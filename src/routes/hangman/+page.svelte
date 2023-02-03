@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Word } from '../../lib/types/word.type';
+	import HangmanDrawing from './HangmanDrawing.svelte';
 
 	let word: Word = {};
 	const Min = 4;
@@ -20,7 +21,13 @@
 			console.log(error);
 		}
 	};
+
+	let wrong: string[] = [];
+
+	let drawHangMan = () => {};
 </script>
+
+<HangmanDrawing {wrong} bind:drawMan={drawHangMan} />
 
 <button on:click={getRandomWord}>Get Word</button>
 
