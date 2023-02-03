@@ -1,3 +1,4 @@
+import { mySqlDateFormat } from '$lib/mysql-date-format';
 import { Model } from 'objection';
 import { GameStatus } from '../enum/game-status.enum';
 import CodeBreakerCode from './code-breaker-code';
@@ -55,13 +56,14 @@ class CodeBreaker extends Model {
 	});
 
 	$beforeInsert() {
-		const now = new Date().toISOString();
-		this.CreatedAt = now;
-		this.UpdatedAt = now;
+		const now = new Date(Date.now());
+		this.CreatedAt = mySqlDateFormat(now);
+		this.UpdatedAt = mySqlDateFormat(now);
 	}
 
 	$beforeUpdate() {
-		this.UpdatedAt = new Date().toISOString();
+		const now = new Date(Date.now());
+		this.UpdatedAt = mySqlDateFormat(now);
 	}
 }
 

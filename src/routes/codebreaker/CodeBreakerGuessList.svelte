@@ -26,7 +26,7 @@
 </div>
 
 <style>
-	div.code-breaker-guess-list {
+	div.code-breaker-guesses {
 		@apply mb-4 mx-2;
 	}
 	div.code-breaker-guess {
@@ -36,7 +36,7 @@
 		@apply flex flex-wrap mr-8;
 	}
 	div.colors div {
-		@apply h-8 w-8 rounded-full border mr-4;
+		@apply h-8 w-8 rounded-full border mr-4 py-1;
 	}
 	div.keys {
 		@apply flex flex-wrap;

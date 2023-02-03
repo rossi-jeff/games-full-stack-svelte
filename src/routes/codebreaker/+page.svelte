@@ -4,6 +4,7 @@
 	import CodeBreakerGameOptions from './CodeBreakerGameOptions.svelte';
 	import CodeBreakerGuessForm from './CodeBreakerGuessForm.svelte';
 	import CodeBreakerGuessList from './CodeBreakerGuessList.svelte';
+	import CodeBreaketSolution from './CodeBreaketSolution.svelte';
 
 	let game: CodeBreaker = {};
 	let available: string[] = [];
@@ -64,8 +65,14 @@
 	};
 </script>
 
+<h1>Code Breaker</h1>
+
 {#if game && game.guesses && game.guesses.length > 0}
 	<CodeBreakerGuessList guesses={game.guesses} />
+{/if}
+
+{#if game && game.Status === 'Lost' && game.codes}
+	<CodeBreaketSolution codes={game.codes} />
 {/if}
 
 {#if game && game.Status !== 'Playing'}
@@ -75,3 +82,9 @@
 {#if game && game.Status === 'Playing'}
 	<CodeBreakerGuessForm {available} {columns} on:sendGuess={sendGuess} />
 {/if}
+
+<style>
+	h1 {
+		@apply font-bold text-2xl mb-4 mx-2;
+	}
+</style>
