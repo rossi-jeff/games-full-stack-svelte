@@ -10,8 +10,10 @@
 				method: 'POST',
 				body: JSON.stringify({ Length })
 			});
+			console.log(result)
 			if (result.ok) {
 				word = await result.json();
+				console.log(word)
 			}
 		} catch (error) {
 			console.log(error);

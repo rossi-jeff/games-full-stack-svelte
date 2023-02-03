@@ -64,5 +64,5 @@ export const POST: RequestHandler = async ({ request }) => {
 			.limit(1)
 		word = wordResult[0]
 	}
-	return json(word);
+	return json(word ?? {});
 };
