@@ -1,3 +1,4 @@
+import { mySqlDateFormat } from '$lib/mysql-date-format';
 import { Model } from 'objection';
 import CodeBreakerGuessColor from './code-breaker-guess-color';
 import CodeBreakerGuessKey from './code-breaker-guess-key';
@@ -46,13 +47,14 @@ class CodeBreakerGuess extends Model {
 	});
 
 	$beforeInsert() {
-		const now = new Date().toISOString();
-		this.CreatedAt = now;
-		this.UpdatedAt = now;
+		const now = new Date(Date.now());
+		this.CreatedAt = mySqlDateFormat(now);
+		this.UpdatedAt = mySqlDateFormat(now);
 	}
 
 	$beforeUpdate() {
-		this.UpdatedAt = new Date().toISOString();
+		const now = new Date(Date.now());
+		this.UpdatedAt = mySqlDateFormat(now);
 	}
 }
 
