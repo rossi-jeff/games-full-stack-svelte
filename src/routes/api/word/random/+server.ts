@@ -12,57 +12,51 @@ export const POST: RequestHandler = async ({ request }) => {
 		offset: number,
 		word: Word | null = null,
 		wordResult: Word[],
-		countResult
+		countResult;
 	if (Length) {
-		countResult = await Word.query()
-			.where('Length', Length)
-			.count('* as count');
+		countResult = await Word.query().where('Length', Length).count('* as count');
 		count = countResult[0].count;
-		offset = Math.floor(Math.random() * count)
+		offset = Math.floor(Math.random() * count);
 		wordResult = await Word.query()
 			.where('Length', Length)
 			.orderBy('Word', 'ASC')
 			.offset(offset)
-			.limit(1)
-		word = wordResult[0]
+			.limit(1);
+		word = wordResult[0];
 	} else if (Min && Max) {
 		countResult = await Word.query()
 			.where('Length', '>=', Min)
 			.where('Length', '<=', Max)
 			.count('* as count');
 		count = countResult[0].count;
-		offset = Math.floor(Math.random() * count)
+		offset = Math.floor(Math.random() * count);
 		wordResult = await Word.query()
 			.where('Length', '>=', Min)
 			.where('Length', '<=', Max)
 			.orderBy('Word', 'ASC')
 			.offset(offset)
-			.limit(1)
-		word = wordResult[0]
+			.limit(1);
+		word = wordResult[0];
 	} else if (Min) {
-		countResult = await Word.query()
-			.where('Length', '>=', Min)
-			.count('* as count');
+		countResult = await Word.query().where('Length', '>=', Min).count('* as count');
 		count = countResult[0].count;
-		offset = Math.floor(Math.random() * count)
+		offset = Math.floor(Math.random() * count);
 		wordResult = await Word.query()
 			.where('Length', '>=', Min)
 			.orderBy('Word', 'ASC')
 			.offset(offset)
-			.limit(1)
-		word = wordResult[0]
+			.limit(1);
+		word = wordResult[0];
 	} else if (Max) {
-		countResult = await Word.query()
-			.where('Length', '<=', Max)
-			.count('* as count');
+		countResult = await Word.query().where('Length', '<=', Max).count('* as count');
 		count = countResult[0].count;
-		offset = Math.floor(Math.random() * count)
+		offset = Math.floor(Math.random() * count);
 		wordResult = await Word.query()
 			.where('Length', '<=', Max)
 			.orderBy('Word', 'ASC')
 			.offset(offset)
-			.limit(1)
-		word = wordResult[0]
+			.limit(1);
+		word = wordResult[0];
 	}
 	return json(word ?? {});
 };
