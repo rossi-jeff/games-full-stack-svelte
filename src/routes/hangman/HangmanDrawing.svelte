@@ -12,7 +12,7 @@
 		}
 	};
 
-	const clearParts = () => {
+	export const clearParts = () => {
 		let el;
 		for (const part of parts) {
 			el = document.getElementsByClassName(part);
@@ -46,7 +46,7 @@
 
 <style>
 	div.hang-man-drawing {
-		@apply w-[200px] h-[320px] bg-blue-300 border-blue-900 rounded-lg border relative mx-2;
+		@apply w-[200px] h-[320px] bg-blue-300 border-blue-900 rounded-lg border relative mx-2 mb-6;
 	}
 	div.gallows-top {
 		@apply w-[130px] h-[20px] bg-amber-800 rounded-lg absolute top-[15px] left-[15px];
