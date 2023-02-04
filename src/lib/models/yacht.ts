@@ -1,20 +1,15 @@
-import { GameStatus } from '$lib/enum/game-status.enum';
 import { mySqlDateFormat } from '$lib/mysql-date-format';
 import { Model } from 'objection';
-import Word from './word';
+import YachtTurn from './yacht-turn';
 
-class HangMan extends Model {
+class Yacht extends Model {
 	[x: string]: any; // eslint-disable-line
-	WordId!: number;
 	UserId?: number;
-	Correct!: string;
-	Wrong!: string;
-	Status!: GameStatus;
-	Score!: number;
+	Total?: number;
 	CreatedAt!: string;
 	UpdatedAt!: string;
 
-	static tableName = 'HangMan';
+	static tableName = 'Yacht';
 
 	static idColumn = 'Id';
 
@@ -22,24 +17,20 @@ class HangMan extends Model {
 		type: 'object',
 		properties: {
 			Id: { type: 'integer' },
-			WordId: { type: 'integer' },
 			UserId: { type: ['integer', 'null'] },
-			Correct: { type: 'string' },
-			Wrong: { type: 'string' },
-			Status: { type: 'string', enum: Object.values(GameStatus), default: GameStatus.Playing },
-			Score: { type: ['integer'], default: 0 },
+			Total: { type: ['integer', 'null'], default: 0 },
 			CreatedAt: { type: 'string' },
 			UpdatedAt: { type: 'string' }
 		}
 	};
 
 	static relationMappings = () => ({
-		word: {
-			relation: Model.BelongsToOneRelation,
-			modelClass: Word,
+		turns: {
+			relation: Model.HasManyRelation,
+			modelClass: YachtTurn,
 			join: {
-				from: 'HangMan.WordId',
-				to: 'Word.Id'
+				from: 'Yacht.Id',
+				to: 'YachtTurn.YachtId'
 			}
 		}
 	});
@@ -56,4 +47,4 @@ class HangMan extends Model {
 	}
 }
 
-export default HangMan;
+export default Yacht;
