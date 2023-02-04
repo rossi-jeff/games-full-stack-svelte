@@ -1,0 +1,129 @@
+import { YachtCategory, yachtCategoryValue } from './enum/yacht-category.enum';
+import type { YachtScoreOption } from './types/yacht-score-option.type';
+
+export const rollDie = (faces: number = 6) => {
+	return Math.ceil(Math.random() * faces);
+};
+
+export const scoreNumber = (dice: number[], number: number) => {
+	let score: number = 0;
+	for (let die of dice) {
+		if (die === number) score += number;
+	}
+	return score;
+};
+
+export const countDieFaces = (dice: number[]) => {
+	let faces: { [key: number]: number } = {};
+	for (let die of dice) {
+		if (!faces[die]) faces[die] = 0;
+		faces[die]++;
+	}
+	return faces;
+};
+
+export const scoreFullHouse = (dice: number[]) => {
+	let faces: { [key: number]: number } = countDieFaces(dice);
+	let score: number = 0;
+	let values = Object.values(faces);
+	if (values.length === 2 && values.includes(2) && values.includes(3)) score = 25;
+	return score;
+};
+
+export const scoreYacht = (dice: number[]) => {
+	let faces: { [key: number]: number } = countDieFaces(dice);
+	let score: number = 0;
+	let values = Object.values(faces);
+	if (values.length === 1 && values.includes(5)) score = 50;
+	return score;
+};
+
+export const scoreLittleStraight = (dice: number[]) => {
+	let score: number = 0;
+	let sorted = JSON.parse(JSON.stringify(dice));
+	sorted.sort();
+	if (sorted.join(',') === '1,2,3,4,5') score = 30;
+	return score;
+};
+
+export const scoreBigStraight = (dice: number[]) => {
+	let score: number = 0;
+	let sorted = JSON.parse(JSON.stringify(dice));
+	sorted.sort();
+	if (sorted.join(',') === '2,3,4,5,6') score = 30;
+	return score;
+};
+
+export const scoreChoice = (dice: number[]) => {
+	let score: number = 0;
+	for (let die of dice) score += die;
+	return score;
+};
+
+export const scoreFourKind = (dice: number[]) => {
+	let faces: { [key: number]: number } = countDieFaces(dice);
+	let score: number = 0;
+	let values = Object.values(faces);
+	let keys = Object.keys(faces);
+	if (values.includes(4) || values.includes(5)) {
+		for (let key of keys) {
+			if (faces[parseInt(key)] >= 4) score = 4 * parseInt(key);
+		}
+	}
+	return score;
+};
+
+export const buildScoreOptions = (dice: number[], skip: string[]) => {
+	const options: YachtScoreOption[] = [];
+	const categories = Object.values(YachtCategory);
+	for (const category of categories) {
+		if (skip.includes(category)) continue;
+		const option: YachtScoreOption = {
+			Category: yachtCategoryValue[category],
+			Score: 0
+		};
+		switch (category) {
+			case 'Ones':
+				option.Score = scoreNumber(dice, 1);
+				break;
+			case 'Twos':
+				option.Score = scoreNumber(dice, 2);
+				break;
+			case 'Threes':
+				option.Score = scoreNumber(dice, 3);
+				break;
+			case 'Fours':
+				option.Score = scoreNumber(dice, 4);
+				break;
+			case 'Fives':
+				option.Score = scoreNumber(dice, 5);
+				break;
+			case 'Sixes':
+				option.Score = scoreNumber(dice, 6);
+				break;
+			case 'FullHouse':
+				option.Score = scoreFullHouse(dice);
+				break;
+			case 'FourOfKind':
+				option.Score = scoreFourKind(dice);
+				break;
+			case 'BigStraight':
+				option.Score = scoreBigStraight(dice);
+				break;
+			case 'LittleStraight':
+				option.Score = scoreLittleStraight(dice);
+				break;
+			case 'Choice':
+				option.Score = scoreChoice(dice);
+				break;
+			case 'Yacht':
+				option.Score = scoreYacht(dice);
+				break;
+		}
+	}
+	options.sort(sortByScore);
+	return options;
+};
+
+export const sortByScore = (a: YachtScoreOption, b: YachtScoreOption) =>
+	(b.Score ?? 0) - (a.Score ?? 0);
