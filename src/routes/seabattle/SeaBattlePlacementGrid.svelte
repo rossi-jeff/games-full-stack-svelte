@@ -116,7 +116,10 @@
 			cellId = highlighted.pop();
 			if (cellId) {
 				el = document.getElementById(cellId);
-				if (el) el.classList.remove('highlight');
+				if (el) {
+					el.classList.remove('highlight');
+					el.classList.add('occupied');
+				}
 				const [_, h, v] = cellId.split('-');
 				ship.points.push({ h, v: parseInt(v) });
 			}
