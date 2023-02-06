@@ -1,16 +1,8 @@
 <script>
 	import '../app.postcss';
+	import NavBar from './NavBar.svelte';
 </script>
 
-<div class="games">
-	<div class="mb-2 ml-2">
-		<a href="/">Home</a>
-	</div>
-	<slot />
-</div>
+<NavBar />
 
-<style>
-	div.games {
-		@apply m-0 p-2;
-	}
-</style>
+<slot />
