@@ -30,7 +30,7 @@
 
 <style>
 	h2 {
-		@apply font-bold text-lg mb-2;
+		@apply font-bold text-base mb-2;
 	}
 	div.guess-word-game-options {
 		@apply mx-2 my-4;

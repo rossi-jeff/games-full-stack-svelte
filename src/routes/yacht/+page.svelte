@@ -109,6 +109,8 @@
 	};
 </script>
 
+<h2>Yacht</h2>
+
 <div class="yacht">
 	{#if game && (!game.Id || game.turns?.length === Object.values(YachtCategory).length)}
 		<button on:click={createGame}>New Game</button>
@@ -146,5 +148,8 @@
 	}
 	div.yacht {
 		@apply mx-2;
+	}
+	h2 {
+		@apply font-bold text-lg mb-2 mx-2;
 	}
 </style>

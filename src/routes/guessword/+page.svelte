@@ -82,6 +82,8 @@
 	};
 </script>
 
+<h2>Guess Word</h2>
+
 {#if game && game.guesses && game.guesses.length}
 	<GuessWordGuessList guesses={game.guesses} />
 {/if}
@@ -97,3 +99,9 @@
 {#if game && game.Status !== 'Playing'}
 	<GuessWordGameOptions on:newGame={newGame} />
 {/if}
+
+<style>
+	h2 {
+		@apply font-bold text-lg mb-2 mx-2;
+	}
+</style>
