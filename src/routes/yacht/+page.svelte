@@ -2,6 +2,7 @@
 	import { YachtCategory } from '$lib/enum/yacht-category.enum';
 	import type { ArgsYachtRoll } from '$lib/types/args-yacht-roll.type';
 	import type { ArgsYachtScore } from '$lib/types/args-yacht-score.type';
+	import type { FlagType } from '$lib/types/flag.type';
 	import type { YachtScoreOption } from '$lib/types/yacht-score-option.type';
 	import type { YachtTurn } from '$lib/types/yacht-turn.type';
 	import type { Yacht } from '$lib/types/yacht.type';
@@ -14,10 +15,7 @@
 	let game: Yacht = {};
 	let turn: YachtTurn = {};
 	let options: YachtScoreOption[] = [];
-	type YachtFlags = {
-		[key: string]: boolean;
-	};
-	let flags: YachtFlags = {
+	let flags: FlagType = {
 		firstRoll: false,
 		secondRoll: false,
 		thirdRoll: false,

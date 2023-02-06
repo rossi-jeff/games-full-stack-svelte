@@ -73,8 +73,6 @@ export const scoreFourKind = (dice: number[]) => {
 	return score;
 };
 
-export type categoryOrUndefinned = YachtCategory | undefined;
-
 export const buildScoreOptions = (dice: number[], skip: string[]) => {
 	const options: YachtScoreOption[] = [];
 	const categories = Object.values(YachtCategory);
