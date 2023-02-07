@@ -31,6 +31,8 @@
 
 	const newDisplay = (length: number) => {
 		display = [];
+		wrong = [];
+		correct = [];
 		for (let i = 0; i < length; i++) display.push('');
 		clearButtons();
 		clearParts();
@@ -123,6 +125,8 @@
 	};
 </script>
 
+<h2>Hang Man</h2>
+
 <HangmanDrawing {wrong} bind:drawMan={drawHangMan} bind:clearParts />
 
 {#if game && game.Status === 'Lost'}
@@ -137,3 +141,9 @@
 {#if game && game.Status !== 'Playing'}
 	<HangManGameOptions {Min} {Max} on:newGame={newGame} />
 {/if}
+
+<style>
+	h2 {
+		@apply font-bold text-lg mb-2 mx-2;
+	}
+</style>

@@ -65,7 +65,7 @@
 	};
 </script>
 
-<h1>Code Breaker</h1>
+<h2>Code Breaker</h2>
 
 {#if game && game.guesses && game.guesses.length > 0}
 	<CodeBreakerGuessList guesses={game.guesses} />
@@ -84,7 +84,7 @@
 {/if}
 
 <style>
-	h1 {
-		@apply font-bold text-2xl mb-4 mx-2;
+	h2 {
+		@apply font-bold text-lg mb-2 mx-2;
 	}
 </style>
