@@ -251,7 +251,34 @@ export const seaBattleStatus = async (Id: number) => {
 	} else {
 		return GameStatus.Playing;
 	}
-	if (allSunk.player) return GameStatus.Won;
-	if (allSunk.opponent) return GameStatus.Lost;
+	if (allSunk.player) return GameStatus.Lost;
+	if (allSunk.opponent) return GameStatus.Won;
 	return GameStatus.Playing;
+};
+
+export const seaBattleScore = async (Id: number, Status: GameStatus) => {
+	SeaBattle.knex(connection);
+	SeaBattleTurn.knex(connection);
+	const seaBattle = await SeaBattle.query().findById(Id).select('Axis');
+	if (!seaBattle || !seaBattle.Axis) return 0;
+	const maxTurns = seaBattle.Axis * seaBattle.Axis * 2;
+	const perMiss = 5;
+	const perHit = 10;
+	let Score = Status === GameStatus.Won ? maxTurns * perMiss : 0;
+	const turns = await SeaBattleTurn.query().where('SeaBattleId', Id);
+	if (turns && turns.length) {
+		Score -= turns.length * perMiss;
+		for (const turn of turns) {
+			if (turn.Navy === Navy.Player) {
+				if (turn.Target === Target.Hit) Score += perHit;
+				if (turn.Target === Target.Miss) Score -= perMiss;
+				if (turn.Target === Target.Sunk) Score += perHit * 2;
+			} else {
+				if (turn.Target === Target.Hit) Score -= perHit;
+				if (turn.Target === Target.Miss) Score += perMiss;
+				if (turn.Target === Target.Sunk) Score -= perHit * 2;
+			}
+		}
+	}
+	return Score;
 };

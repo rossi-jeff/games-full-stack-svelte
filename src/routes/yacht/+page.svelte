@@ -49,6 +49,7 @@
 				const { Turn, Options } = await result.json();
 				turn = Turn;
 				options = Options;
+				// reloadGame();
 			}
 		} catch (error) {
 			console.log(error);
@@ -136,7 +137,7 @@
 	{/if}
 
 	{#if game && game.turns && game.turns.length}
-		<YachtScoreCard turns={game.turns} />
+		<YachtScoreCard turns={game.turns} total={game.Total ?? 0} />
 	{/if}
 </div>
 

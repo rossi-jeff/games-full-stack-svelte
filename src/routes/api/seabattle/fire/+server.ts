@@ -3,7 +3,8 @@ import type { ArgsSeaBattleFire } from '../../../../lib/types/args-sea-battle-fi
 import {
 	seaBattlePlayerFire,
 	seaBattleOpponentFire,
-	seaBattleStatus
+	seaBattleStatus,
+	seaBattleScore
 } from '../../../../lib/sea-battle-server-functions';
 import { GameStatus } from '../../../../lib/enum/game-status.enum';
 import SeaBattle from '../../../../lib/models/sea-battle';
@@ -23,7 +24,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	const Status = await seaBattleStatus(Id);
 	if (Status != GameStatus.Playing) {
 		SeaBattle.knex(connection);
-		await SeaBattle.query().findById(Id).patch({ Status });
+		const Score = await seaBattleScore(Id, Status);
+		await SeaBattle.query().findById(Id).patch({ Status, Score });
 	}
 	return json(turn);
 };

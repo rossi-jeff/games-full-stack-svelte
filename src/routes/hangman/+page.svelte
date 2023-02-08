@@ -2,6 +2,7 @@
 	import { clone } from '$lib/clone';
 	import type { HangMan } from '$lib/types/hang-man-type';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { Word } from '../../lib/types/word.type';
 	import HangManDisplay from './HangManDisplay.svelte';
 	import HangmanDrawing from './HangmanDrawing.svelte';
@@ -120,6 +121,10 @@
 			const result = await fetch(`/api/hangman/${game.Id}`);
 			if (result.ok) {
 				game = await result.json();
+				if (game.Status === GameStatus.Won) {
+					clearButtons();
+					clearParts();
+				}
 			}
 		} catch (error) {
 			console.log(error);

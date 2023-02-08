@@ -10,6 +10,7 @@ import CodeBreakerGuessKey from '../../../../lib/models/code-breaker-guess-key';
 import { Key } from '../../../../lib/enum/key.enum';
 import CodeBreakerGuess from '../../../../lib/models/code-breaker-guess';
 import { codeBreakerStatus } from '$lib/code-breaker-status';
+import { codeBreakerScore } from '../../../../lib/code-breaker-score';
 
 export const POST: RequestHandler = async ({ request }) => {
 	CodeBreaker.knex(connection);
@@ -74,7 +75,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		const count = await CodeBreakerGuess.query().where('CodeBreakerId', Id);
 		const status = codeBreakerStatus(black.length, codes.length, count.length);
 		if (status !== 'Playing') {
-			await CodeBreaker.query().findById(Id).patch({ Status: status });
+			const Score = await codeBreakerScore(Id);
+			await CodeBreaker.query().findById(Id).patch({ Status: status, Score });
 		}
 	}
 	return json(guess);
