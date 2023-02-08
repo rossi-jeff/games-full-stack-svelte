@@ -7,11 +7,11 @@
 <div class="credentials-form">
 	<div class="field">
 		<label for="user-name">User Name</label>
-		<input type="text" name="user-name" id="user-name" bind:value={credentials.UserName} />
+		<input type="text" name="user-name" bind:value={credentials.UserName} />
 	</div>
 	<div class="field">
 		<label for="pass-word">PassWord</label>
-		<input type="password" name="pass-word" id="pass-word" bind:value={credentials.PassWord} />
+		<input type="password" name="pass-word" bind:value={credentials.PassWord} />
 	</div>
 </div>
 
@@ -20,7 +20,7 @@
 		@apply px-2 py-1;
 	}
 	div.field {
-		@apply border border-b-gray-500 border-dotted py-1;
+		@apply text-center pb-4;
 	}
 	label {
 		@apply font-bold w-24 inline-block;

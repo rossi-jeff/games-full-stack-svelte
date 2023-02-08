@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { ArgsUserCredential } from '../lib/types/args-user-credential.type';
 	import CredentialsForm from './CredentialsForm.svelte';
-	let register: ArgsUserCredential = {
-		UserName: '',
-		PassWord: ''
-	};
-	let signIn: ArgsUserCredential = {
+	import { page } from '$app/stores';
+	import { blankUserSession, userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
+
+	let credentials: ArgsUserCredential = {
 		UserName: '',
 		PassWord: ''
 	};
@@ -18,6 +18,8 @@
 		{ url: '/yacht', name: 'Yacht' },
 		{ url: '/seabattle', name: 'Sea Battle' }
 	];
+
+	let session: UserSessionData = get(userSession);
 
 	const openSignIn = () => {
 		const modal = document.getElementById('modal');
@@ -54,18 +56,67 @@
 			modal.style.display = 'none';
 		}
 	};
+
+	const signIn = async () => {
+		if (!credentials.UserName || !credentials.UserName) return alert('Please enter fields');
+		try {
+			const result = await fetch('/api/user/signin', {
+				method: 'POST',
+				body: JSON.stringify(credentials)
+			});
+			if (result.ok) {
+				const { UserName, Token } = await result.json();
+				userSession.set({
+					UserName,
+					Token,
+					SignedIn: true
+				});
+				session = get(userSession);
+				closeSignIn();
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const signOut = () => {
+		userSession.set(blankUserSession);
+		session = get(userSession);
+	};
+
+	const register = async () => {
+		if (!credentials.UserName || !credentials.UserName) return alert('Please enter fields');
+		try {
+			const result = await fetch('/api/user/register', {
+				method: 'POST',
+				body: JSON.stringify(credentials)
+			});
+			if (result.ok) {
+				await result.json();
+				closeRegister();
+				signIn();
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 </script>
 
 <div class="nav-bar">
 	<div class="left-side">
-		<a href="/">Home</a>
+		<a href="/" class:active={$page.url.pathname === '/'}>Home</a>
 		{#each links as link}
-			<a href={link.url}>{link.name}</a>
+			<a href={link.url} class:active={link.url === $page.url.pathname}>{link.name}</a>
 		{/each}
 	</div>
 	<div class="right-side">
-		<button on:click={openRegister}>Register</button>
-		<button on:click={openSignIn}>Sign In</button>
+		{#if session && session.SignedIn}
+			{session.UserName}
+			<button on:click={signOut}>Sign Out</button>
+		{:else}
+			<button on:click={openRegister}>Register</button>
+			<button on:click={openSignIn}>Sign In</button>
+		{/if}
 	</div>
 </div>
 
@@ -74,22 +125,22 @@
 	<div id="register-dialog">
 		<div class="dialog-header">Register</div>
 		<div class="dialog-content">
-			<CredentialsForm bind:credentials={register} />
+			<CredentialsForm bind:credentials />
 		</div>
 		<div class="dialog-buttons">
 			<button class="cancel" on:click={closeRegister}>Cancel</button>
-			<button>Register</button>
+			<button on:click={register}>Register</button>
 		</div>
 	</div>
 	<!-- sign in dialog-->
 	<div id="sign-in-dialog">
 		<div class="dialog-header">Sign In</div>
 		<div class="dialog-content">
-			<CredentialsForm bind:credentials={signIn} />
+			<CredentialsForm bind:credentials />
 		</div>
 		<div class="dialog-buttons">
 			<button class="cancel" on:click={closeSignIn}>Cancel</button>
-			<button>Sign In</button>
+			<button on:click={signIn}>Sign In</button>
 		</div>
 	</div>
 </div>
@@ -108,7 +159,7 @@
 		@apply py-1 px-0 ml-2 font-bold text-sm;
 	}
 	a {
-		@apply no-underline mr-4 font-bold;
+		@apply no-underline mr-2 font-bold py-1 px-1;
 	}
 	a:hover {
 		@apply underline text-white;
@@ -145,5 +196,8 @@
 	}
 	div#register-dialog {
 		@apply hidden mx-auto relative w-96 bg-white p-4 rounded top-24;
+	}
+	:global(div.nav-bar a.active) {
+		@apply bg-blue-900 rounded text-white;
 	}
 </style>
