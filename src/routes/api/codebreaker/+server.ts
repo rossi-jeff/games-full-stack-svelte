@@ -7,6 +7,7 @@ import { error } from '@sveltejs/kit';
 import { GameStatus } from '../../../lib/enum/game-status.enum';
 import CodeBreakerCode from '../../../lib/models/code-breaker-code';
 import { colorValue } from '../../../lib/enum/color.enum';
+import { decodeAuthHeader } from '../../../lib/decode-auth-header';
 
 CodeBreaker.knex(connection);
 
@@ -19,10 +20,12 @@ export const POST: RequestHandler = async ({ request }) => {
 	const data: ArgsCodeBreakerCreate = await request.json();
 	if (!data || !data.Colors || !data.Columns) throw error(400, 'Bad Request');
 	const { Colors, Columns } = data;
+	const { UserId } = decodeAuthHeader(request.headers.get('Authorization'));
 	const codeBreaker = await CodeBreaker.query().insert({
 		Columns,
 		Colors: Colors.length ?? 0,
 		Status: GameStatus.Playing ?? undefined,
+		UserId: UserId ?? undefined,
 		Score: 0
 	});
 	if (Colors.length && Columns > 0 && codeBreaker) {

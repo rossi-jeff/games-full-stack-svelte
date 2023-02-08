@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { clone } from '$lib/clone';
 	import type { HangMan } from '$lib/types/hang-man-type';
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { Word } from '../../lib/types/word.type';
 	import HangManDisplay from './HangManDisplay.svelte';
 	import HangmanDrawing from './HangmanDrawing.svelte';
@@ -57,7 +58,8 @@
 		try {
 			const result = await fetch('/api/hangman', {
 				method: 'POST',
-				body: JSON.stringify({ WordId })
+				body: JSON.stringify({ WordId }),
+				headers: buildRequestHeaders()
 			});
 			if (result.ok) {
 				game = await result.json();

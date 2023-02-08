@@ -6,6 +6,7 @@
 	import type { YachtScoreOption } from '$lib/types/yacht-score-option.type';
 	import type { YachtTurn } from '$lib/types/yacht-turn.type';
 	import type { Yacht } from '$lib/types/yacht.type';
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import RollOne from './RollOne.svelte';
 	import RollThree from './RollThree.svelte';
 	import RollTwo from './RollTwo.svelte';
@@ -24,7 +25,7 @@
 
 	const createGame = async () => {
 		try {
-			const result = await fetch('/api/yacht', { method: 'POST' });
+			const result = await fetch('/api/yacht', { method: 'POST', headers: buildRequestHeaders() });
 			if (result.ok) {
 				game = await result.json();
 			}

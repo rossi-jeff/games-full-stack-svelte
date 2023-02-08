@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Word } from '$lib/types/word.type';
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { Rating } from '../../lib/enum/rating.enum';
 	import type { ArgsGuessWordGuess } from '../../lib/types/args-guess-word-guess';
 	import type { ArgsGuessWordHint } from '../../lib/types/args-guess-word-hint.type';
@@ -78,7 +79,8 @@
 		try {
 			const result = await fetch('/api/guessword', {
 				method: 'POST',
-				body: JSON.stringify({ WordId })
+				body: JSON.stringify({ WordId }),
+				headers: buildRequestHeaders()
 			});
 			if (result.ok) {
 				game = await result.json();

@@ -37,7 +37,7 @@
 
 <style>
 	div.yacht-score-options {
-		@apply border border-black rounded p-2;
+		@apply border border-black rounded p-2 mb-2;
 	}
 	div.yacht-score-option {
 		@apply flex flex-wrap py-1 border border-dashed border-b-gray-500;
