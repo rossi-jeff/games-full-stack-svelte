@@ -6,6 +6,7 @@
 	import type { FlagType } from '$lib/types/flag.type';
 	import type { SeaBattleShip } from '$lib/types/sea-batte-ship.type';
 	import type { SeaBattle } from '$lib/types/sea-battle.type';
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { ArgsSeaBattleFire } from '../../lib/types/args-sea-battle-fire.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
 	import SeaBattleGameOptions from './SeaBattleGameOptions.svelte';
@@ -34,7 +35,8 @@
 		try {
 			const result = await fetch('/api/seabattle', {
 				method: 'POST',
-				body: JSON.stringify({ Axis })
+				body: JSON.stringify({ Axis }),
+				headers: buildRequestHeaders()
 			});
 			if (result.ok) {
 				game = await result.json();

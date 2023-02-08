@@ -73,6 +73,7 @@
 				});
 				session = get(userSession);
 				closeSignIn();
+				credentials.PassWord = '';
 			}
 		} catch (error) {
 			console.log(error);

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { ArgsCodeBreakerCreate } from '../../lib/types/args-code-breaker-create.type';
 	import type { CodeBreaker } from '../../lib/types/code-breaker.type';
 	import CodeBreakerGameOptions from './CodeBreakerGameOptions.svelte';
@@ -17,7 +18,8 @@
 		try {
 			const result = await fetch('/api/codebreaker', {
 				method: 'POST',
-				body: JSON.stringify({ Colors, Columns })
+				body: JSON.stringify({ Colors, Columns }),
+				headers: buildRequestHeaders()
 			});
 			if (result.ok) {
 				game = await result.json();

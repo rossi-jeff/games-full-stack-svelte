@@ -2,16 +2,19 @@ import { connection } from '$lib/connection';
 import { GameStatus } from '$lib/enum/game-status.enum';
 import HangMan from '$lib/models/hang-man';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
+import { decodeAuthHeader } from '../../../lib/decode-auth-header';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const data: { WordId: number } = await request.json();
 	if (!data || !data.WordId) throw error(400, 'Bad Request');
 	HangMan.knex(connection);
 	const { WordId } = data;
+	const { UserId } = decodeAuthHeader(request.headers.get('Authorization'));
 	const hangMan = await HangMan.query().insert({
 		WordId,
 		Correct: '',
 		Wrong: '',
+		UserId: UserId ?? undefined,
 		Status: GameStatus.Playing,
 		Score: 0
 	});
