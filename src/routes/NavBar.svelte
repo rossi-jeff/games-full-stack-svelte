@@ -107,7 +107,7 @@
 	<div class="left-side">
 		<a href="/" class:active={$page.url.pathname === '/'}>Home</a>
 		{#each links as link}
-			<a href={link.url} class:active={link.url === $page.url.pathname}>{link.name}</a>
+			<a href={link.url} class:active={$page.url.pathname.includes(link.url)}>{link.name}</a>
 		{/each}
 	</div>
 	<div class="right-side">

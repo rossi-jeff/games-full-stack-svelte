@@ -5,6 +5,7 @@ import { error, json } from '@sveltejs/kit';
 import { GameStatus } from '../../../lib/enum/game-status.enum';
 import { decodeAuthHeader } from '../../../lib/decode-auth-header';
 import { defaultLimit, defaultOffset } from '../../../lib/constants';
+import Word from '../../../lib/models/word';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const Limit = url.searchParams.get('Limit');
@@ -21,6 +22,12 @@ export const GET: RequestHandler = async ({ url }) => {
 		.whereNot('Status', GameStatus.Playing)
 		.count('* as count');
 	const Count: number = countResult[0].count ?? 0;
+	if (Items && Items.length) {
+		Word.knex(connection);
+		for (const item of Items) {
+			item.word = await Word.query().findById(item.WordId);
+		}
+	}
 	return json({ Items, Count, Limit: limit, Offset: offset });
 };
 
