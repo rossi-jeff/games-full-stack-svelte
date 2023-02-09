@@ -6,6 +6,7 @@ class Yacht extends Model {
 	[x: string]: any; // eslint-disable-line
 	UserId?: number;
 	Total?: number;
+	NumTurns?: number;
 	CreatedAt!: string;
 	UpdatedAt!: string;
 
@@ -19,6 +20,7 @@ class Yacht extends Model {
 			Id: { type: 'integer' },
 			UserId: { type: ['integer', 'null'] },
 			Total: { type: ['integer', 'null'], default: 0 },
+			NumTurns: { type: ['integer', 'null'], default: 0 },
 			CreatedAt: { type: 'string' },
 			UpdatedAt: { type: 'string' }
 		}
