@@ -141,6 +141,10 @@
 	{/if}
 </div>
 
+<div class="scores-link">
+	<a href="/yacht/scores">See Top Scores</a>
+</div>
+
 <style>
 	button {
 		@apply border border-black rounded py-1 px-2 mr-2 mb-2;
@@ -153,5 +157,8 @@
 	}
 	h2 {
 		@apply font-bold text-lg mb-2 mx-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>

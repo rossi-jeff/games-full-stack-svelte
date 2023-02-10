@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { baseUrl, defaultLimit, defaultOffset } from '../../../lib/constants';
+	import { defaultLimit, defaultOffset } from '../../../lib/constants';
+	import { getPaginatedResults } from '../../../lib/get-paginated-results';
 	import type { GuessWord } from '../../../lib/types/guess-word.type';
+	import Pagination from '../../Pagination.svelte';
 	import GuessWordItems from './GuessWordItems.svelte';
 
 	let Limit = defaultLimit;
@@ -10,6 +12,7 @@
 		Offset,
 		Limit
 	};
+	const path = '/api/guessword';
 
 	type PaginatedGuessWords =
 		| {
@@ -21,23 +24,18 @@
 		| undefined;
 	let paginated: PaginatedGuessWords;
 
-	const getGuessWords = async () => {
-		try {
-			let url = new URL('/api/guessword', baseUrl);
-			for (const key in params) {
-				url.searchParams.append(key, params[key].toString());
-			}
-			const result = await fetch(url);
-			if (result.ok) {
-				paginated = await result.json();
-			}
-		} catch (error) {
-			console.log(error);
-		}
+	const changePage = async (event: any) => {
+		const { current, limit } = event.detail;
+		params.Offset = (current - 1) * limit;
+		params.Limit = limit;
+		paginated = await getPaginatedResults(path, params);
+		initPagination();
 	};
+	let initPagination = () => {};
 
-	onMount(() => {
-		getGuessWords();
+	onMount(async () => {
+		paginated = await getPaginatedResults(path, params);
+		initPagination();
 	});
 </script>
 
@@ -45,6 +43,16 @@
 
 {#if paginated && paginated.Items}
 	<GuessWordItems items={paginated.Items} />
+{/if}
+
+{#if paginated}
+	<Pagination
+		count={paginated.Count}
+		limit={paginated.Limit}
+		offset={paginated.Offset}
+		bind:init={initPagination}
+		on:changePage={changePage}
+	/>
 {/if}
 
 <style>

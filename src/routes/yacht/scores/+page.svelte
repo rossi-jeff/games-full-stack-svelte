@@ -2,9 +2,9 @@
 	import { onMount } from 'svelte';
 	import { defaultLimit, defaultOffset } from '../../../lib/constants';
 	import { getPaginatedResults } from '../../../lib/get-paginated-results';
-	import type { CodeBreaker } from '../../../lib/types/code-breaker.type';
+	import type { Yacht } from '../../../lib/types/yacht.type';
 	import Pagination from '../../Pagination.svelte';
-	import CodeBreakerItems from './CodeBreakerItems.svelte';
+	import YachtItems from './YachtItems.svelte';
 
 	let Limit = defaultLimit;
 	let Offset = defaultOffset;
@@ -12,17 +12,16 @@
 		Offset,
 		Limit
 	};
-	const path = '/api/codebreaker';
-
-	type PaginatedCodeBreakers =
+	const path = '/api/yacht';
+	type PaginatedYachts =
 		| {
-				Items: CodeBreaker[];
+				Items: Yacht[];
 				Count: number;
 				Offset: number;
 				Limit: number;
 		  }
 		| undefined;
-	let paginated: PaginatedCodeBreakers;
+	let paginated: PaginatedYachts;
 
 	const changePage = async (event: any) => {
 		const { current, limit } = event.detail;
@@ -39,10 +38,10 @@
 	});
 </script>
 
-<h2>Code Breaker Scores</h2>
+<h2>Yacht Scores</h2>
 
 {#if paginated && paginated.Items}
-	<CodeBreakerItems items={paginated.Items} />
+	<YachtItems items={paginated.Items} />
 {/if}
 
 {#if paginated}

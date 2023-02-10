@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { baseUrl, defaultLimit, defaultOffset } from '../../../lib/constants';
+	import { defaultLimit, defaultOffset } from '../../../lib/constants';
+	import { getPaginatedResults } from '../../../lib/get-paginated-results';
 	import type { HangMan } from '../../../lib/types/hang-man-type';
+	import Pagination from '../../Pagination.svelte';
 	import HangManItems from './HangManItems.svelte';
 
 	let Limit = defaultLimit;
@@ -10,6 +12,7 @@
 		Offset,
 		Limit
 	};
+	const path = '/api/hangman';
 
 	type PaginatedHangMen =
 		| {
@@ -21,23 +24,18 @@
 		| undefined;
 	let paginated: PaginatedHangMen;
 
-	const getHangMen = async () => {
-		try {
-			let url = new URL('/api/hangman', baseUrl);
-			for (const key in params) {
-				url.searchParams.append(key, params[key].toString());
-			}
-			const result = await fetch(url);
-			if (result.ok) {
-				paginated = await result.json();
-			}
-		} catch (error) {
-			console.log(error);
-		}
+	const changePage = async (event: any) => {
+		const { current, limit } = event.detail;
+		params.Offset = (current - 1) * limit;
+		params.Limit = limit;
+		paginated = await getPaginatedResults(path, params);
+		initPagination();
 	};
+	let initPagination = () => {};
 
-	onMount(() => {
-		getHangMen();
+	onMount(async () => {
+		paginated = await getPaginatedResults(path, params);
+		initPagination();
 	});
 </script>
 
@@ -45,6 +43,16 @@
 
 {#if paginated && paginated.Items}
 	<HangManItems items={paginated.Items} />
+{/if}
+
+{#if paginated}
+	<Pagination
+		count={paginated.Count}
+		limit={paginated.Limit}
+		offset={paginated.Offset}
+		bind:init={initPagination}
+		on:changePage={changePage}
+	/>
 {/if}
 
 <style>
