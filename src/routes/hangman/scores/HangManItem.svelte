@@ -5,7 +5,7 @@
 </script>
 
 <div class="hang-man-item">
-	<div class="user">{item.UserId ? item.UserId : 'Anonymous'}</div>
+	<div class="user">{item.user ? item.user.UserName : 'Anonymous'}</div>
 	<div class="status">{item.Status}</div>
 	<div class="score">{item.Score}</div>
 	<div class="correct">{item.Correct}</div>

@@ -6,6 +6,8 @@
 	import type { FlagType } from '$lib/types/flag.type';
 	import type { SeaBattleShip } from '$lib/types/sea-batte-ship.type';
 	import type { SeaBattle } from '$lib/types/sea-battle.type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { ArgsSeaBattleFire } from '../../lib/types/args-sea-battle-fire.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
@@ -24,6 +26,7 @@
 	let modes = Object.values(Navy);
 	let modeIdx = modes.indexOf(Navy.Player);
 	let mode = modes[modeIdx];
+	const session: UserSessionData = get(userSession);
 
 	const newGame = async (event: any) => {
 		const { Axis, ships } = event.detail;
@@ -36,7 +39,7 @@
 			const result = await fetch('/api/seabattle', {
 				method: 'POST',
 				body: JSON.stringify({ Axis }),
-				headers: buildRequestHeaders()
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();

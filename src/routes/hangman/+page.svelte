@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { clone } from '$lib/clone';
 	import type { HangMan } from '$lib/types/hang-man-type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { Word } from '../../lib/types/word.type';
@@ -13,6 +15,7 @@
 	let game: HangMan = {};
 	let Min = 4;
 	let Max = 12;
+	const session: UserSessionData = get(userSession);
 
 	const getRandomWord = async () => {
 		try {
@@ -60,7 +63,7 @@
 			const result = await fetch('/api/hangman', {
 				method: 'POST',
 				body: JSON.stringify({ WordId }),
-				headers: buildRequestHeaders()
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();

@@ -1,6 +1,7 @@
 import type { GameStatus } from '$lib/enum/game-status.enum';
 import type { SeaBattleShip } from './sea-batte-ship.type';
 import type { SeaBattleTurn } from './sea-battle-turn.type';
+import type { User } from './user.type';
 
 export type SeaBattle = {
 	Id?: number;
@@ -13,4 +14,5 @@ export type SeaBattle = {
 
 	ships?: SeaBattleShip[];
 	turns?: SeaBattleTurn[];
+	user?: User;
 };

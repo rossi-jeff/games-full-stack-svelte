@@ -5,7 +5,7 @@
 </script>
 
 <div class="code-breaker-item">
-	<div class="user">{item.UserId ? item.UserId : 'Anonymous'}</div>
+	<div class="user">{item.user ? item.user.UserName : 'Anonymous'}</div>
 	<div class="status">{item.Status}</div>
 	<div class="score">{item.Score}</div>
 	<div class="colors">{item.Colors}</div>

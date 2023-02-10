@@ -1,6 +1,7 @@
 import { connection } from '$lib/connection';
 import { GameStatus } from '$lib/enum/game-status.enum';
 import HangMan from '$lib/models/hang-man';
+import User from '$lib/models/user';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { defaultLimit, defaultOffset } from '../../../lib/constants';
 import { decodeAuthHeader } from '../../../lib/decode-auth-header';
@@ -23,8 +24,10 @@ export const GET: RequestHandler = async ({ url }) => {
 	const Count: number = countResult[0].count ?? 0;
 	if (Items && Items.length) {
 		Word.knex(connection);
+		User.knex(connection);
 		for (const item of Items) {
 			item.word = await Word.query().findById(item.WordId);
+			item.user = item.UserId ? await User.query().findById(item.UserId) : null;
 		}
 	}
 	return json({ Items, Count, Limit: limit, Offset: offset });
@@ -35,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!data || !data.WordId) throw error(400, 'Bad Request');
 	HangMan.knex(connection);
 	const { WordId } = data;
-	const { UserId } = decodeAuthHeader(request.headers.get('Authorization'));
+	const { UserId } = decodeAuthHeader(request.headers);
 	const hangMan = await HangMan.query().insert({
 		WordId,
 		Correct: '',

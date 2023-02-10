@@ -1,4 +1,5 @@
 import { connection } from '$lib/connection';
+import User from '$lib/models/user';
 import Yacht from '$lib/models/yacht';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { defaultLimit, defaultOffset } from '../../../lib/constants';
@@ -21,12 +22,18 @@ export const GET: RequestHandler = async ({ url }) => {
 		.where('NumTurns', '>=', NumCategories)
 		.count('* as count');
 	const Count: number = countResult[0].count ?? 0;
+	if (Items && Items.length) {
+		User.knex(connection)
+		for (const item of Items) {
+			item.user = item.UserId ? await User.query().findById(item.UserId) : null;
+		}
+	}
 	return json({ Items, Count, Limit: limit, Offset: offset });
 };
 
 export const POST: RequestHandler = async ({ request }) => {
 	Yacht.knex(connection);
-	const { UserId } = decodeAuthHeader(request.headers.get('Authorization'));
+	const { UserId } = decodeAuthHeader(request.headers);
 	const yacht = await Yacht.query().insert({ UserId: UserId ?? undefined });
 	return json(yacht);
 };

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { ArgsCodeBreakerCreate } from '../../lib/types/args-code-breaker-create.type';
 	import type { CodeBreaker } from '../../lib/types/code-breaker.type';
@@ -10,6 +12,7 @@
 	let game: CodeBreaker = {};
 	let available: string[] = [];
 	let columns: number = 4;
+	const session: UserSessionData = get(userSession);
 
 	const startGame = async (event: { detail: ArgsCodeBreakerCreate }) => {
 		const { Colors, Columns } = event.detail;
@@ -19,7 +22,7 @@
 			const result = await fetch('/api/codebreaker', {
 				method: 'POST',
 				body: JSON.stringify({ Colors, Columns }),
-				headers: buildRequestHeaders()
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();

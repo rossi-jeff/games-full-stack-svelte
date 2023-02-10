@@ -5,7 +5,7 @@
 </script>
 
 <div class="yacht-item">
-	<div class="user">{item.UserId ? item.UserId : 'Anonymous'}</div>
+	<div class="user">{item.user ? item.user.UserName : 'Anonymous'}</div>
 	<div class="score">{item.Total}</div>
 </div>
 

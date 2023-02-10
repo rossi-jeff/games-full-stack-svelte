@@ -2,6 +2,7 @@ import { Model } from 'objection';
 import { GameStatus } from '../enum/game-status.enum';
 import { mySqlDateFormat } from '../mysql-date-format';
 import GuessWordGuess from './guess-word-guess';
+import User from './user';
 import Word from './word';
 
 class GuessWord extends Model {
@@ -46,6 +47,15 @@ class GuessWord extends Model {
 			join: {
 				from: 'GuessWord.Id',
 				to: 'GuessWordGuess.GuessWordId'
+			}
+		},
+
+		user: {
+			relation: Model.BelongsToOneRelation,
+			modelClass: User,
+			join: {
+				from: 'GuessWord.UserId',
+				to: 'User.Id'
 			}
 		}
 	});
