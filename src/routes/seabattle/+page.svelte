@@ -248,8 +248,15 @@
 	<SeaBattleGameOptions on:newGame={newGame} flag={flags.newGame} />
 {/if}
 
+<div class="scores-link">
+	<a href="/seabattle/scores">See Top Scores</a>
+</div>
+
 <style>
 	h2 {
 		@apply font-bold text-lg mb-2 mx-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>
