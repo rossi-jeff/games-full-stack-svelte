@@ -37,7 +37,7 @@
 		</ul>
 		No contact information is collected.
 	</div>
-	<div>The source code for both the games site and the GraphQL API are available upon request.</div>
+	<div>The source code for the games site is available upon request.</div>
 </div>
 
 <style>
