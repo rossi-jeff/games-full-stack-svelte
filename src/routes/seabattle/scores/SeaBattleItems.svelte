@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { SeaBattle } from '../../../lib/types/sea-battle.type';
+	import Eye from '../../Eye.svelte';
 	import SeaBattleItem from './SeaBattleItem.svelte';
 
 	export let items: SeaBattle[] = [];
@@ -7,6 +8,9 @@
 
 <div class="sea-battle-items">
 	<div class="sea-battle-header">
+		<div class="eye">
+			<Eye />
+		</div>
 		<div class="user">User</div>
 		<div class="status">Status</div>
 		<div class="score">Score</div>
@@ -23,6 +27,9 @@
 	}
 	div.sea-battle-header {
 		@apply flex flex-wrap justify-between mx-2 font-bold border-b-gray-500 border-dashed border mb-2 bg-gray-300 py-1 px-1;
+	}
+	div.eye {
+		@apply w-8;
 	}
 	div.user {
 		@apply w-36;

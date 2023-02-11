@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { GuessWord } from '../../../lib/types/guess-word.type';
+	import Eye from '../../Eye.svelte';
 	import GuessWordItem from './GuessWordItem.svelte';
 
 	export let items: GuessWord[] = [];
@@ -7,6 +8,9 @@
 
 <div class="guess-word-items">
 	<div class="guess-word-header">
+		<div class="eye">
+			<Eye />
+		</div>
 		<div class="user">User</div>
 		<div class="status">Status</div>
 		<div class="score">Score</div>
@@ -24,6 +28,9 @@
 	}
 	div.guess-word-header {
 		@apply flex flex-wrap justify-between mx-2 font-bold border-b-gray-500 border-dashed border mb-2 bg-gray-300 py-1 px-1;
+	}
+	div.eye {
+		@apply w-8;
 	}
 	div.user {
 		@apply w-36;

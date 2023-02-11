@@ -1,10 +1,16 @@
 <script lang="ts">
 	import type { GuessWord } from '../../../lib/types/guess-word.type';
+	import Eye from '../../Eye.svelte';
 
 	export let item: GuessWord = {};
 </script>
 
 <div class="guess-word-item">
+	<div class="eye">
+		<a href="/guessword/scores/{item.Id}">
+			<Eye />
+		</a>
+	</div>
 	<div class="user">{item.user ? item.user.UserName : 'Anonymous'}</div>
 	<div class="status">{item.Status}</div>
 	<div class="score">{item.Score}</div>
@@ -15,6 +21,9 @@
 <style>
 	div.guess-word-item {
 		@apply flex flex-wrap justify-between mx-2 border-b-gray-400 border-dashed border mb-2 px-1;
+	}
+	div.eye {
+		@apply w-8;
 	}
 	div.user {
 		@apply w-36;
