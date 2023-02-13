@@ -1,6 +1,5 @@
 import { connection } from './connection';
 import { Rating } from './enum/rating.enum';
-import GuessWord from './models/guess-word';
 import GuessWordGuess from './models/guess-word-guess';
 import GuessWordGuessRating from './models/guess-word-guess-rating';
 
