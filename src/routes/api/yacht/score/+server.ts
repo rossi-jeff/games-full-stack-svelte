@@ -11,6 +11,8 @@ import {
 	scoreYacht
 } from '$lib/yacht-functions';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
+import Yacht from '../../../../lib/models/yacht';
+import { yachtScore } from '../../../../lib/yacht-score';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const data: ArgsYachtScore = await request.json();
@@ -67,6 +69,11 @@ export const POST: RequestHandler = async ({ request }) => {
 			break;
 	}
 	await YachtTurn.query().findById(TurnId).patch({ Category, Score });
+	if (turn && turn.YachtId) {
+		Yacht.knex(connection);
+		await Yacht.query().findById(turn.YachtId).increment('NumTurns', 1);
+		await yachtScore(turn.YachtId);
+	}
 	const updated = await YachtTurn.query().findById(TurnId);
 	return json(updated);
 };

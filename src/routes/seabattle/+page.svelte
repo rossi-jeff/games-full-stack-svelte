@@ -6,6 +6,8 @@
 	import type { FlagType } from '$lib/types/flag.type';
 	import type { SeaBattleShip } from '$lib/types/sea-batte-ship.type';
 	import type { SeaBattle } from '$lib/types/sea-battle.type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { ArgsSeaBattleFire } from '../../lib/types/args-sea-battle-fire.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
@@ -24,6 +26,7 @@
 	let modes = Object.values(Navy);
 	let modeIdx = modes.indexOf(Navy.Player);
 	let mode = modes[modeIdx];
+	const session: UserSessionData = get(userSession);
 
 	const newGame = async (event: any) => {
 		const { Axis, ships } = event.detail;
@@ -36,7 +39,7 @@
 			const result = await fetch('/api/seabattle', {
 				method: 'POST',
 				body: JSON.stringify({ Axis }),
-				headers: buildRequestHeaders()
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
@@ -229,6 +232,7 @@
 		<SeaBattleTargetGrid
 			axis={game.Axis ?? 8}
 			flag={flags.playerFire}
+			status={game.Status}
 			on:nextTurn={toggleMode}
 			on:fire={playerTurn}
 			bind:displayTurns={displayPlayerTurns}
@@ -238,6 +242,7 @@
 		<SeaBattleShipGrid
 			axis={game.Axis ?? 8}
 			flag={flags.opponentFire}
+			status={game.Status}
 			on:nextTurn={toggleMode}
 			on:fire={opponentTurn}
 			bind:displayShips={displayPlayerShips}
@@ -248,8 +253,15 @@
 	<SeaBattleGameOptions on:newGame={newGame} flag={flags.newGame} />
 {/if}
 
+<div class="scores-link">
+	<a href="/seabattle/scores">See Top Scores</a>
+</div>
+
 <style>
 	h2 {
 		@apply font-bold text-lg mb-2 mx-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { Word } from '$lib/types/word.type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { Rating } from '../../lib/enum/rating.enum';
 	import type { ArgsGuessWordGuess } from '../../lib/types/args-guess-word-guess';
@@ -25,6 +27,7 @@
 		showHints: false
 	};
 	let hints: string[] = [];
+	const session: UserSessionData = get(userSession);
 
 	const getRandomWord = async () => {
 		try {
@@ -80,7 +83,7 @@
 			const result = await fetch('/api/guessword', {
 				method: 'POST',
 				body: JSON.stringify({ WordId }),
-				headers: buildRequestHeaders()
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
@@ -171,11 +174,18 @@
 	<GuessWordGameOptions on:newGame={newGame} />
 {/if}
 
+<div class="scores-link">
+	<a href="/guessword/scores">See Top Scores</a>
+</div>
+
 <style>
 	h2 {
 		@apply font-bold text-lg mb-2 mx-2;
 	}
 	div.hint-check-box {
 		@apply mx-2 mb-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>

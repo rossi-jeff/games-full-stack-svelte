@@ -7,6 +7,7 @@ import GuessWordGuessRating from '../../../../lib/models/guess-word-guess-rating
 import { Rating } from '../../../../lib/enum/rating.enum';
 import { guessWordStatus } from '../../../../lib/guess-word-status';
 import GuessWord from '../../../../lib/models/guess-word';
+import { guessWordScore } from '../../../../lib/guess-word-score';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const data: ArgsGuessWordGuess = await request.json();
@@ -73,7 +74,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			const Status = guessWordStatus(green.length, Word.length, countResult[0].count);
 			if (Status !== 'Playing') {
 				GuessWord.knex(connection);
-				await GuessWord.query().findById(Id).patch({ Status });
+				const Score = await guessWordScore(Id, Word.length);
+				await GuessWord.query().findById(Id).patch({ Status, Score });
 			}
 		}
 	}

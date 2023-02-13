@@ -1,5 +1,5 @@
 import { connection } from '$lib/connection';
-import { hangManStatus } from '$lib/hang-man-status';
+import { hangManScore, hangManStatus } from '$lib/hang-man-status';
 import HangMan from '$lib/models/hang-man';
 import type { ArgsHangManGuess } from '$lib/types/args-hang-man-guess.type';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
@@ -22,12 +22,14 @@ export const POST: RequestHandler = async ({ request }) => {
 		wrong.push(Letter);
 	}
 	const Status = hangManStatus(Word, correct, wrong);
+	const Score = hangManScore(Word, correct, wrong);
 	await HangMan.query()
 		.findById(Id)
 		.patch({
 			Correct: [...new Set(correct)].join(','),
 			Wrong: [...new Set(wrong)].join(','),
-			Status
+			Status,
+			Score
 		});
 	return json({ Letter, Found });
 };

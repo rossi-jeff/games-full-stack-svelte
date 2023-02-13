@@ -1,11 +1,13 @@
 import { mySqlDateFormat } from '$lib/mysql-date-format';
 import { Model } from 'objection';
+import User from './user';
 import YachtTurn from './yacht-turn';
 
 class Yacht extends Model {
 	[x: string]: any; // eslint-disable-line
 	UserId?: number;
 	Total?: number;
+	NumTurns?: number;
 	CreatedAt!: string;
 	UpdatedAt!: string;
 
@@ -19,6 +21,7 @@ class Yacht extends Model {
 			Id: { type: 'integer' },
 			UserId: { type: ['integer', 'null'] },
 			Total: { type: ['integer', 'null'], default: 0 },
+			NumTurns: { type: ['integer', 'null'], default: 0 },
 			CreatedAt: { type: 'string' },
 			UpdatedAt: { type: 'string' }
 		}
@@ -31,6 +34,14 @@ class Yacht extends Model {
 			join: {
 				from: 'Yacht.Id',
 				to: 'YachtTurn.YachtId'
+			}
+		},
+		user: {
+			relation: Model.BelongsToOneRelation,
+			modelClass: User,
+			join: {
+				from: 'Yacht.UserId',
+				to: 'User.Id'
 			}
 		}
 	});

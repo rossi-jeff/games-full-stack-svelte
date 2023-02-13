@@ -15,3 +15,18 @@ export const hangManStatus = (word: string, correct: string[], wrong: string[]) 
 	if (wrong.length >= parts.length) return GameStatus.Lost;
 	return GameStatus.Playing;
 };
+
+export const hangManScore = (word: string, correct: string[], wrong: string[]) => {
+	const Status = hangManStatus(word, correct, wrong);
+	let Score = 0;
+	if (Status === GameStatus.Playing) return Score;
+	const letters: string[] = [...new Set(word.split('').filter((l) => l.length === 1))];
+	correct = [...new Set(correct)];
+	wrong = [...new Set(wrong)];
+	const perLetter = 10,
+		perCorrect = 5;
+	Score = Status === GameStatus.Won ? letters.length * perLetter : 0;
+	Score += correct.length * perCorrect;
+	Score -= wrong.length * perLetter;
+	return Score;
+};

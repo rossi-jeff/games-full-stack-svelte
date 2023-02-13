@@ -3,6 +3,7 @@ import { mySqlDateFormat } from '$lib/mysql-date-format';
 import { Model } from 'objection';
 import SeaBattleShip from './sea-battle-ship';
 import SeaBattleTurn from './sea-battle-turn';
+import User from './user';
 
 class SeaBattle extends Model {
 	[x: string]: any; // eslint-disable-line
@@ -45,6 +46,14 @@ class SeaBattle extends Model {
 			join: {
 				from: 'SeaBattle.Id',
 				to: 'SeaBattleTurn.SeaBattleId'
+			}
+		},
+		user: {
+			relation: Model.BelongsToOneRelation,
+			modelClass: User,
+			join: {
+				from: 'SeaBattle.UserId',
+				to: 'User.Id'
 			}
 		}
 	});

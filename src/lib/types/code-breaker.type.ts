@@ -1,6 +1,7 @@
 import type { GameStatus } from '../enum/game-status.enum';
 import type { CodeBreakerCode } from './code-breaker-code.type';
 import type { CodeBreakerGuess } from './code-breaker-guess.type';
+import type { User } from './user.type';
 
 export type CodeBreaker = {
 	Id?: number;
@@ -14,4 +15,5 @@ export type CodeBreaker = {
 
 	codes?: CodeBreakerCode[];
 	guesses?: CodeBreakerGuess[];
+	user?: User;
 };

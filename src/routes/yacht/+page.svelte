@@ -6,6 +6,8 @@
 	import type { YachtScoreOption } from '$lib/types/yacht-score-option.type';
 	import type { YachtTurn } from '$lib/types/yacht-turn.type';
 	import type { Yacht } from '$lib/types/yacht.type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import RollOne from './RollOne.svelte';
 	import RollThree from './RollThree.svelte';
@@ -22,10 +24,14 @@
 		thirdRoll: false,
 		scored: false
 	};
+	const session: UserSessionData = get(userSession);
 
 	const createGame = async () => {
 		try {
-			const result = await fetch('/api/yacht', { method: 'POST', headers: buildRequestHeaders() });
+			const result = await fetch('/api/yacht', {
+				method: 'POST',
+				headers: buildRequestHeaders(session)
+			});
 			if (result.ok) {
 				game = await result.json();
 			}
@@ -49,6 +55,7 @@
 				const { Turn, Options } = await result.json();
 				turn = Turn;
 				options = Options;
+				// reloadGame();
 			}
 		} catch (error) {
 			console.log(error);
@@ -136,8 +143,12 @@
 	{/if}
 
 	{#if game && game.turns && game.turns.length}
-		<YachtScoreCard turns={game.turns} />
+		<YachtScoreCard turns={game.turns} total={game.Total ?? 0} />
 	{/if}
+</div>
+
+<div class="scores-link">
+	<a href="/yacht/scores">See Top Scores</a>
 </div>
 
 <style>
@@ -152,5 +163,8 @@
 	}
 	h2 {
 		@apply font-bold text-lg mb-2 mx-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>

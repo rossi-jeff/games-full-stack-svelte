@@ -8,7 +8,8 @@ interface UserPayload {
 	UserName?: string;
 }
 
-export const decodeAuthHeader = (header?: string | null) => {
+export const decodeAuthHeader = (headers: Headers) => {
+	const header = headers.get('Authorization')
 	const results: UserPayload = {};
 	if (header && header.length) {
 		try {

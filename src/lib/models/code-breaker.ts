@@ -3,6 +3,7 @@ import { Model } from 'objection';
 import { GameStatus } from '../enum/game-status.enum';
 import CodeBreakerCode from './code-breaker-code';
 import CodeBreakerGuess from './code-breaker-guess';
+import User from './user';
 
 class CodeBreaker extends Model {
 	[x: string]: any; // eslint-disable-line
@@ -51,6 +52,15 @@ class CodeBreaker extends Model {
 			join: {
 				from: 'CodeBreaker.Id',
 				to: 'CodeBreakerGuess.CodeBreakerId'
+			}
+		},
+
+		user: {
+			relation: Model.BelongsToOneRelation,
+			modelClass: User,
+			join: {
+				from: 'CodeBreaker.UserId',
+				to: 'User.Id'
 			}
 		}
 	});

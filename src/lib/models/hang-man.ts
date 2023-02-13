@@ -1,6 +1,7 @@
 import { GameStatus } from '$lib/enum/game-status.enum';
 import { mySqlDateFormat } from '$lib/mysql-date-format';
 import { Model } from 'objection';
+import User from './user';
 import Word from './word';
 
 class HangMan extends Model {
@@ -40,6 +41,15 @@ class HangMan extends Model {
 			join: {
 				from: 'HangMan.WordId',
 				to: 'Word.Id'
+			}
+		},
+
+		user: {
+			relation: Model.BelongsToOneRelation,
+			modelClass: User,
+			join: {
+				from: 'HangMan.UserId',
+				to: 'User.Id'
 			}
 		}
 	});

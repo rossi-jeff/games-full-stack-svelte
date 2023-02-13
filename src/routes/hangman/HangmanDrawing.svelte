@@ -21,6 +21,8 @@
 	};
 
 	export const drawMan = () => {
+		console.log(`drawMan ${wrong.length}`);
+
 		clearParts();
 		if (wrong.length) drawParts();
 	};

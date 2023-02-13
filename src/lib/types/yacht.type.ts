@@ -1,3 +1,4 @@
+import type { User } from './user.type';
 import type { YachtTurn } from './yacht-turn.type';
 
 export type Yacht = {
@@ -8,4 +9,5 @@ export type Yacht = {
 	UpdatedAt?: string;
 
 	turns?: YachtTurn[];
+	user?: User;
 };

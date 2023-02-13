@@ -2,13 +2,7 @@
 	import type { YachtTurn } from '$lib/types/yacht-turn.type';
 
 	export let turns: YachtTurn[] = [];
-
-	const getTotal = () => {
-		let total = 0;
-		for (const turn of turns) total += turn.Score ?? 0;
-		return total;
-	};
-	let total = getTotal();
+	export let total: number;
 </script>
 
 <div class="yacht-score-card">

@@ -1,5 +1,6 @@
 import type { GameStatus } from '../enum/game-status.enum';
 import type { GuessWordGuess } from './guess-word-guess.type';
+import type { User } from './user.type';
 import type { Word } from './word.type';
 
 export type GuessWord = {
@@ -13,4 +14,5 @@ export type GuessWord = {
 
 	word?: Word;
 	guesses?: GuessWordGuess[];
+	user?: User;
 };

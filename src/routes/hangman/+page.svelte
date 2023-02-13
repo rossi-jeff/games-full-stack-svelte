@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { clone } from '$lib/clone';
 	import type { HangMan } from '$lib/types/hang-man-type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { Word } from '../../lib/types/word.type';
 	import HangManDisplay from './HangManDisplay.svelte';
 	import HangmanDrawing from './HangmanDrawing.svelte';
@@ -12,6 +15,7 @@
 	let game: HangMan = {};
 	let Min = 4;
 	let Max = 12;
+	const session: UserSessionData = get(userSession);
 
 	const getRandomWord = async () => {
 		try {
@@ -59,7 +63,7 @@
 			const result = await fetch('/api/hangman', {
 				method: 'POST',
 				body: JSON.stringify({ WordId }),
-				headers: buildRequestHeaders()
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
@@ -120,6 +124,10 @@
 			const result = await fetch(`/api/hangman/${game.Id}`);
 			if (result.ok) {
 				game = await result.json();
+				if (game.Status === GameStatus.Won) {
+					clearButtons();
+					clearParts();
+				}
 			}
 		} catch (error) {
 			console.log(error);
@@ -144,8 +152,15 @@
 	<HangManGameOptions {Min} {Max} on:newGame={newGame} />
 {/if}
 
+<div class="scores-link">
+	<a href="/hangman/scores">See Top Scores</a>
+</div>
+
 <style>
 	h2 {
 		@apply font-bold text-lg mb-2 mx-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>

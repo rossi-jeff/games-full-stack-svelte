@@ -23,6 +23,11 @@
 				> (site documentation)
 			</li>
 			<li>Dice images downloaded from <a href="https://css.gg/">CSS.GG</a></li>
+			<li>
+				Additional SVG images were downloaded from <a href="https://feathericons.com/"
+					>Feather Icons</a
+				>
+			</li>
 		</ul>
 	</div>
 	<div>
@@ -37,7 +42,7 @@
 		</ul>
 		No contact information is collected.
 	</div>
-	<div>The source code for both the games site and the GraphQL API are available upon request.</div>
+	<div>The source code for the games site is available upon request.</div>
 </div>
 
 <style>
