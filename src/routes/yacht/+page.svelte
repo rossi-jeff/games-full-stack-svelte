@@ -12,6 +12,7 @@
 	import RollOne from './RollOne.svelte';
 	import RollThree from './RollThree.svelte';
 	import RollTwo from './RollTwo.svelte';
+	import YachtDirections from './YachtDirections.svelte';
 	import YachtScoreCard from './YachtScoreCard.svelte';
 	import YachtScoreOptionList from './YachtScoreOptionList.svelte';
 
@@ -150,6 +151,8 @@
 <div class="scores-link">
 	<a href="/yacht/scores">See Top Scores</a>
 </div>
+
+<YachtDirections />
 
 <style>
 	button {
