@@ -34,10 +34,16 @@
 	<div class="yacht-directions-content" id="yacht-directions-content">
 		<h3>Directions</h3>
 		<div class="mx-2 mb-2">
-			A game consists of 12 rounds, one for each scoring category. In each turn the player will have
-			a maximum of three dice rolls. After each roll the player may choose to keep some of the dice
-			to be included in the next roll. At the end of the 3rd roll or after any roll the player may
-			choose to assign the category to the roll and receive the resulting score.
+			<div class="mb-2">
+				Yacht is public domain a dice game played with five dice over a series of twelve turns. This
+				version is structured as a solitaire game.
+			</div>
+			<div>
+				A game consists of 12 rounds, one for each scoring category. In each turn the player will
+				have a maximum of three dice rolls. After each roll the player may choose to keep some of
+				the dice to be included in the next roll. At the end of the 3rd roll or after any roll the
+				player may choose to assign the category to the roll and receive the resulting score.
+			</div>
 			<div class="mt-2">
 				<a href="https://en.wikipedia.org/wiki/Yacht_(dice_game)" target="_blank" rel="noreferrer"
 					>Additional info from Wikipedia</a
@@ -150,9 +156,9 @@
 		@apply underline;
 	}
 	button#directions-toggle {
-		@apply w-full text-left;
+		@apply w-full text-left  bg-blue-300 border-blue-600 border rounded px-2 py-1;
 	}
 	div.yacht-directions-content {
-		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible;
+		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible border border-blue-500 rounded mx-2;
 	}
 </style>
