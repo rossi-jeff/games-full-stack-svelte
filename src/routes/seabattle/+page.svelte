@@ -232,6 +232,7 @@
 		<SeaBattleTargetGrid
 			axis={game.Axis ?? 8}
 			flag={flags.playerFire}
+			status={game.Status}
 			on:nextTurn={toggleMode}
 			on:fire={playerTurn}
 			bind:displayTurns={displayPlayerTurns}
@@ -241,6 +242,7 @@
 		<SeaBattleShipGrid
 			axis={game.Axis ?? 8}
 			flag={flags.opponentFire}
+			status={game.Status}
 			on:nextTurn={toggleMode}
 			on:fire={opponentTurn}
 			bind:displayShips={displayPlayerShips}

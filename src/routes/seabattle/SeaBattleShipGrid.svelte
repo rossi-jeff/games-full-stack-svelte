@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { MaxAxis } from '$lib/sea-battle-functions';
 	import { createEventDispatcher } from 'svelte';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { SeaBattleShip } from '../../lib/types/sea-batte-ship.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
 
 	export let axis: number = 8;
 	export let flag: boolean = false;
+	export let status: GameStatus = GameStatus.Playing;
 	const horizontal = MaxAxis.H.slice(0, axis);
 	const vertical = MaxAxis.V.slice(0, axis);
 	let occupied: string[] = [];
@@ -73,13 +75,15 @@
 	{/each}
 </div>
 
-<div class="controls">
-	{#if flag}
-		<button on:click={nextTurn}>Player Turn</button>
-	{:else}
-		<button on:click={fire}>Opponent Fire</button>
-	{/if}
-</div>
+{#if status === GameStatus.Playing}
+	<div class="controls">
+		{#if flag}
+			<button on:click={nextTurn}>Player Turn</button>
+		{:else}
+			<button on:click={fire}>Opponent Fire</button>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	div.ship-grid {

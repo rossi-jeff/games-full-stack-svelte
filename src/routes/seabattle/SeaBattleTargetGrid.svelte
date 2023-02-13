@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { MaxAxis } from '$lib/sea-battle-functions';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { SeaBattleShip } from '../../lib/types/sea-batte-ship.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
 	import ShipDisplay from './ShipDisplay.svelte';
 
 	export let axis: number = 8;
 	export let flag: boolean = false;
+	export let status: GameStatus = GameStatus.Playing;
 	const horizontal = MaxAxis.H.slice(0, axis);
 	const vertical = MaxAxis.V.slice(0, axis);
 
@@ -93,43 +95,45 @@
 	{/each}
 </div>
 
-<div class="controls">
-	{#if flag}
-		<button on:click={nextTurn}>Opponent Turn</button>
-	{:else}
-		<div class="selects">
-			<div>
-				<label for="horizontal">Horizontal</label>
-				<select
-					name="horizontal"
-					id="horizontal"
-					bind:value={target.Horizontal}
-					on:change={highLightTarget}
-				>
-					{#each horizontal as h}
-						<option value={h}>{h}</option>
-					{/each}
-				</select>
+{#if status === GameStatus.Playing}
+	<div class="controls">
+		{#if flag}
+			<button on:click={nextTurn}>Opponent Turn</button>
+		{:else}
+			<div class="selects">
+				<div>
+					<label for="horizontal">Horizontal</label>
+					<select
+						name="horizontal"
+						id="horizontal"
+						bind:value={target.Horizontal}
+						on:change={highLightTarget}
+					>
+						{#each horizontal as h}
+							<option value={h}>{h}</option>
+						{/each}
+					</select>
+				</div>
+				<div>
+					<label for="vertical">Vertical</label>
+					<select
+						name="vertical"
+						id="vertical"
+						bind:value={target.Vertical}
+						on:change={highLightTarget}
+					>
+						{#each vertical as v}
+							<option value={v}>{v}</option>
+						{/each}
+					</select>
+				</div>
+				<div>
+					<button on:click={fire}>Fire</button>
+				</div>
 			</div>
-			<div>
-				<label for="vertical">Vertical</label>
-				<select
-					name="vertical"
-					id="vertical"
-					bind:value={target.Vertical}
-					on:change={highLightTarget}
-				>
-					{#each vertical as v}
-						<option value={v}>{v}</option>
-					{/each}
-				</select>
-			</div>
-			<div>
-				<button on:click={fire}>Fire</button>
-			</div>
-		</div>
-	{/if}
-</div>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	div.target-grid {
