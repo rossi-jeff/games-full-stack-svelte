@@ -1,6 +1,6 @@
 <script lang="ts">
 	let visible: boolean = false;
-	
+
 	const toggleDirections = () => {
 		const button = <HTMLButtonElement>document.getElementById('directions-toggle');
 		if (button) {
@@ -72,9 +72,9 @@
 				arrives at the solution, the higher the score.
 			</div>
 			<div>
-				Additional info about 
+				Additional info about
 				<a href="https://en.wikipedia.org/wiki/Jotto" target="_blank" rel="noreferrer">Jotto</a>
-				and 
+				and
 				<a href="https://en.wikipedia.org/wiki/Wordle" target="_blank" rel="noreferrer">Wordle</a>
 			</div>
 		</div>
