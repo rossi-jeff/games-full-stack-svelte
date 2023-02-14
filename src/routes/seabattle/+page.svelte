@@ -11,6 +11,7 @@
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { ArgsSeaBattleFire } from '../../lib/types/args-sea-battle-fire.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
+	import SeaBattleDirections from './SeaBattleDirections.svelte';
 	import SeaBattleGameOptions from './SeaBattleGameOptions.svelte';
 	import SeaBattlePlacementGrid from './SeaBattlePlacementGrid.svelte';
 	import SeaBattleShipGrid from './SeaBattleShipGrid.svelte';
@@ -256,6 +257,8 @@
 <div class="scores-link">
 	<a href="/seabattle/scores">See Top Scores</a>
 </div>
+
+<SeaBattleDirections />
 
 <style>
 	h2 {
