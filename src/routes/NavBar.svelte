@@ -4,6 +4,9 @@
 	import { page } from '$app/stores';
 	import { blankUserSession, userSession, type UserSessionData } from '$lib/user-session.writable';
 	import { get } from 'svelte/store';
+	import UserPlus from './UserPlus.svelte';
+	import LogIn from './LogIn.svelte';
+	import LogOut from './LogOut.svelte';
 
 	let credentials: ArgsUserCredential = {
 		UserName: '',
@@ -113,10 +116,19 @@
 	<div class="right-side">
 		{#if session && session.SignedIn}
 			{session.UserName}
-			<button on:click={signOut}>Sign Out</button>
+			<button on:click={signOut}>
+				Sign Out
+				<LogOut />
+			</button>
 		{:else}
-			<button on:click={openRegister}>Register</button>
-			<button on:click={openSignIn}>Sign In</button>
+			<button on:click={openRegister}>
+				<UserPlus />
+				Register
+			</button>
+			<button on:click={openSignIn}>
+				Sign In
+				<LogIn />
+			</button>
 		{/if}
 	</div>
 </div>
@@ -154,10 +166,10 @@
 		@apply flex flex-wrap;
 	}
 	div.right-side {
-		@apply text-right;
+		@apply text-right flex;
 	}
 	div.right-side button {
-		@apply py-1 px-0 ml-2 font-bold text-sm;
+		@apply py-1 px-0 ml-2 font-bold text-sm flex;
 	}
 	a {
 		@apply no-underline mr-2 font-bold py-1 px-1;
