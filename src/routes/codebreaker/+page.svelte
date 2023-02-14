@@ -4,6 +4,7 @@
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import type { ArgsCodeBreakerCreate } from '../../lib/types/args-code-breaker-create.type';
 	import type { CodeBreaker } from '../../lib/types/code-breaker.type';
+	import CodeBreakerDirections from './CodeBreakerDirections.svelte';
 	import CodeBreakerGameOptions from './CodeBreakerGameOptions.svelte';
 	import CodeBreakerGuessForm from './CodeBreakerGuessForm.svelte';
 	import CodeBreakerGuessList from './CodeBreakerGuessList.svelte';
@@ -91,6 +92,8 @@
 <div class="scores-link">
 	<a href="/codebreaker/scores">See Top Scores</a>
 </div>
+
+<CodeBreakerDirections />
 
 <style>
 	h2 {

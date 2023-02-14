@@ -5,6 +5,7 @@ import CodeBreakerGuess from './models/code-breaker-guess';
 import CodeBreakerGuessKey from './models/code-breaker-guess-key';
 
 const perColumn = 10;
+const perColor = 10;
 const perBlack = 10;
 const perWhite = 5;
 
@@ -14,14 +15,17 @@ export const codeBreakerScore = async (Id: number) => {
 	CodeBreakerGuessKey.knex(connection);
 	let Score = 0,
 		perGuess = 0,
-		maxGuesses = 0;
+		maxGuesses = 0,
+		colorBonus = 0;
 	const existing = await CodeBreaker.query().findById(Id);
 	if (!existing) return Score;
+	if (existing && existing.Colors) colorBonus = perColor * existing.Colors;
 	if (existing && existing.Columns) {
 		perGuess = perColumn * existing.Columns;
 		maxGuesses = existing.Columns * 2;
-		Score = maxGuesses * perGuess;
+		Score = maxGuesses * perGuess + colorBonus;
 	}
+
 	const guesses = await CodeBreakerGuess.query().where('CodeBreakerId', Id);
 	if (guesses && guesses.length) {
 		for (const guess of guesses) {

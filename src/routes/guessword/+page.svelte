@@ -9,6 +9,7 @@
 	import type { FlagType } from '../../lib/types/flag.type';
 	import type { GuessWordGuess } from '../../lib/types/guess-word-guess.type';
 	import type { GuessWord } from '../../lib/types/guess-word.type';
+	import GuessWordDirections from './GuessWordDirections.svelte';
 	import GuessWordGameOptions from './GuessWordGameOptions.svelte';
 	import GuessWordGuessForm from './GuessWordGuessForm.svelte';
 	import GuessWordGuessList from './GuessWordGuessList.svelte';
@@ -177,6 +178,8 @@
 <div class="scores-link">
 	<a href="/guessword/scores">See Top Scores</a>
 </div>
+
+<GuessWordDirections />
 
 <style>
 	h2 {

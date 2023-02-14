@@ -6,6 +6,7 @@
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { Word } from '../../lib/types/word.type';
+	import HangManDirections from './HangManDirections.svelte';
 	import HangManDisplay from './HangManDisplay.svelte';
 	import HangmanDrawing from './HangmanDrawing.svelte';
 	import HangManGameOptions from './HangManGameOptions.svelte';
@@ -155,6 +156,8 @@
 <div class="scores-link">
 	<a href="/hangman/scores">See Top Scores</a>
 </div>
+
+<HangManDirections />
 
 <style>
 	h2 {
