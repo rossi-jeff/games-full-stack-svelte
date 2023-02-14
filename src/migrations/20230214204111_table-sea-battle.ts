@@ -7,16 +7,8 @@ enum GameStatus {
 }
 
 export async function up(knex: Knex): Promise<void> {
-	return knex.schema.createTable('GuessWord', (table) => {
+	return knex.schema.createTable('SeaBattle', (table) => {
 		table.increments('Id').primary();
-		table
-			.integer('WordId')
-			.unsigned()
-			.notNullable()
-			.references('Id')
-			.inTable('Word')
-			.onDelete('CASCADE')
-			.index();
 		table
 			.integer('UserId')
 			.unsigned()
@@ -25,6 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 			.inTable('User')
 			.onDelete('CASCADE')
 			.index();
+		table.integer('Axis').notNullable();
 		table.enum('Status', Object.values(GameStatus)).notNullable();
 		table.integer('Score').notNullable().defaultTo(0);
 		table.datetime('CreatedAt').notNullable();
@@ -33,5 +26,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	return knex.schema.dropTableIfExists('GuessWord');
+	return knex.schema.dropTableIfExists('SeaBattle');
 }
