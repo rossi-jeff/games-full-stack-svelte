@@ -12,10 +12,11 @@
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"knex:path": "export KNEX_PATH=`which knex`",
-		"migrate:make": "npm run knex:path && node --loader ts-node/esm $KNEX_PATH migrate:make",
-		"migrate:latest": "npm run knex:path && node --loader ts-node/esm $KNEX_PATH migrate:latest",
-		"migrate:rollback": "npm run knex:path && node --loader ts-node/esm $KNEX_PATH migrate:rollback"
+		"migrate:make": "node --loader ts-node/esm `which knex` migrate:make",
+		"migrate:latest": "node --loader ts-node/esm `which knex` migrate:latest",
+		"migrate:rollback": "node --loader ts-node/esm `which knex` migrate:rollback",
+		"seed:make": "node --loader ts-node/esm `which knex` seed:make",
+		"seed:run": "node --loader ts-node/esm `which knex` seed:run"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
