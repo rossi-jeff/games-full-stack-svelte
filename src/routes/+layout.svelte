@@ -10,6 +10,7 @@
 	</div>
 	<div class="content">
 		<slot />
+		<div class="spacer" />
 	</div>
 	<div class="footer">
 		<Footer />
@@ -22,5 +23,8 @@
 	}
 	div.content {
 		@apply flex-1 overflow-y-scroll;
+	}
+	div.spacer {
+		@apply h-16;
 	}
 </style>
