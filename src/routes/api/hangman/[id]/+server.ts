@@ -13,8 +13,8 @@ export const GET: RequestHandler = async ({ request }) => {
 		hangMan.word = await Word.query().findById(hangMan.WordId);
 	}
 	if (hangMan && hangMan.UserId) {
-		User.knex(connection)
-		hangMan.user = await User.query().findById(hangMan.UserId)
+		User.knex(connection);
+		hangMan.user = await User.query().findById(hangMan.UserId);
 	}
 	return json(hangMan);
 };

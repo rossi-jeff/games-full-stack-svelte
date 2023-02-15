@@ -12,8 +12,8 @@ export const GET: RequestHandler = async ({ request }) => {
 	if (yacht) {
 		yacht.turns = await YachtTurn.query().where('YachtId', id);
 		if (yacht.UserId) {
-			User.knex(connection)
-			yacht.user = await User.query().findById(yacht.UserId)
+			User.knex(connection);
+			yacht.user = await User.query().findById(yacht.UserId);
 		}
 	}
 	return json(yacht);

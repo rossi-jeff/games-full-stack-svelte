@@ -3,11 +3,11 @@
 
 	const toggleDirections = () => {
 		console.log('toggleDirections');
-		
+
 		const button = <HTMLButtonElement>document.getElementById('directions-toggle');
 		if (button) {
 			console.log('button');
-			
+
 			button.disabled = true;
 
 			visible = !visible;
@@ -15,7 +15,7 @@
 			const content = document.getElementById('sea-battle-directions-content');
 			if (content) {
 				console.log('content');
-				
+
 				const scrollH = content.scrollHeight;
 				content.style.visibility = visible ? 'visible' : 'hidden';
 				content.style.maxHeight = visible ? scrollH + 50 + 'px' : '0px';
@@ -96,12 +96,16 @@
 				will be added.
 			</div>
 			<div class="mb-2">
-				During the opponent's turn, depnding on the fire results, the per miss amount will be
-				added, or the per hit amount will be subtracted, or if the ship is sunk twice the per hit
-				will be subtracted.
+				During the opponent's turn, depnding on the fire results, the per miss amount will be added,
+				or the per hit amount will be subtracted, or if the ship is sunk twice the per hit will be
+				subtracted.
 			</div>
 			<div>
-				Additional info about <a href="https://en.wikipedia.org/wiki/Battleship_(game)" target="_blank" rel="noreferrer">Sea Battle</a>
+				Additional info about <a
+					href="https://en.wikipedia.org/wiki/Battleship_(game)"
+					target="_blank"
+					rel="noreferrer">Sea Battle</a
+				>
 			</div>
 		</div>
 	</div>
@@ -136,4 +140,3 @@
 		@apply underline;
 	}
 </style>
-

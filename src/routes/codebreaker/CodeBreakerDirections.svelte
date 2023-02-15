@@ -1,6 +1,6 @@
 <script lang="ts">
 	let visible: boolean = false;
-	
+
 	const toggleDirections = () => {
 		const button = <HTMLButtonElement>document.getElementById('directions-toggle');
 		if (button) {
@@ -34,12 +34,12 @@
 	<div class="code-breaker-directions-content" id="code-breaker-directions-content">
 		<h3>Directions</h3>
 		<div class="mx-2 mb-2">
-			Code breaker is based on the paper and pencil game known as <b>bulls and cows</b>. A commercial
-			version was released as <b>Master Mind</b>. A player will guess what they believe the code to
-			be and a number of black and white keys will be returned rating their guess. A black key
-			indicates the correct color is in the correct position and a white key indicates a correct
-			color in the wrong position. This version is set up as solitaire and allows selection of both
-			the colors to be used and the number of columns in the code.
+			Code breaker is based on the paper and pencil game known as <b>bulls and cows</b>. A
+			commercial version was released as <b>Master Mind</b>. A player will guess what they believe
+			the code to be and a number of black and white keys will be returned rating their guess. A
+			black key indicates the correct color is in the correct position and a white key indicates a
+			correct color in the wrong position. This version is set up as solitaire and allows selection
+			of both the colors to be used and the number of columns in the code.
 		</div>
 		<h3>Scoring</h3>
 		<div class="mx-2 mb-2">
@@ -81,10 +81,16 @@
 				arrives at the solution, the higher the score.
 			</div>
 			<div>
-				Additional info about 
-				<a href="https://en.wikipedia.org/wiki/Bulls_and_Cows" target="_blank" rel="noreferrer">Bulls and Cows</a> 
+				Additional info about
+				<a href="https://en.wikipedia.org/wiki/Bulls_and_Cows" target="_blank" rel="noreferrer"
+					>Bulls and Cows</a
+				>
 				and
-				<a href="https://en.wikipedia.org/wiki/Mastermind_(board_game)" target="_blank" rel="noreferrer">Master Mind</a>
+				<a
+					href="https://en.wikipedia.org/wiki/Mastermind_(board_game)"
+					target="_blank"
+					rel="noreferrer">Master Mind</a
+				>
 			</div>
 		</div>
 	</div>

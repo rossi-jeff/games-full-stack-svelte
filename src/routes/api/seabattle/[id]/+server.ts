@@ -33,8 +33,8 @@ export const GET: RequestHandler = async ({ request }) => {
 			}
 		}
 		if (seaBattle.UserId) {
-			User.knex(connection)
-			seaBattle.user = await User.query().findById(seaBattle.UserId)
+			User.knex(connection);
+			seaBattle.user = await User.query().findById(seaBattle.UserId);
 		}
 	}
 	return json(seaBattle);
