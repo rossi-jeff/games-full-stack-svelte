@@ -24,6 +24,11 @@
 			</li>
 			<li>Dice images downloaded from <a href="https://css.gg/">CSS.GG</a></li>
 			<li>
+				Playing Card images downloaded from <a
+					href="https://tekeye.uk/playing_cards/svg-playing-cards">Tek Eye</a
+				>
+			</li>
+			<li>
 				Additional SVG images were downloaded from <a href="https://feathericons.com/"
 					>Feather Icons</a
 				>
