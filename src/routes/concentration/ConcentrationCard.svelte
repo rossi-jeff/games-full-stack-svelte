@@ -1,32 +1,41 @@
 <script lang="ts">
 	import type { Card } from '$lib/deck';
+	import { createEventDispatcher } from 'svelte';
 
 	export let card: Card;
 	export let idx: number;
 	let facedown: boolean = true;
 
-	export const flip = () => {
+	export const flipCard = () => {
 		facedown = !facedown;
 		const img = <HTMLImageElement>document.getElementById(`card-${idx}`);
-		if (img) img.src = facedown ? card.backSrc : card.src;
+		if (img) {
+			img.src = facedown ? card.backSrc : card.src;
+		}
 	};
 
-	export const hide = () => {
+	export const hideCard = () => {
 		const img = <HTMLImageElement>document.getElementById(`card-${idx}`);
 		if (img) {
 			img.style.visibility = 'hidden';
 		}
 	};
 
-	export const show = () => {
+	export const showCard = () => {
 		const img = <HTMLImageElement>document.getElementById(`card-${idx}`);
 		if (img) {
 			img.style.visibility = 'visible';
 		}
 	};
+
+	const dispatch = createEventDispatcher();
+
+	const cardClicked = () => {
+		dispatch('cardClicked', { idx, card });
+	};
 </script>
 
-<div class="playing-card-wrapper" on:click={flip} on:keydown={flip}>
+<div class="playing-card-wrapper" on:click={cardClicked} on:keydown={cardClicked}>
 	<img src={card.backSrc} alt="card-{idx}" class="playing-card" id="card-{idx}" />
 </div>
 

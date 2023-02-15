@@ -19,7 +19,8 @@
 		{ url: '/hangman', name: 'Hang Man' },
 		{ url: '/codebreaker', name: 'Code Breaker' },
 		{ url: '/yacht', name: 'Yacht' },
-		{ url: '/seabattle', name: 'Sea Battle' }
+		{ url: '/seabattle', name: 'Sea Battle' },
+		{ url: '/concentration', name: 'Concentration' }
 	];
 
 	let session: UserSessionData = get(userSession);
