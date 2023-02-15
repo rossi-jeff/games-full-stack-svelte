@@ -1,3 +1,4 @@
+import User from '$lib/models/user';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '../$types';
 import { connection } from '../../../../lib/connection';
@@ -18,6 +19,10 @@ export const GET: RequestHandler = async ({ request }) => {
 		guessWord.guesses = await GuessWordGuess.query().where('GuessWordId', id);
 		for (const guess of guessWord.guesses) {
 			guess.ratings = await GuessWordGuessRating.query().where('GuessWordGuessId', guess.Id);
+		}
+		if (guessWord.UserId) {
+			User.knex(connection)
+			guessWord.user = await User.query().findById(guessWord.UserId)
 		}
 	}
 	return json(guessWord);

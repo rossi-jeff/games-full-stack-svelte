@@ -1,3 +1,4 @@
+import User from '$lib/models/user';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '../$types';
 import { connection } from '../../../../lib/connection';
@@ -31,6 +32,10 @@ export const GET: RequestHandler = async ({ request }) => {
 				.where('CodeBreakerGuessId', guess.Id)
 				.select('CodeBreakerGuessKey.Key');
 			codeBreaker.guesses.push(guess);
+		}
+		if (codeBreaker.UserId) {
+			User.knex(connection)
+			codeBreaker.user = await User.query().findById(codeBreaker.UserId)
 		}
 	}
 	return json(codeBreaker);

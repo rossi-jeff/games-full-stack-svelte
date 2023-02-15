@@ -2,6 +2,7 @@ import { connection } from '$lib/connection';
 import SeaBattle from '$lib/models/sea-battle';
 import SeaBattleShip from '$lib/models/sea-battle-ship';
 import SeaBattleShipGridPoint from '$lib/models/sea-battle-ship-grid-point';
+import User from '$lib/models/user';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import SeaBattleShipHit from '../../../../lib/models/sea-battle-ship-hit';
 import SeaBattleTurn from '../../../../lib/models/sea-battle-turn';
@@ -30,6 +31,10 @@ export const GET: RequestHandler = async ({ request }) => {
 				const gridPoint = await SeaBattleTurnGridPoint.query().where('SeaBattleTurnId', turn.Id);
 				if (gridPoint.length) turn.gridPoint = gridPoint[0];
 			}
+		}
+		if (seaBattle.UserId) {
+			User.knex(connection)
+			seaBattle.user = await User.query().findById(seaBattle.UserId)
 		}
 	}
 	return json(seaBattle);
