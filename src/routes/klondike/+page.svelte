@@ -793,6 +793,10 @@
 			<button on:click={deal}>Deal</button>
 		</div>
 	{/if}
+
+	{#if passes && passes >= 3}
+		<button on:click={deal}>New Deal</button>
+	{/if}
 </div>
 
 <style>
