@@ -5,19 +5,22 @@
 	export let card: Card;
 	export let from: string;
 	export let level: number;
-	export let clickable: boolean;
 
 	const dispatch = createEventDispatcher();
 
 	const cardClicked = () => {
-		if (!clickable) return;
+		if (!card.clickable) return;
 		dispatch('cardClicked', { card, from, level });
 	};
 
 	const setTop = () => {
 		const top = level + 0.5;
-		const div = document.getElementById(`card-${card.id}`);
+		const div = document.getElementById(`${from}_${card.id}`);
 		if (div) div.style.top = `${top}rem`;
+	};
+
+	const dragStart = (event: any) => {
+		dispatch('dragStart', event);
 	};
 
 	onMount(() => {
@@ -27,15 +30,28 @@
 
 <div
 	class="klondike-card-wrapper"
-	id="card-{card.id}"
-	draggable={!card.facedown}
+	id="{from}_{card.id}"
+	draggable={card.draggable}
+	on:dragstart={dragStart}
 	on:click={cardClicked}
 	on:keydown={cardClicked}
 >
 	{#if card && card.facedown}
-		<img src={card.backSrc} alt="card back" class="card-back" />
+		<img
+			src={card.backSrc}
+			alt="card back"
+			class="card-back"
+			draggable="false"
+			id="back_{card.id}"
+		/>
 	{:else}
-		<img src={card.src} alt="card face" class="card-face" />
+		<img
+			src={card.src}
+			alt="{card.face.toUpperCase()} of {card.suit.toUpperCase()}"
+			class="card-face"
+			draggable="false"
+			id="front_{card.id}"
+		/>
 	{/if}
 </div>
 

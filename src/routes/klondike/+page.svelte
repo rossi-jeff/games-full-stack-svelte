@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Deck, type Card } from '../../lib/deck';
+	import { clone } from '../../lib/clone';
+	import { Card, Deck } from '../../lib/deck';
 	import type { FlagType } from '../../lib/types/flag.type';
 	import KlondikeBack from './KlondikeBack.svelte';
 	import KlondikeCard from './KlondikeCard.svelte';
@@ -34,6 +35,17 @@
 		backSelected: false
 	};
 	let passes: number = 0;
+	let acesDroppable: string[] = ['aces-0', 'aces-1', 'aces-2', 'aces-3'];
+	let tableauDroppable: string[] = [
+		'tableau-0',
+		'tableau-1',
+		'tableau-2',
+		'tableau-3',
+		'tableau-4',
+		'tableau-5',
+		'tableau-6'
+	];
+	let droppable: string[] = [...acesDroppable, ...tableauDroppable];
 
 	const build = () => {
 		for (let i = 0; i < 4; i++) aces[i] = [];
@@ -79,12 +91,18 @@
 			for (let j = i; j < 7; j++) {
 				card = deck.draw();
 				if (card) {
-					if (i === j) card.facedown = false;
+					if (i === j) {
+						card.facedown = false;
+						card.draggable = true;
+					}
 					tableau[j].push(card);
 				}
 			}
 		}
-		while ((card = deck.draw())) stock.push(card);
+		while ((card = deck.draw())) {
+			card.clickable = true;
+			stock.push(card);
+		}
 		for (const key in flags) flags[key] = true;
 	};
 
@@ -106,6 +124,8 @@
 			card = stock.pop();
 			if (card) {
 				card.facedown = false;
+				card.clickable = false;
+				card.draggable = true;
 				waste.push(card);
 			}
 			setTimeout(() => {
@@ -113,6 +133,474 @@
 				flags.waste = true;
 			}, 25);
 		}
+	};
+
+	const dragStart = (event: any) => {
+		event.preventDefault();
+		if (event.target) event.dataTransfer.setData('text', event.target.id);
+		else if (event.detail) event.detail.dataTransfer.setData('text', event.detail.target.id);
+	};
+
+	const dragOver = (event: any) => {
+		event.preventDefault();
+	};
+
+	const dragEnter = (event: any) => {
+		if (event.target) {
+			event.target.classList.add('over');
+			setTimeout(() => {
+				// dragleave not 100%
+				event.target.classList.remove('over');
+			}, 500);
+		}
+	};
+
+	const dragExit = (event: any) => {
+		if (event.target) {
+			event.target.classList.remove('over');
+		}
+	};
+
+	const drop = (event: any) => {
+		event.preventDefault();
+		event.stopPropagation();
+		const data = event.dataTransfer.getData('text');
+		const [from, cardId] = data.split('_');
+		const to = event.target ? event.target.id : null;
+		moveCard(to, from, cardId);
+	};
+
+	const moveCard = (toStr: string | null, from: string, cardId: string) => {
+		const to = toStr && droppable.includes(toStr) ? toStr : findToDroppable(toStr);
+		if (!to) return;
+		const lastCard = getLastCard(to);
+		const droppedCard = getDroppedCard(from, cardId);
+		if (!droppedCard) return;
+		if (canDropCard(to, lastCard, droppedCard)) {
+			completeDrop(to, from, cardId);
+		} else console.log('can not drop');
+	};
+
+	const completeDrop = (to: string, from: string, cardId: string) => {
+		let toMove: Card[] = [],
+			found: boolean = false;
+		switch (from) {
+			case 'tableau-0':
+				flags.tableau0 = false;
+				while (!found) {
+					card = tableau[0].pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (tableau[0].length) {
+					tableau[0][tableau[0].length - 1].facedown = false;
+					tableau[0][tableau[0].length - 1].draggable = true;
+				}
+				setTimeout(() => {
+					flags.tableau0 = true;
+				}, 25);
+
+				break;
+			case 'tableau-1':
+				flags.tableau1 = false;
+				while (!found) {
+					card = tableau[1].pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (tableau[1].length) {
+					tableau[1][tableau[1].length - 1].facedown = false;
+					tableau[1][tableau[1].length - 1].draggable = true;
+				}
+				setTimeout(() => {
+					flags.tableau1 = true;
+				}, 25);
+
+				break;
+			case 'tableau-2':
+				flags.tableau2 = false;
+				while (!found) {
+					card = tableau[2].pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (tableau[2].length) {
+					tableau[2][tableau[2].length - 1].facedown = false;
+					tableau[2][tableau[2].length - 1].draggable = true;
+				}
+				setTimeout(() => {
+					flags.tableau2 = true;
+				}, 25);
+
+				break;
+			case 'tableau-3':
+				flags.tableau3 = false;
+				while (!found) {
+					card = tableau[3].pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (tableau[3].length) {
+					tableau[3][tableau[3].length - 1].facedown = false;
+					tableau[3][tableau[3].length - 1].draggable = true;
+				}
+				setTimeout(() => {
+					flags.tableau3 = true;
+				}, 25);
+
+				break;
+			case 'tableau-4':
+				flags.tableau4 = false;
+				while (!found) {
+					card = tableau[4].pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (tableau[4].length) {
+					tableau[4][tableau[4].length - 1].facedown = false;
+					tableau[4][tableau[4].length - 1].draggable = true;
+				}
+				setTimeout(() => {
+					flags.tableau4 = true;
+				}, 25);
+
+				break;
+			case 'tableau-5':
+				flags.tableau5 = false;
+				while (!found) {
+					card = tableau[5].pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (tableau[5].length) {
+					tableau[5][tableau[5].length - 1].facedown = false;
+					tableau[5][tableau[5].length - 1].draggable = true;
+				}
+				setTimeout(() => {
+					flags.tableau5 = true;
+				}, 25);
+
+				break;
+			case 'tableau-6':
+				flags.tableau6 = false;
+				while (!found) {
+					card = tableau[6].pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (tableau[6].length) {
+					tableau[6][tableau[6].length - 1].facedown = false;
+					tableau[6][tableau[6].length - 1].draggable = true;
+				}
+				setTimeout(() => {
+					flags.tableau6 = true;
+				}, 25);
+
+				break;
+			case 'waste':
+				flags.waste = false;
+				while (!found) {
+					card = waste.pop();
+					if (card) {
+						toMove.push(card);
+						if (card.id === parseInt(cardId)) found = true;
+					} else found = true;
+				}
+				if (waste.length) waste[waste.length - 1].facedown = false;
+				setTimeout(() => {
+					flags.waste = true;
+				}, 25);
+
+				break;
+		}
+		switch (to) {
+			case 'aces-0':
+				flags.aces0 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) {
+						card.draggable = false;
+						aces[0].push(card);
+					}
+				}
+				setTimeout(() => {
+					flags.aces0 = true;
+				}, 25);
+
+				break;
+			case 'aces-1':
+				flags.aces1 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) {
+						card.draggable = false;
+						aces[1].push(card);
+					}
+				}
+				setTimeout(() => {
+					flags.aces1 = true;
+				}, 25);
+
+				break;
+			case 'aces-2':
+				flags.aces2 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) {
+						card.draggable = false;
+						aces[2].push(card);
+					}
+				}
+				setTimeout(() => {
+					flags.aces2 = true;
+				}, 25);
+
+				break;
+			case 'aces-3':
+				flags.aces3 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) {
+						card.draggable = false;
+						aces[3].push(card);
+					}
+				}
+				setTimeout(() => {
+					flags.aces3 = true;
+				}, 25);
+
+				break;
+			case 'tableau-0':
+				flags.tableau0 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) tableau[0].push(card);
+				}
+				setTimeout(() => {
+					flags.tableau0 = true;
+				}, 25);
+
+				break;
+			case 'tableau-1':
+				flags.tableau1 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) tableau[1].push(card);
+				}
+				setTimeout(() => {
+					flags.tableau1 = true;
+				}, 25);
+
+				break;
+			case 'tableau-2':
+				flags.tableau2 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) tableau[2].push(card);
+				}
+				setTimeout(() => {
+					flags.tableau2 = true;
+				}, 25);
+
+				break;
+			case 'tableau-3':
+				flags.tableau3 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) tableau[3].push(card);
+				}
+				setTimeout(() => {
+					flags.tableau3 = true;
+				}, 25);
+
+				break;
+			case 'tableau-4':
+				flags.tableau4 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) tableau[4].push(card);
+				}
+				setTimeout(() => {
+					flags.tableau4 = true;
+				}, 25);
+
+				break;
+			case 'tableau-5':
+				flags.tableau5 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) tableau[5].push(card);
+				}
+				setTimeout(() => {
+					flags.tableau5 = true;
+				}, 25);
+
+				break;
+			case 'tableau-6':
+				flags.tableau6 = false;
+				while (toMove.length) {
+					card = toMove.pop();
+					if (card) tableau[6].push(card);
+				}
+				setTimeout(() => {
+					flags.tableau6 = true;
+				}, 25);
+
+				break;
+		}
+	};
+
+	const canDropCard = (to: string, lastCard: Card | undefined, droppedCard: Card) => {
+		let idxLast: number, idxDropped: number;
+		if (acesDroppable.includes(to)) {
+			if (!lastCard && droppedCard.face === 'ace') return true;
+			if (lastCard) {
+				idxLast = deck.faces.indexOf(lastCard.face);
+				idxDropped = deck.faces.indexOf(droppedCard.face);
+				return idxDropped === idxLast + 1;
+			} else return false;
+		} else if (tableauDroppable.includes(to)) {
+			if (lastCard) {
+				if (deck.color(lastCard) === deck.color(droppedCard)) return false;
+				idxLast = deck.faces.indexOf(lastCard.face);
+				idxDropped = deck.faces.indexOf(droppedCard.face);
+				return idxLast === idxDropped + 1;
+			} else {
+				return droppedCard.face === 'king';
+			}
+		} else return false;
+	};
+
+	const getLastCard = (to: string) => {
+		let lastCard: Card | undefined;
+		switch (to) {
+			case 'aces-0':
+				lastCard = aces[0].length ? aces[0][aces[0].length - 1] : undefined;
+				break;
+			case 'aces-1':
+				lastCard = aces[1].length ? aces[1][aces[1].length - 1] : undefined;
+				break;
+			case 'aces-2':
+				lastCard = aces[2].length ? aces[2][aces[2].length - 1] : undefined;
+				break;
+			case 'aces-3':
+				lastCard = aces[3].length ? aces[3][aces[3].length - 1] : undefined;
+				break;
+			case 'tableau-0':
+				lastCard = tableau[0].length ? tableau[0][tableau[0].length - 1] : undefined;
+				break;
+			case 'tableau-1':
+				lastCard = tableau[1].length ? tableau[1][tableau[1].length - 1] : undefined;
+				break;
+			case 'tableau-2':
+				lastCard = tableau[2].length ? tableau[2][tableau[2].length - 1] : undefined;
+				break;
+			case 'tableau-3':
+				lastCard = tableau[3].length ? tableau[3][tableau[3].length - 1] : undefined;
+				break;
+			case 'tableau-4':
+				lastCard = tableau[4].length ? tableau[4][tableau[4].length - 1] : undefined;
+				break;
+			case 'tableau-5':
+				lastCard = tableau[5].length ? tableau[5][tableau[5].length - 1] : undefined;
+				break;
+			case 'tableau-6':
+				lastCard = tableau[6].length ? tableau[6][tableau[6].length - 1] : undefined;
+				break;
+		}
+		return lastCard;
+	};
+
+	const getDroppedCard = (from: string, cardId: string) => {
+		let droppedCard: Card | undefined;
+		switch (from) {
+			case 'tableau-0':
+				droppedCard = tableau[0].find((c) => c.id === parseInt(cardId));
+				break;
+			case 'tableau-1':
+				droppedCard = tableau[1].find((c) => c.id === parseInt(cardId));
+				break;
+			case 'tableau-2':
+				droppedCard = tableau[2].find((c) => c.id === parseInt(cardId));
+				break;
+			case 'tableau-3':
+				droppedCard = tableau[3].find((c) => c.id === parseInt(cardId));
+				break;
+			case 'tableau-4':
+				droppedCard = tableau[4].find((c) => c.id === parseInt(cardId));
+				break;
+			case 'tableau-5':
+				droppedCard = tableau[5].find((c) => c.id === parseInt(cardId));
+				break;
+			case 'tableau-6':
+				droppedCard = tableau[6].find((c) => c.id === parseInt(cardId));
+				break;
+			case 'waste':
+				droppedCard = waste.find((c) => c.id === parseInt(cardId));
+				break;
+		}
+		return droppedCard;
+	};
+
+	const findToDroppable = (toStr: string | null) => {
+		if (!toStr) return undefined;
+		const [_, dropCardId] = toStr.split('_');
+		let idx: number,
+			where: string | undefined,
+			found: boolean = false;
+		for (const key in aces) {
+			idx = aces[key].findIndex((c) => c.id === parseInt(dropCardId));
+			if (idx !== -1) {
+				found = true;
+				where = `aces-${key}`;
+				break;
+			}
+		}
+		if (!found) {
+			for (const key in tableau) {
+				idx = tableau[key].findIndex((c) => c.id === parseInt(dropCardId));
+				if (idx !== -1) {
+					found = true;
+					where = `tableau-${key}`;
+					break;
+				}
+			}
+		}
+		return where;
+	};
+
+	const reloadStock = () => {
+		if (stock.length || passes >= 3) return;
+		flags.stock = false;
+		flags.waste = false;
+		while (waste.length) {
+			card = waste.pop();
+			if (card) {
+				card.facedown = true;
+				card.draggable = false;
+				card.clickable = true;
+				stock.push(card);
+			}
+		}
+		passes++;
+		setTimeout(() => {
+			flags.stock = true;
+			flags.waste = true;
+		}, 25);
 	};
 
 	onMount(() => {
@@ -125,105 +613,169 @@
 	{#if flags.playing && deck.cards}
 		<div class="klondike-top-row">
 			<div class="klondike-top-left">
-				<div class="card-container" id="stock">
+				<div class="card-container" id="stock" on:click={reloadStock}>
 					{#if flags.stock}
 						{#each stock as card}
-							<KlondikeCard
-								{card}
-								level={0}
-								from="stock"
-								clickable={true}
-								on:cardClicked={cardClicked}
-							/>
+							<KlondikeCard {card} level={0} from="stock" on:cardClicked={cardClicked} />
 						{/each}
 					{/if}
 				</div>
 				<div class="card-container" id="waste">
 					{#if flags.waste}
 						{#each waste as card}
-							<KlondikeCard {card} level={0} from="waste" clickable={false} />
+							<KlondikeCard {card} level={0} from="waste" on:dragStart={dragStart} />
 						{/each}
 					{/if}
 				</div>
 			</div>
 			<div class="klondike-top-right">
-				<div class="card-container" id="aces-0">
+				<div class="card-container" id="aces-0" on:dragover={dragOver} on:drop={drop}>
 					{#if flags.aces0}
 						{#each aces[0] as card}
-							<KlondikeCard {card} level={0} from="aces-0" clickable={false} />
+							<KlondikeCard {card} level={0} from="aces-0" />
 						{/each}
 					{/if}
 				</div>
-				<div class="card-container" id="aces-1">
+				<div
+					class="card-container"
+					id="aces-1"
+					on:dragover={dragOver}
+					on:drop={drop}
+					on:dragenter={dragEnter}
+					on:dragleave={dragExit}
+				>
 					{#if flags.aces1}
 						{#each aces[1] as card}
-							<KlondikeCard {card} level={0} from="aces-1" clickable={false} />
+							<KlondikeCard {card} level={0} from="aces-1" />
 						{/each}
 					{/if}
 				</div>
-				<div class="card-container" id="aces-2">
+				<div
+					class="card-container"
+					id="aces-2"
+					on:dragover={dragOver}
+					on:drop={drop}
+					on:dragenter={dragEnter}
+					on:dragleave={dragExit}
+				>
 					{#if flags.aces2}
 						{#each aces[2] as card}
-							<KlondikeCard {card} level={0} from="aces-2" clickable={false} />
+							<KlondikeCard {card} level={0} from="aces-2" />
 						{/each}
 					{/if}
 				</div>
-				<div class="card-container" id="aces-3">
+				<div
+					class="card-container"
+					id="aces-3"
+					on:dragover={dragOver}
+					on:drop={drop}
+					on:dragenter={dragEnter}
+					on:dragleave={dragExit}
+				>
 					{#if flags.aces3}
 						{#each aces[3] as card}
-							<KlondikeCard {card} level={0} from="aces-3" clickable={false} />
+							<KlondikeCard {card} level={0} from="aces-3" />
 						{/each}
 					{/if}
 				</div>
 			</div>
 		</div>
 		<div class="klondike-tableau">
-			<div class="card-container" id="tableau-0">
+			<div
+				class="card-container"
+				id="tableau-0"
+				on:dragover={dragOver}
+				on:drop={drop}
+				on:dragenter={dragEnter}
+				on:dragleave={dragExit}
+			>
 				{#if flags.tableau0}
 					{#each tableau[0] as card, level}
-						<KlondikeCard {card} {level} from="tableau-0" clickable={false} />
+						<KlondikeCard {card} {level} from="tableau-0" on:dragStart={dragStart} />
 					{/each}
 				{/if}
 			</div>
-			<div class="card-container" id="tableau-1">
+			<div
+				class="card-container"
+				id="tableau-1"
+				on:dragover={dragOver}
+				on:drop={drop}
+				on:dragenter={dragEnter}
+				on:dragleave={dragExit}
+			>
 				{#if flags.tableau1}
 					{#each tableau[1] as card, level}
-						<KlondikeCard {card} {level} from="tableau-1" clickable={false} />
+						<KlondikeCard {card} {level} from="tableau-1" on:dragStart={dragStart} />
 					{/each}
 				{/if}
 			</div>
-			<div class="card-container" id="tableau-2">
+			<div
+				class="card-container"
+				id="tableau-2"
+				on:dragover={dragOver}
+				on:drop={drop}
+				on:dragenter={dragEnter}
+				on:dragleave={dragExit}
+			>
 				{#if flags.tableau2}
 					{#each tableau[2] as card, level}
-						<KlondikeCard {card} {level} from="tableau-2" clickable={false} />
+						<KlondikeCard {card} {level} from="tableau-2" on:dragStart={dragStart} />
 					{/each}
 				{/if}
 			</div>
-			<div class="card-container" id="tableau-3">
+			<div
+				class="card-container"
+				id="tableau-3"
+				on:dragover={dragOver}
+				on:drop={drop}
+				on:dragenter={dragEnter}
+				on:dragleave={dragExit}
+			>
 				{#if flags.tableau3}
 					{#each tableau[3] as card, level}
-						<KlondikeCard {card} {level} from="tableau-3" clickable={false} />
+						<KlondikeCard {card} {level} from="tableau-3" on:dragStart={dragStart} />
 					{/each}
 				{/if}
 			</div>
-			<div class="card-container" id="tableau-4">
+			<div
+				class="card-container"
+				id="tableau-4"
+				on:dragover={dragOver}
+				on:drop={drop}
+				on:dragenter={dragEnter}
+				on:dragleave={dragExit}
+			>
 				{#if flags.tableau4}
 					{#each tableau[4] as card, level}
-						<KlondikeCard {card} {level} from="tableau-4" clickable={false} />
+						<KlondikeCard {card} {level} from="tableau-4" on:dragStart={dragStart} />
 					{/each}
 				{/if}
 			</div>
-			<div class="card-container" id="tableau-5">
+			<div
+				class="card-container"
+				id="tableau-5"
+				on:dragover={dragOver}
+				on:drop={drop}
+				on:dragenter={dragEnter}
+				on:dragleave={dragExit}
+			>
 				{#if flags.tableau5}
 					{#each tableau[5] as card, level}
-						<KlondikeCard {card} {level} from="tableau-5" clickable={false} />
+						<KlondikeCard {card} {level} from="tableau-5" on:dragStart={dragStart} />
 					{/each}
 				{/if}
 			</div>
-			<div class="card-container" id="tableau-6">
+			<div
+				class="card-container"
+				id="tableau-6"
+				on:dragover={dragOver}
+				on:drop={drop}
+				on:dragenter={dragEnter}
+				on:dragleave={dragExit}
+			>
 				{#if flags.tableau6}
 					{#each tableau[6] as card, level}
-						<KlondikeCard {card} {level} from="tableau-6" clickable={false} />
+						<KlondikeCard {card} {level} from="tableau-6" on:dragStart={dragStart} />
 					{/each}
 				{/if}
 			</div>
@@ -276,5 +828,8 @@
 	}
 	div.klondike-tableau {
 		@apply flex flex-wrap justify-between;
+	}
+	:global(div.card-container.over) {
+		border: dashed red !important;
 	}
 </style>

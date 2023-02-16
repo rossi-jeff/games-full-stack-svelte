@@ -4,6 +4,8 @@ export class Card {
 	readonly back: string;
 	readonly id: number;
 	facedown = true;
+	clickable = false;
+	draggable = false;
 
 	constructor(suit: string, face: string, back: string, id: number) {
 		this.suit = suit;
@@ -25,6 +27,7 @@ export class Deck {
 	cards: Card[] = [];
 	readonly suits: string[] = ['clubs', 'diamonds', 'hearts', 'spades'];
 	readonly faces: string[] = [
+		'ace',
 		'2',
 		'3',
 		'4',
@@ -36,8 +39,7 @@ export class Deck {
 		'10',
 		'jack',
 		'queen',
-		'king',
-		'ace'
+		'king'
 	];
 	readonly backs: string[] = [
 		'abstract_clouds',
