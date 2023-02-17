@@ -32,7 +32,8 @@
 		tableau4: false,
 		tableau5: false,
 		tableau6: false,
-		backSelected: false
+		backSelected: false,
+		newGame: false
 	};
 	let passes: number = 0;
 	let acesDroppable: string[] = ['aces-0', 'aces-1', 'aces-2', 'aces-3'];
@@ -83,7 +84,10 @@
 	};
 
 	const deal = () => {
-		if (deck.cards.length !== 52) deck.build();
+		if (deck.cards.length !== 52) {
+			deck.build();
+			build();
+		}
 		deck.shuffle();
 		for (const key in flags) flags[key] = false;
 		passes = 0;
@@ -103,7 +107,10 @@
 			card.clickable = true;
 			stock.push(card);
 		}
-		for (const key in flags) flags[key] = true;
+		setTimeout(() => {
+			for (const key in flags) flags[key] = true;
+			flags.newGame = false;
+		}, 25);
 	};
 
 	const selectBack = (event: any) => {
@@ -462,6 +469,7 @@
 
 				break;
 		}
+		checkStatus();
 	};
 
 	const canDropCard = (to: string, lastCard: Card | undefined, droppedCard: Card) => {
@@ -603,6 +611,25 @@
 		}, 25);
 	};
 
+	const checkStatus = () => {
+		let numFaceUp = 0;
+		flags.newGame = false;
+		for (const key in aces) {
+			for (const card of aces[key]) {
+				if (!card.facedown) numFaceUp++;
+			}
+		}
+		for (const key in tableau) {
+			for (const card of tableau[key]) {
+				if (!card.facedown) numFaceUp++;
+			}
+		}
+		for (const card of waste) {
+			if (!card.facedown) numFaceUp++;
+		}
+		if (numFaceUp === 52 || passes >= 3) flags.newGame = true;
+	};
+
 	onMount(() => {
 		loadDeck();
 		build();
@@ -610,6 +637,10 @@
 </script>
 
 <div class="klondike-container">
+	{#if flags.newGame}
+		<button on:click={deal} class="mb-2">New Deal</button>
+	{/if}
+
 	{#if flags.playing && deck.cards}
 		<div class="klondike-top-row">
 			<div class="klondike-top-left">
@@ -792,10 +823,6 @@
 		<div>
 			<button on:click={deal}>Deal</button>
 		</div>
-	{/if}
-
-	{#if passes && passes >= 3}
-		<button on:click={deal}>New Deal</button>
 	{/if}
 </div>
 
