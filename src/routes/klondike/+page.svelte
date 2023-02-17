@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { clone } from '../../lib/clone';
 	import { Card, Deck } from '../../lib/deck';
 	import type { FlagType } from '../../lib/types/flag.type';
 	import KlondikeBack from './KlondikeBack.svelte';

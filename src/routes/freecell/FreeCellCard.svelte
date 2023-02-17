@@ -8,11 +8,6 @@
 
 	const dispatch = createEventDispatcher();
 
-	const cardClicked = () => {
-		if (!card.clickable) return;
-		dispatch('cardClicked', { card, from, level });
-	};
-
 	const setTop = () => {
 		const top = level * 1.5 + 0.5;
 		const div = document.getElementById(`${from}_${card.id}`);
@@ -29,40 +24,25 @@
 </script>
 
 <div
-	class="klondike-card-wrapper"
+	class="free-cell-card-wrapper"
 	id="{from}_{card.id}"
 	draggable={card.draggable}
 	on:dragstart={dragStart}
-	on:click={cardClicked}
-	on:keydown={cardClicked}
 >
-	{#if card && card.facedown}
-		<img
-			src={card.backSrc}
-			alt="card back"
-			class="card-back"
-			draggable="false"
-			id="back_{card.id}"
-			style="cursor: pointer;"
-		/>
-	{:else}
-		<img
-			src={card.src}
-			alt="{card.face.toUpperCase()} of {card.suit.toUpperCase()}"
-			class="card-face"
-			draggable="false"
-			id="front_{card.id}"
-			style="cursor: move;"
-		/>
-	{/if}
+	<img
+		src={card.src}
+		alt="{card.face.toUpperCase()} of {card.suit.toUpperCase()}"
+		class="card-face"
+		draggable="false"
+		id="front_{card.id}"
+	/>
 </div>
 
 <style>
-	div.klondike-card-wrapper {
+	div.free-cell-card-wrapper {
 		@apply w-28 h-36 p-0 absolute top-2 left-2;
 	}
-	img.card-back,
 	img.card-face {
-		@apply w-24 h-32;
+		@apply w-24 h-32 cursor-move;
 	}
 </style>
