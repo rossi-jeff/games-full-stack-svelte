@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Card, Deck } from '../../lib/deck';
+	import { zeroPad } from '../../lib/mysql-date-format';
 	import type { FlagType } from '../../lib/types/flag.type';
 	import KlondikeBack from './KlondikeBack.svelte';
 	import KlondikeCard from './KlondikeCard.svelte';
@@ -32,8 +33,10 @@
 		tableau5: false,
 		tableau6: false,
 		backSelected: false,
-		newGame: false
+		newGame: false,
+		autoComplete: false
 	};
+	let protectedFlags = ['newGame', 'autoComplete'];
 	let passes: number = 0;
 	let acesDroppable: string[] = ['aces-0', 'aces-1', 'aces-2', 'aces-3'];
 	let tableauDroppable: string[] = [
@@ -52,6 +55,7 @@
 	let interval: ReturnType<typeof setInterval> | undefined;
 
 	const clock = () => {
+		if (interval) clearInterval(interval);
 		elapsed = 0;
 		interval = setInterval(() => {
 			elapsed = Math.round((Date.now() - start) / 1000);
@@ -127,8 +131,7 @@
 		start = Date.now();
 		clock();
 		setTimeout(() => {
-			for (const key in flags) flags[key] = true;
-			flags.newGame = false;
+			for (const key in flags) if (!protectedFlags.includes(key)) flags[key] = true;
 		}, 25);
 	};
 
@@ -612,7 +615,7 @@
 	};
 
 	const reloadStock = () => {
-		if (stock.length || passes >= 3) return;
+		if (stock.length > 0 || passes >= 3) return;
 		flags.stock = false;
 		flags.waste = false;
 		while (waste.length) {
@@ -633,6 +636,8 @@
 
 	const checkStatus = () => {
 		let numFaceUp = 0;
+		const wasteCount = waste.length;
+		const stockCount = stock.length;
 		flags.newGame = false;
 		for (const key in aces) {
 			for (const card of aces[key]) {
@@ -648,6 +653,68 @@
 			if (!card.facedown) numFaceUp++;
 		}
 		if (numFaceUp === 52 || passes >= 3) flags.newGame = true;
+		if (numFaceUp === 52 && stockCount === 0 && wasteCount === 0) flags.autoComplete = true;
+	};
+
+	const autoComplete = () => {
+		if (interval) clearInterval(interval);
+		let lowestCard: Card | undefined;
+		let current: Card | undefined;
+		let fromKey: string | undefined, toKey: string | undefined;
+		for (const key in tableau) {
+			if (tableau[key].length) {
+				current = tableau[key][tableau[key].length - 1];
+				if (lowestCard) {
+					if (deck.faces.indexOf(current.face) < deck.faces.indexOf(lowestCard.face)) {
+						lowestCard = current;
+						fromKey = key;
+					}
+				} else {
+					lowestCard = current;
+					fromKey = key;
+				}
+			}
+		}
+		if (lowestCard) {
+			for (const key in aces) {
+				if (aces[key].length) {
+					current = aces[key][aces[key].length - 1];
+					if (
+						lowestCard.suit === current.suit &&
+						deck.faces.indexOf(lowestCard.face) === deck.faces.indexOf(current.face) + 1
+					)
+						toKey = key;
+				}
+			}
+		}
+		if (fromKey && toKey) {
+			autoMoveCard(fromKey, toKey);
+		} else {
+			console.log({ lowestCard, fromKey, toKey });
+		}
+	};
+
+	const autoMoveCard = (fromKey: string, toKey: string) => {
+		card = tableau[parseInt(fromKey)].pop();
+		console.log({ card, fromKey, toKey });
+		if (card) {
+			flags[`tableau${fromKey}`] = false;
+			flags[`aces${toKey}`] = false;
+			aces[parseInt(toKey)].push(card);
+			setTimeout(() => {
+				flags[`tableau${fromKey}`] = true;
+				flags[`aces${toKey}`] = true;
+				checkAcesForAuto();
+			}, 25);
+		}
+	};
+
+	const checkAcesForAuto = () => {
+		let acesCount = 0;
+		for (const key in aces) acesCount += aces[key].length;
+		console.log({ acesCount });
+		if (acesCount < 52) autoComplete();
+		else flags.autoComplete = false;
 	};
 
 	onMount(() => {
@@ -659,6 +726,9 @@
 <div class="klondike-container">
 	{#if flags.newGame}
 		<button on:click={deal} class="mb-2">New Deal</button>
+	{/if}
+	{#if flags.autoComplete}
+		<button on:click={autoComplete}>Auto Complete</button>
 	{/if}
 	<div class="flex justify-between mb-2">
 		<span>
@@ -674,7 +744,7 @@
 	{#if flags.playing && deck.cards}
 		<div class="klondike-top-row">
 			<div class="klondike-top-left">
-				<div class="card-container" id="stock" on:click={reloadStock}>
+				<div class="card-container" id="stock" on:click={reloadStock} on:keypress={reloadStock}>
 					{#if flags.stock}
 						{#each stock as card}
 							<KlondikeCard {card} level={0} from="stock" on:cardClicked={cardClicked} />
