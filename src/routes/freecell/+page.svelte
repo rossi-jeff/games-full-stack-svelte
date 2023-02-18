@@ -28,7 +28,8 @@
 		tableau4: false,
 		tableau5: false,
 		tableau6: false,
-		tableau7: false
+		tableau7: false,
+		autoComplete: false
 	};
 
 	let acesDroppable: string[] = ['aces-0', 'aces-1', 'aces-2', 'aces-3'];
@@ -43,7 +44,6 @@
 		'tableau-7'
 	];
 	let freeDroppable: string[] = ['free-0', 'free-1', 'free-2', 'free-3'];
-	let droppable: string[] = [...acesDroppable, ...tableauDroppable, ...freeDroppable];
 	let start: number,
 		elapsed: number = 0;
 	let turns: number = 0;
@@ -105,9 +105,10 @@
 		adjustDraggable();
 		turns = 0;
 		start = Date.now();
+		if (interval) clearInterval(interval);
 		clock();
 		setTimeout(() => {
-			for (const key in flags) flags[key] = true;
+			for (const key in flags) if (key !== 'autoComplete') flags[key] = true;
 		}, 25);
 	};
 
@@ -146,6 +147,7 @@
 				previous = current;
 			}
 		}
+		checkStatus();
 	};
 
 	const dragStart = (event: any) => {
@@ -163,7 +165,7 @@
 		if (target) {
 			let classSet = false;
 			while (!classSet) {
-				if (target.classList.contains('card-container')) {
+				if (target && target.classList.contains('card-container')) {
 					target.classList.add('over');
 					classSet = true;
 					setTimeout(() => {
@@ -183,7 +185,7 @@
 		if (target) {
 			let classSet = false;
 			while (!classSet) {
-				if (target.classList.contains('over')) {
+				if (target && target.classList.contains('over')) {
 					target.classList.remove('over');
 				} else if (target.parentElement) {
 					target = target.parentElement;
@@ -801,10 +803,10 @@
 		if (el) {
 			let found = false;
 			while (!found) {
-				if (el.classList.contains('card-container')) {
+				if (el && el.classList.contains('card-container')) {
 					found = true;
-				} else if (el && el.parentNode) {
-					el = el.parentNode;
+				} else if (el && el.parentElement) {
+					el = el.parentElement;
 				} else {
 					found = true;
 				}
@@ -815,6 +817,112 @@
 		}
 	};
 
+	const checkStatus = () => {
+		let allDescending = true;
+		let current: Card | undefined, previous: Card | undefined, idxP: number, idxC: number;
+		for (const key in tableau) {
+			if (tableau[key].length) {
+				current = undefined;
+				previous = undefined;
+				for (let i = tableau[key].length - 1; i >= 0; i--) {
+					current = tableau[key][i];
+					if (previous) {
+						idxC = deck.faces.indexOf(current.face);
+						idxP = deck.faces.indexOf(previous.face);
+						if (idxP > idxC) allDescending = false;
+					}
+					previous = current;
+				}
+			}
+		}
+		let allAces = true;
+		for (const key in aces) if (!aces[key].length) allAces = false;
+		if (allAces && allDescending) flags.autoComplete = true;
+	};
+
+	const autoComplete = () => {
+		if (interval) clearInterval(interval);
+		let lowestCard: Card | undefined;
+		let current: Card | undefined;
+		let fromType: string | undefined, fromKey: string | undefined, toKey: string | undefined;
+		for (const key in free) {
+			if (free[key].length) {
+				current = free[key][free[key].length - 1];
+				if (lowestCard) {
+					if (deck.faces.indexOf(current.face) < deck.faces.indexOf(lowestCard.face)) {
+						lowestCard = current;
+						fromType = 'tableau';
+						fromKey = key;
+					}
+				} else {
+					lowestCard = current;
+					fromType = 'free';
+					fromKey = key;
+				}
+			}
+		}
+		for (const key in tableau) {
+			if (tableau[key].length) {
+				current = tableau[key][tableau[key].length - 1];
+				if (lowestCard) {
+					if (deck.faces.indexOf(current.face) < deck.faces.indexOf(lowestCard.face)) {
+						lowestCard = current;
+						fromType = 'tableau';
+						fromKey = key;
+					}
+				} else {
+					lowestCard = current;
+					fromType = 'tableau';
+					fromKey = key;
+				}
+			}
+		}
+		if (lowestCard) {
+			for (const key in aces) {
+				if (aces[key].length) {
+					current = aces[key][aces[key].length - 1];
+					if (
+						lowestCard.suit === current.suit &&
+						deck.faces.indexOf(lowestCard.face) === deck.faces.indexOf(current.face) + 1
+					)
+						toKey = key;
+				}
+			}
+		}
+		if (fromType && fromKey && toKey) {
+			autoMoveCard(fromType, fromKey, toKey);
+		} else {
+			console.log({ lowestCard, fromType, fromKey, toKey });
+		}
+	};
+
+	const autoMoveCard = (fromType: string, fromKey: string, toKey: string) => {
+		if (fromType === 'tableau') {
+			card = tableau[parseInt(fromKey)].pop();
+		} else {
+			card = free[parseInt(fromKey)].pop();
+		}
+		console.log({ card, fromType, fromKey, toKey });
+		if (card) {
+			flags[`${fromType}${fromKey}`] = false;
+			flags[`aces${toKey}`] = false;
+			aces[parseInt(toKey)].push(card);
+			setTimeout(() => {
+				flags[`${fromType}${fromKey}`] = true;
+				flags[`aces${toKey}`] = true;
+				checkAcesForAuto();
+			}, 25);
+		}
+	};
+
+	const checkAcesForAuto = () => {
+		let acesCount = 0;
+		for (const key in aces) acesCount += aces[key].length;
+		console.log({ acesCount });
+		if (acesCount < 52) autoComplete();
+		else flags.autoComplete = false;
+	};
+
 	onMount(() => {
 		loadDeck();
 		build();
@@ -823,6 +931,9 @@
 
 <div class="free-cell-container">
 	<button on:click={deal} class="mb-2 ml-2">New Deal</button>
+	{#if flags.autoComplete}
+		<button on:click={autoComplete}>Auto Complete</button>
+	{/if}
 	<div class="flex justify-between mb-2 mx-2">
 		<span>
 			<strong>Turns</strong>
