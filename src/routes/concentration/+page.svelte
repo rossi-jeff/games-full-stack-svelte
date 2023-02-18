@@ -182,7 +182,7 @@
 
 <style>
 	div.concentration-container {
-		@apply mx-2 p-4 bg-green-600 rounded;
+		@apply mx-2 p-4 bg-green-600 rounded h-screen;
 	}
 	h2 {
 		@apply text-lg font-bold mb-2;
@@ -191,7 +191,7 @@
 		@apply flex flex-wrap;
 	}
 	div.backs-wrap {
-		@apply flex flex-wrap justify-between mb-4 h-40;
+		@apply flex flex-wrap mb-4 min-h-max;
 	}
 	button {
 		@apply bg-white border border-black rounded py-1 px-2;

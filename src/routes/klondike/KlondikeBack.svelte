@@ -22,10 +22,10 @@
 
 <style>
 	div.card-back-wrapper {
-		@apply w-28 h-36 p-0;
+		@apply w-28 h-36 p-0 mr-4 mb-4;
 	}
 	div.card-back-selected-wrapper {
-		@apply w-28 h-36 p-0 border border-dashed border-yellow-300 rounded text-center;
+		@apply w-28 h-36 p-0 border border-dashed border-yellow-300 rounded text-center mr-4 mb-4;
 	}
 	div.card-back-selected-wrapper img,
 	div.card-back-wrapper img {

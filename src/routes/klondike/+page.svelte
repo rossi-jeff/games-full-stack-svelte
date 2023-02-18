@@ -864,7 +864,7 @@
 		@apply text-lg font-bold mb-2;
 	}
 	div.backs-wrap {
-		@apply flex flex-wrap justify-between mb-4 h-40;
+		@apply flex flex-wrap mb-4 min-h-max;
 	}
 	button {
 		@apply bg-white border border-black rounded py-1 px-2;
