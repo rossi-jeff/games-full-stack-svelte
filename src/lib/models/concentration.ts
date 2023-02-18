@@ -53,3 +53,5 @@ class Concentration extends Model {
         this.UpdatedAt = mySqlDateFormat(now);
     }
 }
+
+export default Concentration

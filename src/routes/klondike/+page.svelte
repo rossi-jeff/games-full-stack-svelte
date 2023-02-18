@@ -5,6 +5,10 @@
 	import type { FlagType } from '../../lib/types/flag.type';
 	import KlondikeBack from './KlondikeBack.svelte';
 	import KlondikeCard from './KlondikeCard.svelte';
+	import type { Klondike } from '../../lib/types/klondike.type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
+	import { buildRequestHeaders } from '$lib/build-request-headers';
 
 	let aces: { [key: number]: Card[] } = {};
 	let tableau: { [key: number]: Card[] } = {};
@@ -53,6 +57,8 @@
 		elapsed: number = 0;
 	let turns: number = 0;
 	let interval: ReturnType<typeof setInterval> | undefined;
+	let game: Klondike = {}
+	const session: UserSessionData = get(userSession);
 
 	const clock = () => {
 		if (interval) clearInterval(interval);
@@ -130,6 +136,7 @@
 		turns = 0;
 		start = Date.now();
 		clock();
+		createGame()
 		setTimeout(() => {
 			for (const key in flags) if (!protectedFlags.includes(key)) flags[key] = true;
 		}, 25);
@@ -143,6 +150,21 @@
 		setTimeout(() => {
 			flags.backSelected = true;
 		}, 25);
+	};
+
+	const createGame = async () => {
+		try {
+			const result = await fetch('/api/klondike', {
+				method: 'POST',
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				game = await result.json();
+				console.log(game);
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const cardClicked = (event: any) => {

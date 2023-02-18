@@ -4,6 +4,10 @@
 	import { zeroPad } from '../../lib/mysql-date-format';
 	import ConcentrationBack from './ConcentrationBack.svelte';
 	import ConcentrationCard from './ConcentrationCard.svelte';
+	import type { Concentration } from '../../lib/types/concentration.type';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
+	import { buildRequestHeaders } from '$lib/build-request-headers';
 
 	let deck: Deck;
 	let dealt: boolean = false;
@@ -21,9 +25,11 @@
 	let handlers: cardHandler[] = [];
 	let turns: number = 0;
 	let matched: number = 0;
-	let start: number, elapsed: number;
+	let start: number, elapsed: number = 0;
 	let cardBacks: string[] = [];
 	let backSelected: boolean = true;
+	let game: Concentration = {};
+	const session: UserSessionData = get(userSession);
 
 	const deal = () => {
 		dealt = false;
@@ -36,6 +42,22 @@
 		if (timeout) clearTimeout(timeout);
 		clock();
 		dealt = true;
+		createGame();
+	};
+
+	const createGame = async () => {
+		try {
+			const result = await fetch('/api/concentration', {
+				method: 'POST',
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				game = await result.json();
+				console.log(game);
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const loadDeck = () => {
@@ -182,7 +204,7 @@
 
 <style>
 	div.concentration-container {
-		@apply mx-2 p-4 bg-green-600 rounded h-screen;
+		@apply mx-2 p-4 bg-green-600 rounded min-h-screen;
 	}
 	h2 {
 		@apply text-lg font-bold mb-2;

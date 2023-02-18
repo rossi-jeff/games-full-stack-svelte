@@ -51,3 +51,5 @@ class Klondike extends Model {
         this.UpdatedAt = mySqlDateFormat(now);
     }
 }
+
+export default Klondike
