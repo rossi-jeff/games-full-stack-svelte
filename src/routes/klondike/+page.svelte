@@ -46,6 +46,23 @@
 		'tableau-6'
 	];
 	let droppable: string[] = [...acesDroppable, ...tableauDroppable];
+	let start: number,
+		elapsed: number = 0;
+	let turns: number = 0;
+	let interval: ReturnType<typeof setInterval> | undefined;
+
+	const clock = () => {
+		elapsed = 0;
+		interval = setInterval(() => {
+			elapsed = Math.round((Date.now() - start) / 1000);
+		}, 1000);
+	};
+
+	const displayElapsed = (allSeconds: number) => {
+		const seconds = allSeconds % 60;
+		const minutes = Math.floor(allSeconds / 60);
+		return minutes > 0 ? `${minutes}:${zeroPad(seconds)}` : seconds;
+	};
 
 	const build = () => {
 		for (let i = 0; i < 4; i++) aces[i] = [];
@@ -106,6 +123,9 @@
 			card.clickable = true;
 			stock.push(card);
 		}
+		turns = 0;
+		start = Date.now();
+		clock();
 		setTimeout(() => {
 			for (const key in flags) flags[key] = true;
 			flags.newGame = false;
@@ -469,6 +489,7 @@
 				break;
 		}
 		checkStatus();
+		turns++;
 	};
 
 	const canDropCard = (to: string, lastCard: Card | undefined, droppedCard: Card) => {
@@ -639,6 +660,16 @@
 	{#if flags.newGame}
 		<button on:click={deal} class="mb-2">New Deal</button>
 	{/if}
+	<div class="flex justify-between mb-2">
+		<span>
+			<strong>Turns</strong>
+			{turns}
+		</span>
+		<span>
+			<strong>Elapsed</strong>
+			{displayElapsed(elapsed)}
+		</span>
+	</div>
 
 	{#if flags.playing && deck.cards}
 		<div class="klondike-top-row">

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Deck, type Card } from '../../lib/deck';
+	import { zeroPad } from '../../lib/mysql-date-format';
 	import type { FlagType } from '../../lib/types/flag.type';
 	import FreeCellCard from './FreeCellCard.svelte';
 
@@ -43,6 +44,23 @@
 	];
 	let freeDroppable: string[] = ['free-0', 'free-1', 'free-2', 'free-3'];
 	let droppable: string[] = [...acesDroppable, ...tableauDroppable, ...freeDroppable];
+	let start: number,
+		elapsed: number = 0;
+	let turns: number = 0;
+	let interval: ReturnType<typeof setInterval> | undefined;
+
+	const clock = () => {
+		elapsed = 0;
+		interval = setInterval(() => {
+			elapsed = Math.round((Date.now() - start) / 1000);
+		}, 1000);
+	};
+
+	const displayElapsed = (allSeconds: number) => {
+		const seconds = allSeconds % 60;
+		const minutes = Math.floor(allSeconds / 60);
+		return minutes > 0 ? `${minutes}:${zeroPad(seconds)}` : seconds;
+	};
 
 	const build = () => {
 		for (let i = 0; i < 4; i++) {
@@ -85,6 +103,9 @@
 			if (idx > 7) idx = 0;
 		}
 		adjustDraggable();
+		turns = 0;
+		start = Date.now();
+		clock();
 		setTimeout(() => {
 			for (const key in flags) flags[key] = true;
 		}, 25);
@@ -565,6 +586,7 @@
 				}, 25);
 				break;
 		}
+		turns++;
 	};
 
 	const canDropCard = (to: string, droppedCard: Card, lastCard: Card | undefined) => {
@@ -801,6 +823,16 @@
 
 <div class="free-cell-container">
 	<button on:click={deal} class="mb-2 ml-2">New Deal</button>
+	<div class="flex justify-between mb-2 mx-2">
+		<span>
+			<strong>Turns</strong>
+			{turns}
+		</span>
+		<span>
+			<strong>Elapsed</strong>
+			{displayElapsed(elapsed)}
+		</span>
+	</div>
 	<div class="free-cell-top-row">
 		<div class="free-cell-free">
 			<div
