@@ -9,6 +9,8 @@
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '$lib/build-request-headers';
 	import { displayElapsed } from '../../lib/display-elapsed';
+	import type { ArgsConcentrationUpdate } from '../../lib/types/args-concentration-update.type';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
 
 	let deck: Deck;
 	let dealt: boolean = false;
@@ -40,6 +42,7 @@
 		elapsed = 0;
 		start = Date.now();
 		deck.shuffle();
+		if (game && game.Id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
 		if (interval) clearInterval(interval);
 		if (timeout) clearTimeout(timeout);
 		clock();
@@ -56,6 +59,27 @@
 			if (result.ok) {
 				game = await result.json();
 				console.log(game);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const updateGame = async (Status: GameStatus) => {
+		if (!game.Id) return;
+		try {
+			const payload: ArgsConcentrationUpdate = {
+				Moves: turns,
+				Elapsed: elapsed,
+				Matched: matched,
+				Status
+			};
+			const result = await fetch(`/api/concentration/${game.Id}`, {
+				method: 'PATCH',
+				body: JSON.stringify(payload)
+			});
+			if (result.ok) {
+				game = await result.json();
 			}
 		} catch (error) {
 			console.log(error);
@@ -129,6 +153,7 @@
 		turns++;
 		if (matched === deck.cards.length / 2 && interval) {
 			clearInterval(interval);
+			updateGame(GameStatus.Won);
 			dealt = false;
 		}
 	};
