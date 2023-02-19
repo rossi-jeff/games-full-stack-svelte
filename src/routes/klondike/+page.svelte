@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Card, Deck } from '../../lib/deck';
-	import { zeroPad } from '../../lib/mysql-date-format';
 	import type { FlagType } from '../../lib/types/flag.type';
 	import KlondikeBack from './KlondikeBack.svelte';
 	import KlondikeCard from './KlondikeCard.svelte';
@@ -9,6 +8,9 @@
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '$lib/build-request-headers';
+	import type { ArgsKlondikeUpdate } from '../../lib/types/args-klondike-update.type';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
+	import { displayElapsed } from '../../lib/display-elapsed';
 
 	let aces: { [key: number]: Card[] } = {};
 	let tableau: { [key: number]: Card[] } = {};
@@ -57,7 +59,8 @@
 		elapsed: number = 0;
 	let turns: number = 0;
 	let interval: ReturnType<typeof setInterval> | undefined;
-	let game: Klondike = {}
+	let timeout: ReturnType<typeof setTimeout> | undefined;
+	let game: Klondike = {};
 	const session: UserSessionData = get(userSession);
 
 	const clock = () => {
@@ -66,12 +69,6 @@
 		interval = setInterval(() => {
 			elapsed = Math.round((Date.now() - start) / 1000);
 		}, 1000);
-	};
-
-	const displayElapsed = (allSeconds: number) => {
-		const seconds = allSeconds % 60;
-		const minutes = Math.floor(allSeconds / 60);
-		return minutes > 0 ? `${minutes}:${zeroPad(seconds)}` : seconds;
 	};
 
 	const build = () => {
@@ -115,6 +112,7 @@
 			build();
 		}
 		deck.shuffle();
+		if (game && game.Id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
 		for (const key in flags) flags[key] = false;
 		passes = 0;
 		for (let i = 0; i < 7; i++) {
@@ -136,7 +134,7 @@
 		turns = 0;
 		start = Date.now();
 		clock();
-		createGame()
+		createGame();
 		setTimeout(() => {
 			for (const key in flags) if (!protectedFlags.includes(key)) flags[key] = true;
 		}, 25);
@@ -167,22 +165,45 @@
 		}
 	};
 
+	const updateGame = async (Status: GameStatus) => {
+		if (!game.Id) return;
+		try {
+			const payload: ArgsKlondikeUpdate = {
+				Moves: turns,
+				Elapsed: elapsed,
+				Status
+			};
+			const result = await fetch(`/api/klondike/${game.Id}`, {
+				method: 'PATCH',
+				body: JSON.stringify(payload)
+			});
+			if (result.ok) {
+				game = await result.json();
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const cardClicked = (event: any) => {
+		if (timeout) clearTimeout(timeout);
 		const { from } = event.detail;
 		if (from === 'stock') {
-			flags.stock = false;
-			flags.waste = false;
-			card = stock.pop();
-			if (card) {
-				card.facedown = false;
-				card.clickable = false;
-				card.draggable = true;
-				waste.push(card);
-			}
-			setTimeout(() => {
-				flags.stock = true;
-				flags.waste = true;
-			}, 25);
+			timeout = setTimeout(() => {
+				flags.stock = false;
+				flags.waste = false;
+				card = stock.pop();
+				if (card) {
+					card.facedown = false;
+					card.clickable = false;
+					card.draggable = true;
+					waste.push(card);
+				}
+				setTimeout(() => {
+					flags.stock = true;
+					flags.waste = true;
+				}, 25);
+			}, 150);
 		}
 	};
 
@@ -638,22 +659,25 @@
 
 	const reloadStock = () => {
 		if (stock.length > 0 || passes >= 3) return;
-		flags.stock = false;
-		flags.waste = false;
-		while (waste.length) {
-			card = waste.pop();
-			if (card) {
-				card.facedown = true;
-				card.draggable = false;
-				card.clickable = true;
-				stock.push(card);
+		if (timeout) clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			flags.stock = false;
+			flags.waste = false;
+			while (waste.length) {
+				card = waste.pop();
+				if (card) {
+					card.facedown = true;
+					card.draggable = false;
+					card.clickable = true;
+					stock.push(card);
+				}
 			}
-		}
-		passes++;
-		setTimeout(() => {
-			flags.stock = true;
-			flags.waste = true;
-		}, 25);
+			passes++;
+			setTimeout(() => {
+				flags.stock = true;
+				flags.waste = true;
+			}, 25);
+		}, 150);
 	};
 
 	const checkStatus = () => {
@@ -736,7 +760,10 @@
 		for (const key in aces) acesCount += aces[key].length;
 		console.log({ acesCount });
 		if (acesCount < 52) autoComplete();
-		else flags.autoComplete = false;
+		else {
+			flags.autoComplete = false;
+			updateGame(GameStatus.Won);
+		}
 	};
 
 	onMount(() => {

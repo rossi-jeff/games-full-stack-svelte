@@ -8,6 +8,7 @@
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '$lib/build-request-headers';
+	import { displayElapsed } from '../../lib/display-elapsed';
 
 	let deck: Deck;
 	let dealt: boolean = false;
@@ -25,7 +26,8 @@
 	let handlers: cardHandler[] = [];
 	let turns: number = 0;
 	let matched: number = 0;
-	let start: number, elapsed: number = 0;
+	let start: number,
+		elapsed: number = 0;
 	let cardBacks: string[] = [];
 	let backSelected: boolean = true;
 	let game: Concentration = {};
@@ -129,12 +131,6 @@
 			clearInterval(interval);
 			dealt = false;
 		}
-	};
-
-	const displayElapsed = (allSeconds: number) => {
-		const seconds = allSeconds % 60;
-		const minutes = Math.floor(allSeconds / 60);
-		return minutes > 0 ? `${minutes}:${zeroPad(seconds)}` : seconds;
 	};
 
 	const clock = () => {

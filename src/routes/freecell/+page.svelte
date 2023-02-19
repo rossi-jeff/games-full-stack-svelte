@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { Deck, type Card } from '../../lib/deck';
-	import { zeroPad } from '../../lib/mysql-date-format';
+	import { displayElapsed } from '../../lib/display-elapsed';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
+	import type { ArgsFreeCellUpdate } from '../../lib/types/args-freee-cell-update.type';
 	import type { FlagType } from '../../lib/types/flag.type';
+	import type { Freecell } from '../../lib/types/free-cell.type';
+	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
 	import FreeCellCard from './FreeCellCard.svelte';
 
 	let free: { [key: number]: Card[] } = {};
@@ -11,6 +17,8 @@
 
 	let deck: Deck;
 	let card: Card | undefined;
+	let game: Freecell = {};
+	const session: UserSessionData = get(userSession);
 
 	let flags: FlagType = {
 		free0: false,
@@ -56,10 +64,38 @@
 		}, 1000);
 	};
 
-	const displayElapsed = (allSeconds: number) => {
-		const seconds = allSeconds % 60;
-		const minutes = Math.floor(allSeconds / 60);
-		return minutes > 0 ? `${minutes}:${zeroPad(seconds)}` : seconds;
+	const createGame = async () => {
+		try {
+			const result = await fetch('/api/freecell', {
+				method: 'POST',
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				game = await result.json();
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const updateGame = async (Status: GameStatus) => {
+		if (!game.Id) return;
+		try {
+			const payload: ArgsFreeCellUpdate = {
+				Moves: turns,
+				Elapsed: elapsed,
+				Status
+			};
+			const result = await fetch(`/api/freecell/${game.Id}`, {
+				method: 'PATCH',
+				body: JSON.stringify(payload)
+			});
+			if (result.ok) {
+				game = await result.json();
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const build = () => {
@@ -92,6 +128,7 @@
 			build();
 		}
 		deck.shuffle();
+		if (game && game.Id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
 		for (const key in flags) flags[key] = false;
 		let idx = 0;
 		while ((card = deck.draw())) {
@@ -107,6 +144,7 @@
 		start = Date.now();
 		if (interval) clearInterval(interval);
 		clock();
+		createGame();
 		setTimeout(() => {
 			for (const key in flags) if (key !== 'autoComplete') flags[key] = true;
 		}, 25);
@@ -920,7 +958,10 @@
 		for (const key in aces) acesCount += aces[key].length;
 		console.log({ acesCount });
 		if (acesCount < 52) autoComplete();
-		else flags.autoComplete = false;
+		else {
+			flags.autoComplete = false;
+			updateGame(GameStatus.Won);
+		}
 	};
 
 	onMount(() => {
