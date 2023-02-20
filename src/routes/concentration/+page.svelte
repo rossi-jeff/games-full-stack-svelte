@@ -223,6 +223,10 @@
 	</div>
 </div>
 
+<div class="scores-link">
+	<a href="/concentration/scores">See Top Scores</a>
+</div>
+
 <style>
 	div.concentration-container {
 		@apply mx-2 p-4 bg-green-600 rounded min-h-screen;
@@ -238,5 +242,8 @@
 	}
 	button {
 		@apply bg-white border border-black rounded py-1 px-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>

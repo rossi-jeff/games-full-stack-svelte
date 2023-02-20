@@ -975,6 +975,10 @@
 	{/if}
 </div>
 
+<div class="scores-link">
+	<a href="/klondike/scores">See Top Scores</a>
+</div>
+
 <style>
 	div.klondike-container {
 		@apply mx-2 p-4 h-screen bg-green-600 rounded;
@@ -1011,5 +1015,8 @@
 	}
 	:global(div.card-container.over) {
 		border: dashed red !important;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>
