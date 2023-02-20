@@ -19,7 +19,10 @@
 		{ url: '/hangman', name: 'Hang Man' },
 		{ url: '/codebreaker', name: 'Code Breaker' },
 		{ url: '/yacht', name: 'Yacht' },
-		{ url: '/seabattle', name: 'Sea Battle' }
+		{ url: '/seabattle', name: 'Sea Battle' },
+		{ url: '/concentration', name: 'Concentration' },
+		{ url: '/klondike', name: 'Klondike' },
+		{ url: '/freecell', name: 'Free Cell' }
 	];
 
 	let session: UserSessionData = get(userSession);

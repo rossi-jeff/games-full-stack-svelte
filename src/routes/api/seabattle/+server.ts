@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		.count('* as count');
 	const Count: number = countResult[0].count ?? 0;
 	if (Items && Items.length) {
-		User.knex(connection)
+		User.knex(connection);
 		for (const item of Items) {
 			item.user = item.UserId ? await User.query().findById(item.UserId) : null;
 		}

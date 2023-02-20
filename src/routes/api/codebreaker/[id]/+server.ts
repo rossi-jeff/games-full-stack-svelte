@@ -34,8 +34,8 @@ export const GET: RequestHandler = async ({ request }) => {
 			codeBreaker.guesses.push(guess);
 		}
 		if (codeBreaker.UserId) {
-			User.knex(connection)
-			codeBreaker.user = await User.query().findById(codeBreaker.UserId)
+			User.knex(connection);
+			codeBreaker.user = await User.query().findById(codeBreaker.UserId);
 		}
 	}
 	return json(codeBreaker);

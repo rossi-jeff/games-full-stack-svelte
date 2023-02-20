@@ -21,8 +21,8 @@ export const GET: RequestHandler = async ({ request }) => {
 			guess.ratings = await GuessWordGuessRating.query().where('GuessWordGuessId', guess.Id);
 		}
 		if (guessWord.UserId) {
-			User.knex(connection)
-			guessWord.user = await User.query().findById(guessWord.UserId)
+			User.knex(connection);
+			guessWord.user = await User.query().findById(guessWord.UserId);
 		}
 	}
 	return json(guessWord);
