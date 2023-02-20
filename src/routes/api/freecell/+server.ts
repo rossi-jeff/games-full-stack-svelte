@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		}
 	}
 	return json({ Items, Count, Limit: limit, Offset: offset });
-}
+};
 
 export const POST: RequestHandler = async ({ request }) => {
 	const { UserId } = decodeAuthHeader(request.headers);

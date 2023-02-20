@@ -28,3 +28,13 @@ export const noGreen = (green: stringOrNull[]) => {
 	}
 	return true;
 };
+
+export const includeAllBrown = (word: string, brown: string[][]) => {
+	let allBrown: string[] = [];
+	allBrown = allBrown.concat.apply([], brown);
+	allBrown = [...new Set(allBrown)];
+	for (const letter of allBrown) {
+		if (!word.includes(letter)) return false;
+	}
+	return true;
+};
