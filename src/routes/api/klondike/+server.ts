@@ -2,10 +2,38 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { decodeAuthHeader } from '../../../lib/decode-auth-header';
 import Klondike from '../../../lib/models/klondike'
 import { connection } from '../../../lib/connection';
+import User from '$lib/models/user';
+import { GameStatus } from '$lib/enum/game-status.enum';
+import { defaultLimit, defaultOffset } from '$lib/constants';
+
+Klondike.knex(connection)
+
+export const GET: RequestHandler = async ({ url }) => {
+    const Limit = url.searchParams.get('Limit');
+    const Offset = url.searchParams.get('Offset');
+    const limit = Limit ? parseInt(Limit) : defaultLimit;
+    const offset = Offset ? parseInt(Offset) : defaultOffset;
+    const Items = await Klondike.query()
+        .whereNot('Status', GameStatus.Playing)
+        .orderBy('Status', 'DESC')
+        .orderBy('Elapsed', 'ASC')
+        .limit(limit)
+        .offset(offset);
+    const countResult = await Klondike.query()
+        .whereNot('Status', GameStatus.Playing)
+        .count('* as count');
+    const Count: number = countResult[0].count ?? 0;
+    if (Items && Items.length) {
+        User.knex(connection);
+        for (const item of Items) {
+            item.user = item.UserId ? await User.query().findById(item.UserId) : null;
+        }
+    }
+    return json({ Items, Count, Limit: limit, Offset: offset });
+}
 
 export const POST: RequestHandler = async ({ request }) => {
     const { UserId } = decodeAuthHeader(request.headers);
-    Klondike.knex(connection)
     const klondike = await Klondike.query().insert({
         UserId: UserId ?? undefined,
     })
