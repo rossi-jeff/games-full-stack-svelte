@@ -942,6 +942,7 @@
 		}
 		console.log({ card, fromType, fromKey, toKey });
 		if (card) {
+			card.draggable = false;
 			flags[`${fromType}${fromKey}`] = false;
 			flags[`aces${toKey}`] = false;
 			aces[parseInt(toKey)].push(card);
