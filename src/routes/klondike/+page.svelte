@@ -747,6 +747,7 @@
 			flags[`tableau${fromKey}`] = false;
 			flags[`aces${toKey}`] = false;
 			aces[parseInt(toKey)].push(card);
+			turns++;
 			setTimeout(() => {
 				flags[`tableau${fromKey}`] = true;
 				flags[`aces${toKey}`] = true;

@@ -945,6 +945,7 @@
 			flags[`${fromType}${fromKey}`] = false;
 			flags[`aces${toKey}`] = false;
 			aces[parseInt(toKey)].push(card);
+			turns++;
 			setTimeout(() => {
 				flags[`${fromType}${fromKey}`] = true;
 				flags[`aces${toKey}`] = true;
