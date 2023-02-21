@@ -15,8 +15,10 @@ export const GET: RequestHandler = async ({ url }) => {
 	const offset = Offset ? parseInt(Offset) : defaultOffset;
 	const Items = await FreeCell.query()
 		.whereNot('Status', GameStatus.Playing)
-		.orderBy('Status', 'DESC')
-		.orderBy('Elapsed', 'ASC')
+		.orderBy([
+			{ column: 'Status', order: 'ASC' },
+			{ column: 'Elapsed', order: 'ASC' }
+		])
 		.limit(limit)
 		.offset(offset);
 	const countResult = await FreeCell.query()

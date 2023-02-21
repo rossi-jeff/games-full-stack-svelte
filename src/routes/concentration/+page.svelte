@@ -11,6 +11,7 @@
 	import { displayElapsed } from '../../lib/display-elapsed';
 	import type { ArgsConcentrationUpdate } from '../../lib/types/args-concentration-update.type';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
+	import ConcentrationDirections from './ConcentrationDirections.svelte';
 
 	let deck: Deck;
 	let dealt: boolean = false;
@@ -226,6 +227,8 @@
 <div class="scores-link">
 	<a href="/concentration/scores">See Top Scores</a>
 </div>
+
+<ConcentrationDirections />
 
 <style>
 	div.concentration-container {
