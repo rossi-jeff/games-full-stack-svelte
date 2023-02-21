@@ -1,4 +1,6 @@
 import type { Knex } from 'knex';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const host = process.env.SECRET_DB_HOST || '127.0.0.1';
 const user = process.env.SECRET_DB_USER || 'nodejs';

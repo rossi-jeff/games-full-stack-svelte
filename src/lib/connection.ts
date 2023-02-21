@@ -1,4 +1,5 @@
-import { knex } from 'knex';
+import knex, { Knex } from 'knex';
+
 import {
 	SECRET_DB_HOST,
 	SECRET_DB_NAME,
@@ -11,7 +12,7 @@ const user = SECRET_DB_USER ?? 'nodejs';
 const password = SECRET_DB_PASS ?? 'typescript';
 const database = SECRET_DB_NAME ?? 'games';
 
-export const connection = knex({
+export const connection: Knex = knex({
 	client: 'mysql',
 	connection: {
 		host,
