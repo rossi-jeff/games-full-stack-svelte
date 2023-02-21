@@ -11,10 +11,10 @@ export const GET: RequestHandler = async ({ request }) => {
 	const freecell = await FreeCell.query().findById(id);
 	if (freecell && freecell.UserId) {
 		User.knex(connection);
-		freecell.user = await User.query().findById(freecell.UserId)
+		freecell.user = await User.query().findById(freecell.UserId);
 	}
 	return json(freecell);
-}
+};
 
 export const PATCH: RequestHandler = async ({ request }) => {
 	const id = request.url.split('/').pop();

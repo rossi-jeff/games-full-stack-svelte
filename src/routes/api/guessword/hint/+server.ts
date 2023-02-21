@@ -2,7 +2,7 @@ import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { connection } from '../../../../lib/connection';
 import Word from '../../../../lib/models/word';
 import type { ArgsGuessWordHint } from '../../../../lib/types/args-guess-word-hint.type';
-import { matchBrown, matchGray, matchGreen } from '../../../../lib/guess-word-hint-functions';
+import { includeAllBrown, matchBrown, matchGray, matchGreen } from '../../../../lib/guess-word-hint-functions';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const data: ArgsGuessWordHint = await request.json();
@@ -17,6 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!matchGreen(word, Green)) continue;
 		if (matchBrown(word, Brown)) continue;
 		if (matchGray(word, Gray)) continue;
+		if (!includeAllBrown(word, Brown)) continue;
 		Hints.push(word);
 	}
 	return json(Hints);

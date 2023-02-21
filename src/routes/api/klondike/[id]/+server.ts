@@ -11,10 +11,10 @@ export const GET: RequestHandler = async ({ request }) => {
 	const klondike = await Klondike.query().findById(id);
 	if (klondike && klondike.UserId) {
 		User.knex(connection);
-		klondike.user = await User.query().findById(klondike.UserId)
+		klondike.user = await User.query().findById(klondike.UserId);
 	}
 	return json(klondike);
-}
+};
 
 export const PATCH: RequestHandler = async ({ request }) => {
 	const id = request.url.split('/').pop();

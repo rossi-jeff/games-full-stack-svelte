@@ -1,55 +1,55 @@
-import { Model } from "objection";
-import { mySqlDateFormat } from "../mysql-date-format";
-import User from "./user";
+import { Model } from 'objection';
+import { mySqlDateFormat } from '../mysql-date-format';
+import User from './user';
 import { GameStatus } from '../enum/game-status.enum';
 
 class Klondike extends Model {
-    [x: string]: any; // eslint-disable-line
-    UserId?: number;
-    Status!: GameStatus;
-    Moves!: number;
-    Elapsed!: number;
-    CreatedAt!: string;
-    UpdatedAt!: string;
+	[x: string]: any; // eslint-disable-line
+	UserId?: number;
+	Status!: GameStatus;
+	Moves!: number;
+	Elapsed!: number;
+	CreatedAt!: string;
+	UpdatedAt!: string;
 
-    static tableName = 'Klondike';
+	static tableName = 'Klondike';
 
-    static idColumn = 'Id';
+	static idColumn = 'Id';
 
-    static jsonSchema = {
-        type: 'object',
-        properties: {
-            Id: { type: 'integer' },
-            UserId: { type: ['integer', 'null'] },
-            Status: { type: 'string', enum: Object.values(GameStatus), default: GameStatus.Playing },
-            Moves: { type: 'integer' },
-            Elapsed: { type: 'integer' },
-            CreatedAt: { type: 'string' },
-            UpdatedAt: { type: 'string' }
-        }
-    }
+	static jsonSchema = {
+		type: 'object',
+		properties: {
+			Id: { type: 'integer' },
+			UserId: { type: ['integer', 'null'] },
+			Status: { type: 'string', enum: Object.values(GameStatus), default: GameStatus.Playing },
+			Moves: { type: 'integer' },
+			Elapsed: { type: 'integer' },
+			CreatedAt: { type: 'string' },
+			UpdatedAt: { type: 'string' }
+		}
+	};
 
-    static relationMappings = () => ({
-        user: {
-            relation: Model.BelongsToOneRelation,
-            modelClass: User,
-            join: {
-                from: 'Klondike.UserId',
-                to: 'User.Id'
-            }
-        }
-    })
+	static relationMappings = () => ({
+		user: {
+			relation: Model.BelongsToOneRelation,
+			modelClass: User,
+			join: {
+				from: 'Klondike.UserId',
+				to: 'User.Id'
+			}
+		}
+	});
 
-    $beforeInsert() {
-        const now = new Date(Date.now());
-        this.CreatedAt = mySqlDateFormat(now);
-        this.UpdatedAt = mySqlDateFormat(now);
-    }
+	$beforeInsert() {
+		const now = new Date(Date.now());
+		this.CreatedAt = mySqlDateFormat(now);
+		this.UpdatedAt = mySqlDateFormat(now);
+	}
 
-    $beforeUpdate() {
-        const now = new Date(Date.now());
-        this.UpdatedAt = mySqlDateFormat(now);
-    }
+	$beforeUpdate() {
+		const now = new Date(Date.now());
+		this.UpdatedAt = mySqlDateFormat(now);
+	}
 }
 
-export default Klondike
+export default Klondike;

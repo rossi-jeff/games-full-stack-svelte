@@ -11,10 +11,10 @@ export const GET: RequestHandler = async ({ request }) => {
 	const concentration = await Concentration.query().findById(id);
 	if (concentration && concentration.UserId) {
 		User.knex(connection);
-		concentration.user = await User.query().findById(concentration.UserId)
+		concentration.user = await User.query().findById(concentration.UserId);
 	}
-	return json(concentration)
-}
+	return json(concentration);
+};
 
 export const PATCH: RequestHandler = async ({ request }) => {
 	const id = request.url.split('/').pop();
@@ -29,9 +29,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
 	)
 		throw error(400, 'Bad Request');
 	const { Elapsed, Moves, Status, Matched } = data;
-	await Concentration.query()
-		.findById(parseInt(id))
-		.patch({ Elapsed, Moves, Status, Matched });
+	await Concentration.query().findById(parseInt(id)).patch({ Elapsed, Moves, Status, Matched });
 	const concentraton = await Concentration.query().findById(parseInt(id));
 	return json(concentraton);
 };
