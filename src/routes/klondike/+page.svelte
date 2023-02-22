@@ -11,6 +11,7 @@
 	import type { ArgsKlondikeUpdate } from '../../lib/types/args-klondike-update.type';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import { displayElapsed } from '../../lib/display-elapsed';
+	import KlondikeDirections from './KlondikeDirections.svelte';
 
 	let aces: { [key: number]: Card[] } = {};
 	let tableau: { [key: number]: Card[] } = {};
@@ -197,11 +198,13 @@
 					card.facedown = false;
 					card.clickable = false;
 					card.draggable = true;
+					turns++;
 					waste.push(card);
 				}
 				setTimeout(() => {
 					flags.stock = true;
 					flags.waste = true;
+					checkStatus();
 				}, 25);
 			}, 150);
 		}
@@ -979,6 +982,8 @@
 <div class="scores-link">
 	<a href="/klondike/scores">See Top Scores</a>
 </div>
+
+<KlondikeDirections />
 
 <style>
 	div.klondike-container {

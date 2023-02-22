@@ -10,6 +10,7 @@
 	import type { Freecell } from '../../lib/types/free-cell.type';
 	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
 	import FreeCellCard from './FreeCellCard.svelte';
+	import FreeCellDirections from './FreeCellDirections.svelte';
 
 	let free: { [key: number]: Card[] } = {};
 	let aces: { [key: number]: Card[] } = {};
@@ -1224,6 +1225,8 @@
 <div class="scores-link">
 	<a href="/freecell/scores">See Top Scores</a>
 </div>
+
+<FreeCellDirections />
 
 <style>
 	div.free-cell-container {
