@@ -22,7 +22,8 @@
 		{ url: '/seabattle', name: 'Sea Battle' },
 		{ url: '/concentration', name: 'Concentration' },
 		{ url: '/klondike', name: 'Klondike' },
-		{ url: '/freecell', name: 'Free Cell' }
+		{ url: '/freecell', name: 'Free Cell' },
+		{ url: '/tengrand', name: 'Ten Grand' }
 	];
 
 	let session: UserSessionData = get(userSession);

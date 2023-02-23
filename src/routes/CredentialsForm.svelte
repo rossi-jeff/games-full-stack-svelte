@@ -5,14 +5,16 @@
 </script>
 
 <div class="credentials-form">
-	<div class="field">
-		<label for="user-name">User Name</label>
-		<input type="text" name="user-name" bind:value={credentials.UserName} />
-	</div>
-	<div class="field">
-		<label for="pass-word">PassWord</label>
-		<input type="password" name="pass-word" bind:value={credentials.PassWord} />
-	</div>
+	<form>
+		<div class="field">
+			<label for="user-name">User Name</label>
+			<input type="text" name="user-name" bind:value={credentials.UserName} />
+		</div>
+		<div class="field">
+			<label for="pass-word">PassWord</label>
+			<input type="password" name="pass-word" bind:value={credentials.PassWord} />
+		</div>
+	</form>
 </div>
 
 <style>
