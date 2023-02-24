@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { TenGrand } from '../../lib/types/ten-grand.type';
 	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
 	import TenGrandDirections from './TenGrandDirections.svelte';
 	import TenGrandTurnForm from './TenGrandTurnForm.svelte';
+	import TenGrandTurns from './TenGrandTurns.svelte';
 
 	let game: TenGrand = {};
 	const session: UserSessionData = get(userSession);
@@ -43,6 +45,12 @@
 		<TenGrandTurnForm {game} on:reloadGame={reloadGame} />
 	{:else}
 		<button on:click={createGame}>New Game</button>
+	{/if}
+	{#if game && game.Status === GameStatus.Won}
+		<button on:click={createGame}>New Game</button>
+	{/if}
+	{#if game.turns}
+		<TenGrandTurns turns={game.turns} />
 	{/if}
 </div>
 

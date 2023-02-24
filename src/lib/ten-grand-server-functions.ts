@@ -3,6 +3,7 @@ import TenGrandScore from './models/ten-grand-score';
 import TenGrandTurn from './models/ten-grand-turn';
 import { connection } from './connection';
 import TenGrand from './models/ten-grand';
+import { GameStatus } from './enum/game-status.enum';
 
 export const updateTurnScore = async (TurnId: number) => {
 	TenGrandScore.knex(connection);
@@ -27,5 +28,6 @@ export const updateGameScore = async (GameId: number) => {
 	for (const turn of results) {
 		Score += turn.Score ?? 0;
 	}
-	await TenGrand.query().findById(GameId).patch({ Score });
+	const Status = Score >= 10000 ? GameStatus.Won : GameStatus.Playing;
+	await TenGrand.query().findById(GameId).patch({ Score, Status });
 };

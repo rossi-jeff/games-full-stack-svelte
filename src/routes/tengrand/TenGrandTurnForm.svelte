@@ -7,6 +7,7 @@
 	import type { TenGrandTurn } from '../../lib/types/ten-grand-turn.type';
 	import type { TenGrand } from '../../lib/types/ten-grand.type';
 	import DieFace from './DieFace.svelte';
+	import TenGrandTurnDisplay from './TenGrandTurnDisplay.svelte';
 
 	export let game: TenGrand = {};
 
@@ -155,6 +156,7 @@
 				turn = await result.json();
 				flags.roll = true;
 				flags.score = true;
+				if (!rollDice.length) turn = {};
 				reloadGame();
 			}
 		} catch (error) {
@@ -166,6 +168,20 @@
 </script>
 
 <div class="ten-grand-turn-form">
+	<div class="game-score-header">
+		<div>
+			<strong>Turns</strong>
+			{game.turns ? game.turns.length : 0}
+		</div>
+		<div>
+			<strong>Status</strong>
+			{game.Status}
+		</div>
+		<div>
+			<strong>Total Score</strong>
+			{game.Score}
+		</div>
+	</div>
 	<div class="top-row">
 		<div class="roll-container">
 			<h3>Roll</h3>
@@ -212,11 +228,19 @@
 			<button class="mt-2 mx-2" on:click={roll}> Roll </button>
 		{/if}
 	</div>
+	{#if turn && turn.Id}
+		<div class="current-turn">
+			<TenGrandTurnDisplay {turn} />
+		</div>
+	{/if}
 </div>
 
 <style>
 	div.ten-grand-turn-form {
-		@apply p-4 bg-green-600 rounded;
+		@apply p-4 bg-green-600 rounded mb-2;
+	}
+	div.game-score-header {
+		@apply flex flex-wrap justify-between mb-2;
 	}
 	div.top-row {
 		@apply flex flex-wrap;
@@ -254,5 +278,8 @@
 	}
 	input {
 		@apply mr-2;
+	}
+	div.current-turn {
+		@apply bg-white rounded p-2 mt-2;
 	}
 </style>
