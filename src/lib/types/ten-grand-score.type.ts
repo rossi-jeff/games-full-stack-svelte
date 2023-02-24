@@ -1,4 +1,4 @@
-import { TenGrandCategory } from "../enum/ten-grand-category.enum";
+import type { TenGrandCategory } from "../enum/ten-grand-category.enum";
 
 export type TenGrandScore = {
     Id?: number;

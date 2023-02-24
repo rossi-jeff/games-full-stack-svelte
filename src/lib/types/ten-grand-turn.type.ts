@@ -1,4 +1,4 @@
-import { TenGrandScore } from "./ten-grand-score.type";
+import type { TenGrandScore } from "./ten-grand-score.type";
 
 export type TenGrandTurn = {
     Id?: number;

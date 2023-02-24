@@ -4,6 +4,7 @@
 	export let face: number = 1;
 	export let idx: number = 0;
 	export let draggable: boolean = false;
+	export let from: string;
 	let folder = '/dice';
 	const src = `${folder}/dice-${face}.svg`;
 	const alt = `Die ${face}`;
@@ -15,7 +16,7 @@
 	};
 </script>
 
-<div class="ten-grand-die" {draggable} id="{idx}-{face}" on:dragstart={dragStart}>
+<div class="ten-grand-die" {draggable} id="{from}-{idx}-{face}" on:dragstart={dragStart}>
 	<img {src} {alt} class="w-16 h-16" draggable="false" />
 </div>
 

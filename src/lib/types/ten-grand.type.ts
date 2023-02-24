@@ -1,5 +1,5 @@
 import type { GameStatus } from '../enum/game-status.enum';
-import { TenGrandTurn } from './ten-grand-turn.type';
+import type { TenGrandTurn } from './ten-grand-turn.type';
 import type { User } from './user.type';
 
 export type TenGrand = {

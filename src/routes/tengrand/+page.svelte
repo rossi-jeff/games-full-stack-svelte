@@ -5,6 +5,7 @@
 	import type { TenGrandOption } from '../../lib/types/ten-grand-option.type';
 	import DieFace from './DieFace.svelte';
 	import ScoreGrid from './ScoreGrid.svelte';
+	import type { TenGrand } from '../../lib/types/ten-grand.type';
 
 	let Dice: number[] = [];
 	let toScore: number[] = [];
@@ -13,9 +14,11 @@
 		scoreReady: false,
 		options: false
 	};
+	``;
 	let Options: TenGrandOption[] = [];
-	let selectedOption: number[] = [];
+	let selectedOptions: number[] = [];
 	let Scored: TenGrandOption[] = [];
+	let game: TenGrand = {};
 
 	const rollDice = async () => {
 		let Quantity = Dice.length || 6;
@@ -84,17 +87,39 @@
 		}
 	};
 
-	const drop = (event: any) => {
+	const dropScoring = (event: any) => {
 		event.preventDefault();
 		event.stopPropagation();
 		const data = event.dataTransfer.getData('text');
-		let [idx, face] = data.split('-');
+		let [from, idx, face] = data.split('-');
+		console.log({ from, idx, face });
+		if (from === 'scoring') return;
 		idx = parseInt(idx);
 		face = parseInt(face);
 		flags.rolled = false;
 		flags.scoreReady = false;
 		toScore.push(face);
 		Dice.splice(idx, 1);
+		setTimeout(() => {
+			flags.rolled = true;
+			flags.scoreReady = true;
+			getOptions();
+		}, 25);
+	};
+
+	const dropRoll = (event: any) => {
+		event.preventDefault();
+		event.stopPropagation();
+		const data = event.dataTransfer.getData('text');
+		let [from, idx, face] = data.split('-');
+		console.log({ from, idx, face });
+		if (from === 'roll') return;
+		idx = parseInt(idx);
+		face = parseInt(face);
+		flags.rolled = false;
+		flags.scoreReady = false;
+		Dice.push(face);
+		toScore.splice(idx, 1);
 		setTimeout(() => {
 			flags.rolled = true;
 			flags.scoreReady = true;
@@ -116,7 +141,7 @@
 			if (result.ok) {
 				const data = await result.json();
 				Options = data.Options;
-				selectedOption = [];
+				selectedOptions = [];
 				setTimeout(() => {
 					flags.options = true;
 				}, 25);
@@ -127,9 +152,9 @@
 	};
 
 	const scoreOption = () => {
-		if (!selectedOption.length) return;
+		if (!selectedOptions.length) return;
 		let crapOut = false;
-		for (const idx of selectedOption) {
+		for (const idx of selectedOptions) {
 			const option = Options[idx];
 			if (option.Category === TenGrandCategory.CrapOut) crapOut = true;
 			Scored.push(option);
@@ -158,18 +183,24 @@
 		on:dragover={dragOver}
 		on:dragenter={dragEnter}
 		on:dragleave={dragExit}
-		on:drop={drop}
+		on:drop={dropScoring}
 	>
 		{#if flags.scoreReady}
 			{#each toScore as face, idx}
-				<DieFace {face} {idx} draggable={false} />
+				<DieFace {face} {idx} draggable={true} from="score" on:dragStart={dragStart} />
 			{/each}
 		{/if}
 	</div>
-	<div class="ten-grand-dice dice-container">
+	<div
+		class="ten-grand-dice dice-container"
+		on:dragover={dragOver}
+		on:dragenter={dragEnter}
+		on:dragleave={dragExit}
+		on:drop={dropRoll}
+	>
 		{#if flags.rolled}
 			{#each Dice as face, idx}
-				<DieFace {face} {idx} draggable={true} on:dragStart={dragStart} />
+				<DieFace {face} {idx} draggable={true} from="roll" on:dragStart={dragStart} />
 			{/each}
 		{/if}
 	</div>
@@ -184,7 +215,7 @@
 							name="option"
 							id="option"
 							value={idx}
-							bind:group={selectedOption}
+							bind:group={selectedOptions}
 						/>
 					</div>
 					<div class="category">{option.Category}</div>
