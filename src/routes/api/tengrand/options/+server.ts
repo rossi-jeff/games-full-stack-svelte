@@ -4,7 +4,7 @@ import { getTenGrandOptions, sortByScore } from '../../../../lib/ten-grand-funct
 
 export const POST: RequestHandler = async ({ request }) => {
 	const data: ArgsTenGrandOptions = await request.json();
-	if (!data || !data.Dice || !data.Dice.length) throw error(400, 'Bad Request');
+	if (!data || !data.Dice) throw error(400, 'Bad Request');
 	const { Dice } = data;
 	const Options = getTenGrandOptions(Dice);
 	Options.sort(sortByScore);
