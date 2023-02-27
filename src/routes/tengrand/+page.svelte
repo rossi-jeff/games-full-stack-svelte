@@ -54,6 +54,10 @@
 	{/if}
 </div>
 
+<div class="scores-link">
+	<a href="/tengrand/scores">See Top Scores</a>
+</div>
+
 <TenGrandDirections />
 
 <style>
@@ -68,5 +72,8 @@
 	}
 	h2 {
 		@apply font-bold text-xl mb-2 mx-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>
