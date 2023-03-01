@@ -19,10 +19,10 @@
 
 <style>
 	div.layout-container {
-		@apply flex flex-col h-screen max-h-screen overflow-hidden;
+		@apply flex flex-col h-screen max-h-screen overflow-hidden bg-green-600;
 	}
 	div.content {
-		@apply flex-1 overflow-y-scroll;
+		@apply flex-1 overflow-y-scroll bg-green-600;
 	}
 	div.spacer {
 		@apply h-16;

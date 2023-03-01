@@ -82,7 +82,7 @@
 		@apply border border-black rounded px-1 py-1;
 	}
 	button {
-		@apply border border-black rounded px-1 py-1;
+		@apply border border-black rounded px-1 py-1 bg-white;
 	}
 	.Black {
 		@apply bg-black border-black text-white;

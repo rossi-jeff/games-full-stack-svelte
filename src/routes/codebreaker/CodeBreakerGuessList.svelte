@@ -30,7 +30,7 @@
 		@apply mb-4 mx-2;
 	}
 	div.code-breaker-guess {
-		@apply flex flex-wrap border border-b-gray-500 border-dashed py-1;
+		@apply flex flex-wrap border border-t-0 border-l-0 border-r-0 border-b-white border-dashed py-2 px-2;
 	}
 	div.colors {
 		@apply flex flex-wrap mr-8;

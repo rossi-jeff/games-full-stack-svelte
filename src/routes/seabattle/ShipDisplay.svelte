@@ -27,7 +27,7 @@
 
 <style>
 	div.ship {
-		@apply py-2 px-2 text-center mr-2 mb-2 border border-black rounded;
+		@apply py-2 px-2 text-center mr-2 mb-2 border border-black rounded bg-white;
 	}
 	div.ship-icon {
 		@apply flex justify-center;

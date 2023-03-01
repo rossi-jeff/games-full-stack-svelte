@@ -10,7 +10,7 @@
 
 <style>
 	div.hang-man-display {
-		@apply flex flex-wrap mx-2 my-4;
+		@apply flex flex-wrap mx-2 my-4 max-w-fit bg-white rounded py-2 px-4;
 	}
 	div.hang-man-display div {
 		@apply border border-b-black w-8 h-8 mr-2 text-center;

@@ -156,7 +156,7 @@
 
 <style>
 	button {
-		@apply border border-black rounded py-1 px-2 mr-2 mb-2;
+		@apply border border-black rounded py-1 px-2 mr-2 mb-2 bg-white;
 	}
 	button:hover {
 		@apply bg-blue-400;

@@ -159,6 +159,6 @@
 		@apply w-full text-left  bg-blue-300 border-blue-600 border rounded px-2 py-1;
 	}
 	div.yacht-directions-content {
-		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible border border-blue-500 rounded mx-2;
+		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible border border-blue-500 rounded mx-2 bg-white;
 	}
 </style>

@@ -45,15 +45,17 @@
 		@apply flex flex-wrap mx-2;
 	}
 	button {
-		@apply border border-black rounded py-1 px-2 mr-2 mb-2;
+		@apply border border-black rounded py-1 px-2 mr-2 mb-2 bg-white;
 	}
 	button:hover {
 		@apply bg-blue-400;
 	}
 	:global(.Correct) {
-		@apply bg-green-200 border-green-800;
+		background-color: lightgreen !important;
+		border: solid darkgreen !important;
 	}
 	:global(.Wrong) {
-		@apply bg-red-200 border-red-900;
+		background-color: lightcoral !important;
+		border: solid darkred !important;
 	}
 </style>

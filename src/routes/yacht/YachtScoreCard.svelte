@@ -23,7 +23,7 @@
 
 <style>
 	div.yacht-score-card {
-		@apply border border-black rounded p-2;
+		@apply border border-black rounded p-2 bg-white;
 	}
 	div.turn {
 		@apply flex flex-wrap py-1 border border-dashed border-b-gray-500;

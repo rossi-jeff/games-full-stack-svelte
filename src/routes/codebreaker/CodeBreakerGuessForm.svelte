@@ -84,7 +84,7 @@
 		@apply border border-black rounded px-1 py-1;
 	}
 	button {
-		@apply border border-black rounded px-1 py-1;
+		@apply border border-black rounded px-1 py-1 bg-white;
 	}
 	button:hover {
 		@apply bg-blue-400;

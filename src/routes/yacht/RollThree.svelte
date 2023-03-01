@@ -19,6 +19,6 @@
 		@apply font-bold text-lg mb-2;
 	}
 	div.roll-three {
-		@apply border border-black rounded p-2 mb-2;
+		@apply border border-black rounded p-2 mb-2 bg-white;
 	}
 </style>

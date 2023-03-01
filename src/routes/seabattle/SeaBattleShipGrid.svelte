@@ -87,7 +87,7 @@
 
 <style>
 	div.ship-grid {
-		@apply flex flex-col mb-4 mx-2;
+		@apply flex flex-col mb-4 mx-2 bg-white max-w-fit;
 	}
 	div.top-header {
 		@apply flex;
@@ -105,7 +105,7 @@
 		@apply h-10 w-10 border border-dotted border-gray-500 pt-1 text-center;
 	}
 	button {
-		@apply border border-black rounded py-1 px-2;
+		@apply border border-black rounded py-1 px-2 bg-white;
 	}
 	button:hover {
 		@apply bg-blue-400;

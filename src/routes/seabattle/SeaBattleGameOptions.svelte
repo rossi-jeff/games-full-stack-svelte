@@ -51,7 +51,7 @@
 
 <style>
 	div.sea-battle-game-options {
-		@apply mx-2;
+		@apply mx-2 rounded bg-white p-2;
 	}
 	div.sea-battle-game-options div {
 		@apply border-b-gray-500 border-dashed border py-1 mb-1;
