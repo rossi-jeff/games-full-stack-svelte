@@ -48,7 +48,7 @@
 
 <HangmanDrawing {wrong} bind:drawMan={drawHangMan} />
 
-<div class="mx-2 mb-2">
+<div class="mx-2 mb-2 bg-white rounded p-2">
 	<div class="user">
 		<strong>User</strong>
 		{game.user ? game.user.UserName : 'Anonymous'}
@@ -83,7 +83,7 @@
 		@apply mt-1;
 	}
 	div.letter-display {
-		@apply flex flex-wrap justify-between mx-2;
+		@apply flex flex-wrap justify-between mx-2 bg-white rounded p-2;
 	}
 	div.correct {
 		@apply border border-green-800 rounded-full px-1 bg-green-200 font-bold;

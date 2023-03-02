@@ -31,7 +31,7 @@
 	</a>
 </div>
 
-<div class="mx-2 mb-2">
+<div class="mx-2 mb-2 bg-white rounded p-2">
 	<div class="user">
 		<strong>User</strong>
 		{game.user ? game.user.UserName : 'Anonymous'}
