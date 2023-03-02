@@ -52,7 +52,7 @@
 
 <style>
 	div.content {
-		@apply mx-2 my-2;
+		@apply mx-2 my-2 bg-white rounded p-2;
 	}
 	h3 {
 		@apply font-bold text-lg mb-2;

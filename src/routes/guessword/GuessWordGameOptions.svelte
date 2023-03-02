@@ -43,7 +43,7 @@
 	}
 	select,
 	button {
-		@apply border border-black rounded px-2 py-1;
+		@apply border border-black rounded px-2 py-1 bg-white;
 	}
 	label {
 		@apply font-bold;

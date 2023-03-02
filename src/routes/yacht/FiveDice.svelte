@@ -50,7 +50,7 @@
 		@apply flex flex-wrap justify-between;
 	}
 	div.die {
-		@apply border border-black rounded p-2 text-center;
+		@apply border border-black rounded p-2 text-center bg-white;
 	}
 	div.five-dice {
 		@apply mb-2;

@@ -32,7 +32,7 @@
 	</a>
 </div>
 
-<div class="mx-2 mb-2">
+<div class="mx-2 mb-2 bg-white rounded p-2">
 	<div class="user">
 		<strong>User</strong>
 		{game.user ? game.user.UserName : 'Anonymous'}
@@ -50,7 +50,9 @@
 </div>
 
 {#if game.turns}
-	<TenGrandTurns turns={game.turns} />
+	<div class="mx-2">
+		<TenGrandTurns turns={game.turns} />
+	</div>
 {/if}
 
 <style>

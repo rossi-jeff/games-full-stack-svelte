@@ -31,7 +31,7 @@
 	</a>
 </div>
 
-<div class="mx-2 mb-2">
+<div class="mx-2 mb-2 bg-white rounded p-2">
 	<div class="user">
 		<strong>User</strong>
 		{game.user ? game.user.UserName : 'Anonymous'}
@@ -41,11 +41,13 @@
 		<strong>Score</strong>
 		{game.Total}
 	</div>
-
-	{#if game && game.turns && game.turns.length}
-		<YachtScoreCard turns={game.turns} total={game.Total ?? 0} />
-	{/if}
 </div>
+
+{#if game && game.turns && game.turns.length}
+	<div class="mx-2">
+		<YachtScoreCard turns={game.turns} total={game.Total || 0} />
+	</div>
+{/if}
 
 <style>
 	div.back-link a {

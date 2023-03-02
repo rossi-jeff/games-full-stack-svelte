@@ -77,7 +77,7 @@
 
 <style>
 	div.pagination-container {
-		@apply flex flex-wrap justify-between mx-2;
+		@apply flex flex-wrap justify-between mx-2 rounded bg-white px-2 pt-2;
 	}
 	div.pages-container {
 		@apply flex flex-wrap;

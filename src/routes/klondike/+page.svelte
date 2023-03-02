@@ -1025,4 +1025,7 @@
 	div.scores-link {
 		@apply mx-2 mt-4;
 	}
+	button:hover {
+		@apply bg-blue-400;
+	}
 </style>

@@ -101,7 +101,7 @@
 		@apply ml-2;
 	}
 	div.guess-word-directions-content {
-		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible border border-blue-500 rounded mx-2 p-2;
+		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible border border-blue-500 rounded mx-2 p-2 bg-white;
 	}
 	a {
 		@apply font-bold text-blue-600 no-underline;

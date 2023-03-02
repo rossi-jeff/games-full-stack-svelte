@@ -21,7 +21,7 @@
 
 <style>
 	div.ten-grand-turns {
-		@apply mt-4 p-2;
+		@apply mt-4 p-2 bg-white rounded;
 	}
 	div.ten-grand-turns-header {
 		@apply flex flex-wrap  bg-blue-200 font-bold px-2;
