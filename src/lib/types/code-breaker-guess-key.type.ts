@@ -1,9 +1,9 @@
 import type { Key } from '../enum/key.enum';
 
 export type CodeBreakerGuessKey = {
-	Id?: number;
-	CodeBreakerGuessId?: number;
+	id?: number;
+	code_breaker_guess_id?: number;
 	Key?: Key;
-	CreatedAt?: Date;
-	UpdatedAt?: Date;
+	created_at?: Date;
+	updated_at?: Date;
 };

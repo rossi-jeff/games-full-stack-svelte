@@ -1,9 +1,9 @@
 import type { Color } from '../enum/color.enum';
 
 export type CodeBreakerCode = {
-	Id?: number;
-	CodeBreakerId?: number;
+	id?: number;
+	code_breaker_id?: number;
 	Color?: Color;
-	CreatedAt?: Date;
-	UpdatedAt?: Date;
+	created_at?: Date;
+	updated_at?: Date;
 };

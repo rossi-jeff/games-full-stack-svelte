@@ -2,6 +2,7 @@
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { railsRoot } from '../../lib/constants';
 	import type { ArgsCodeBreakerCreate } from '../../lib/types/args-code-breaker-create.type';
 	import type { CodeBreaker } from '../../lib/types/code-breaker.type';
 	import CodeBreakerDirections from './CodeBreakerDirections.svelte';
@@ -20,7 +21,7 @@
 		available = Colors;
 		columns = Columns;
 		try {
-			const result = await fetch('/api/codebreaker', {
+			const result = await fetch(`${railsRoot}/api/code_breaker`, {
 				method: 'POST',
 				body: JSON.stringify({ Colors, Columns }),
 				headers: buildRequestHeaders(session)
@@ -37,13 +38,13 @@
 	const sendGuess = async (event: { detail: { selected: string[] } }) => {
 		const { selected: Colors } = event.detail;
 		const payload = {
-			Id: game.Id,
 			Colors
 		};
 		try {
-			const result = await fetch('/api/codebreaker/guess', {
+			const result = await fetch(`${railsRoot}/api/code_breaker/${game.id}/guess`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				const guess = await result.json();
@@ -59,11 +60,12 @@
 	};
 
 	const reloadGame = async () => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
-			const result = await fetch(`/api/codebreaker/${game.Id}`);
+			const result = await fetch(`${railsRoot}/api/code_breaker/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
+				console.log(game);
 			}
 		} catch (error) {
 			console.log(error);

@@ -7,7 +7,7 @@
 
 <div class="code-breaker-item">
 	<div class="eye">
-		<a href="/codebreaker/scores/{item.Id}">
+		<a href="/codebreaker/scores/{item.id}">
 			<Eye />
 		</a>
 	</div>

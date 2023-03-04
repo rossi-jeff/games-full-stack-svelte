@@ -4,14 +4,14 @@ import type { CodeBreakerGuess } from './code-breaker-guess.type';
 import type { User } from './user.type';
 
 export type CodeBreaker = {
-	Id?: number;
-	UserId?: number;
+	id?: number;
+	user_id?: number;
 	Status?: GameStatus;
 	Columns?: number;
 	Colors?: number;
 	Score?: number;
-	CreatedAt?: Date;
-	UpdatedAt?: Date;
+	created_at?: Date;
+	updated_at?: Date;
 
 	codes?: CodeBreakerCode[];
 	guesses?: CodeBreakerGuess[];

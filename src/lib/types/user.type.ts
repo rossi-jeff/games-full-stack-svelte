@@ -1,6 +1,6 @@
 export type User = {
-	Id?: number;
+	id?: number;
 	UserName?: string;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 };
