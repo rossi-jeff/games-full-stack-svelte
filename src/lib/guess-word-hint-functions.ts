@@ -1,3 +1,4 @@
+import { clone } from './clone';
 import type { stringOrNull } from './types/args-guess-word-hint.type';
 
 export const matchGreen = (word: string, green: stringOrNull[]) => {
@@ -15,9 +16,15 @@ export const matchBrown = (word: string, brown: string[][]) => {
 	return false;
 };
 
-export const matchGray = (word: string, gray: string[]) => {
+export const matchGray = (word: string, gray: string[], green: stringOrNull[]) => {
+	const grayCopy = clone(gray);
+	for (const letter of green) {
+		if (letter === null) continue;
+		const idx = grayCopy.indexOf(letter);
+		if (idx != -1) grayCopy.splice(idx, 1);
+	}
 	for (let i = 0; i < word.length; i++) {
-		if (gray.includes(word[i])) return true;
+		if (grayCopy.includes(word[i])) return true;
 	}
 	return false;
 };

@@ -1,7 +1,6 @@
-import { baseUrl } from './constants';
-
 export const getPaginatedResults = async (path: string, params: { [key: string]: number } = {}) => {
 	try {
+		const baseUrl = window.location.origin;
 		const url = new URL(path, baseUrl);
 		for (const key in params) {
 			url.searchParams.append(key, params[key].toString());

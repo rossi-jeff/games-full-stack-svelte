@@ -12,7 +12,7 @@
 		</div>
 		<div class="field">
 			<label for="pass-word">PassWord</label>
-			<input type="password" name="pass-word" bind:value={credentials.PassWord} />
+			<input type="password" name="pass-word" bind:value={credentials.password} />
 		</div>
 	</form>
 </div>
