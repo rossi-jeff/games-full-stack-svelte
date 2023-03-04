@@ -5,13 +5,14 @@
 	import CodeBreakerGuessList from '../../CodeBreakerGuessList.svelte';
 	import CodeBreaketSolution from '../../CodeBreaketSolution.svelte';
 	import ChevronLeft from '../../../ChevronLeft.svelte';
+	import { railsRoot } from '../../../../lib/constants';
 
 	let game: CodeBreaker = {};
 	let id = $page.params.id;
 
 	const getCodeBreaker = async () => {
 		try {
-			const result = await fetch(`/api/codebreaker/${id}`);
+			const result = await fetch(`${railsRoot}/api/code_breaker/${id}`);
 			if (result.ok) {
 				game = await result.json();
 			}
