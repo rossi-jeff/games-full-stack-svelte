@@ -7,10 +7,11 @@
 	import UserPlus from './UserPlus.svelte';
 	import LogIn from './LogIn.svelte';
 	import LogOut from './LogOut.svelte';
+	import { railsRoot } from '../lib/constants';
 
 	let credentials: ArgsUserCredential = {
 		UserName: '',
-		PassWord: ''
+		password: ''
 	};
 
 	type LinkType = { url: string; name: string };
@@ -65,14 +66,19 @@
 	};
 
 	const signIn = async () => {
-		if (!credentials.UserName || !credentials.UserName) return alert('Please enter fields');
+		if (!credentials.UserName || !credentials.password) return alert('Please enter fields');
 		try {
-			const result = await fetch('/api/user/signin', {
+			const result = await fetch(`${railsRoot}/api/auth/login`, {
 				method: 'POST',
-				body: JSON.stringify(credentials)
+				body: JSON.stringify(credentials),
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json'
+				}
 			});
 			if (result.ok) {
 				const { UserName, Token } = await result.json();
+				console.log({ UserName, Token });
 				userSession.set({
 					UserName,
 					Token,
@@ -80,7 +86,7 @@
 				});
 				session = get(userSession);
 				closeSignIn();
-				credentials.PassWord = '';
+				credentials.password = '';
 			}
 		} catch (error) {
 			console.log(error);
@@ -93,14 +99,20 @@
 	};
 
 	const register = async () => {
-		if (!credentials.UserName || !credentials.UserName) return alert('Please enter fields');
+		if (!credentials.UserName || !credentials.password) return alert('Please enter fields');
 		try {
-			const result = await fetch('/api/user/register', {
+			console.log({ credentials });
+			const result = await fetch(`${railsRoot}/api/auth/register`, {
 				method: 'POST',
-				body: JSON.stringify(credentials)
+				body: JSON.stringify(credentials),
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json'
+				}
 			});
 			if (result.ok) {
-				await result.json();
+				const user = await result.json();
+				console.log({ user });
 				closeRegister();
 				signIn();
 			}

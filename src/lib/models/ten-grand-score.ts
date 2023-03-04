@@ -5,7 +5,7 @@ import { TenGrandCategory } from '../enum/ten-grand-category.enum'
 class TenGrandScore extends Model {
     [x: string]: any; // eslint-disable-line
     TenGrandTurnId!: number;
-    Dice?: number;
+    Dice?: string;
     Category!: TenGrandCategory;
     Score!: number;
     CreatedAt!: string;

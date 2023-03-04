@@ -20,7 +20,7 @@
 
 <style>
 	div.guess-word-guess-list {
-		@apply mx-2 bg-white rounded p-2;
+		@apply mx-2 bg-white rounded p-2 mb-4;
 	}
 	div.guess-word-guess {
 		@apply flex flex-wrap mb-2;

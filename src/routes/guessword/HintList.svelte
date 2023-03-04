@@ -10,7 +10,7 @@
 
 <style>
 	div.hint-list {
-		@apply mx-2 flex flex-wrap;
+		@apply mx-2 flex flex-wrap max-h-32 overflow-y-auto;
 	}
 	div.hint {
 		@apply mr-4 mb-2;
