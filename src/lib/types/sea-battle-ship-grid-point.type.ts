@@ -1,8 +1,8 @@
 export type SeaBattleShipGridPoint = {
-	Id?: number;
+	id?: number;
 	SeaBattleShipId?: number;
 	Horizontal?: string;
 	Vertical?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 };

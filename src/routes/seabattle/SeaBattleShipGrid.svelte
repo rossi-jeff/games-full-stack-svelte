@@ -18,8 +18,8 @@
 		occupied = [];
 		let el, cellId;
 		for (const ship of ships) {
-			if (ship.gridPoints) {
-				for (const point of ship.gridPoints) {
+			if (ship.points) {
+				for (const point of ship.points) {
 					cellId = `s-${point.Horizontal}-${point.Vertical}`;
 					el = document.getElementById(cellId);
 					if (el) {
@@ -32,11 +32,10 @@
 	};
 
 	export const displayTurns = (turns: SeaBattleTurn[]) => {
-		let el, cellId, point;
+		let el, cellId;
 		for (const turn of turns) {
-			if (turn.gridPoint && turn.Target) {
-				point = turn.gridPoint;
-				cellId = `s-${point.Horizontal}-${point.Vertical}`;
+			if (turn.Horizontal && turn.Vertical && turn.Target) {
+				cellId = `s-${turn.Horizontal}-${turn.Vertical}`;
 				el = document.getElementById(cellId);
 				if (el) {
 					el.classList.add(turn.Target);

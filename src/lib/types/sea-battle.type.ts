@@ -4,13 +4,13 @@ import type { SeaBattleTurn } from './sea-battle-turn.type';
 import type { User } from './user.type';
 
 export type SeaBattle = {
-	Id?: number;
+	id?: number;
 	Axis?: number;
-	UserId?: number;
+	user_id?: number;
 	Status?: GameStatus;
 	Score?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 
 	ships?: SeaBattleShip[];
 	turns?: SeaBattleTurn[];
