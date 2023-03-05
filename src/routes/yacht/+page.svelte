@@ -15,6 +15,7 @@
 	import YachtDirections from './YachtDirections.svelte';
 	import YachtScoreCard from './YachtScoreCard.svelte';
 	import YachtScoreOptionList from './YachtScoreOptionList.svelte';
+	import { railsRoot } from '../../lib/constants';
 
 	let game: Yacht = {};
 	let turn: YachtTurn = {};
@@ -29,12 +30,14 @@
 
 	const createGame = async () => {
 		try {
-			const result = await fetch('/api/yacht', {
+			const result = await fetch(`${railsRoot}/api/yacht`, {
 				method: 'POST',
 				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
+				console.log(game);
+				
 			}
 		} catch (error) {
 			console.log(error);
@@ -42,15 +45,15 @@
 	};
 
 	const roll = async (Keep: number[] = []) => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		const payload: ArgsYachtRoll = {
-			YachtId: game.Id,
 			Keep
 		};
 		try {
-			const result = await fetch('/api/yacht/roll', {
+			const result = await fetch(`${railsRoot}/api/yacht/${game.id}/roll`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				const { Turn, Options } = await result.json();
@@ -64,17 +67,18 @@
 	};
 
 	const scoreTurn = async (event: any) => {
-		if (!turn.Id) return;
+		if (!turn.id || !game.id) return;
 		flags.scored = true;
 		const { Category } = event.detail;
 		const payload: ArgsYachtScore = {
-			TurnId: turn.Id,
+			TurnId: turn.id,
 			Category
 		};
 		try {
-			const result = await fetch('/api/yacht/score', {
+			const result = await fetch(`${railsRoot}/api/yacht/${game.id}/score`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				await result.json();
@@ -106,9 +110,9 @@
 	};
 
 	const reloadGame = async () => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
-			const result = await fetch(`/api/yacht/${game.Id}`);
+			const result = await fetch(`${railsRoot}/api/yacht/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
 			}
@@ -121,7 +125,7 @@
 <h2>Yacht</h2>
 
 <div class="yacht">
-	{#if game && (!game.Id || game.turns?.length === Object.values(YachtCategory).length)}
+	{#if game && (!game.id || game.turns?.length === Object.values(YachtCategory).length)}
 		<button on:click={createGame}>New Game</button>
 	{:else}
 		{#if turn && turn.RollOne}

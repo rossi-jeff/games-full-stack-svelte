@@ -2,11 +2,11 @@ import type { User } from './user.type';
 import type { YachtTurn } from './yacht-turn.type';
 
 export type Yacht = {
-	Id?: number;
+	id?: number;
 	UserId?: number;
 	Total?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 
 	turns?: YachtTurn[];
 	user?: User;
