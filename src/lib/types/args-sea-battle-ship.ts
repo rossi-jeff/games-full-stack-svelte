@@ -7,7 +7,6 @@ export type ArgsGridPoint = {
 };
 
 export type ArgsSeaBattleShip = {
-	Id: number;
 	Navy: Navy;
 	ShipType: ShipType;
 	Size: number;

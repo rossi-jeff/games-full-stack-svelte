@@ -4,15 +4,15 @@ import type { SeaBattleShipGridPoint } from './sea-battle-ship-grid-point.type';
 import type { SeaBattleShipHit } from './sea-battle-ship-hit.type';
 
 export type SeaBattleShip = {
-	Id?: number;
+	id?: number;
 	SeaBattleId?: number;
 	Type?: ShipType;
 	Navy?: Navy;
 	Size?: number;
 	Sunk?: boolean;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 
-	gridPoints?: SeaBattleShipGridPoint[];
+	points?: SeaBattleShipGridPoint[];
 	hits?: SeaBattleShipHit[];
 };

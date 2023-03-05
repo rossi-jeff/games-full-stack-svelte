@@ -14,8 +14,8 @@
 
 <div class="ship">
 	<div class="ship-icon">
-		{#if ship && ship.gridPoints}
-			{#each ship.gridPoints as point}
+		{#if ship && ship.points}
+			{#each ship.points as point}
 				<div class={isGridHit(point)}>
 					<span />
 				</div>

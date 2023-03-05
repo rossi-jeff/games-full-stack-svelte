@@ -37,11 +37,10 @@
 	};
 
 	export const displayTurns = (turns: SeaBattleTurn[]) => {
-		let el, cellId, point;
+		let el, cellId;
 		for (const turn of turns) {
-			if (turn.gridPoint && turn.Target) {
-				point = turn.gridPoint;
-				cellId = `t-${point.Horizontal}-${point.Vertical}`;
+			if (turn.Horizontal && turn.Vertical && turn.Target) {
+				cellId = `t-${turn.Horizontal}-${turn.Vertical}`;
 				el = document.getElementById(cellId);
 				if (el) {
 					el.classList.add(turn.Target);

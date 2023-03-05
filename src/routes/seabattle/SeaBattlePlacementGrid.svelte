@@ -131,8 +131,8 @@
 		occupied = [];
 		let el, cellId;
 		for (const ship of ships) {
-			if (ship.gridPoints) {
-				for (const point of ship.gridPoints) {
+			if (ship.points) {
+				for (const point of ship.points) {
 					cellId = `p-${point.Horizontal}-${point.Vertical}`;
 					el = document.getElementById(cellId);
 					if (el) {

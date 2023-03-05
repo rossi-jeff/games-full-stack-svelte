@@ -1,8 +1,8 @@
 export type SeaBattleTurnGridPoint = {
-	Id?: number;
+	id?: number;
 	SeaBattleTurnId?: number;
 	Horizontal?: string;
 	Vertical?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 };

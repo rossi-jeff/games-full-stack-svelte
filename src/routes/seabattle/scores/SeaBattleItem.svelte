@@ -7,7 +7,7 @@
 
 <div class="sea-battle-item">
 	<div class="eye">
-		<a href="/seabattle/scores/{item.Id}">
+		<a href="/seabattle/scores/{item.id}">
 			<Eye />
 		</a>
 	</div>

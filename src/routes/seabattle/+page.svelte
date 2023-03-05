@@ -9,6 +9,7 @@
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { railsRoot } from '../../lib/constants';
 	import type { ArgsSeaBattleFire } from '../../lib/types/args-sea-battle-fire.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
 	import SeaBattleDirections from './SeaBattleDirections.svelte';
@@ -37,13 +38,14 @@
 			for (let i = 0; i < ships[ship]; i++) shipsToPlace.push(ship);
 		}
 		try {
-			const result = await fetch('/api/seabattle', {
+			const result = await fetch(`${railsRoot}/api/sea_battle`, {
 				method: 'POST',
 				body: JSON.stringify({ Axis }),
 				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
+				console.log(game);
 			}
 		} catch (error) {
 			console.log(error);
@@ -51,19 +53,19 @@
 	};
 
 	const reloadGame = async () => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
-			const result = await fetch(`/api/seabattle/${game.Id}`);
+			const result = await fetch(`${railsRoot}/api/sea_battle/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
 				console.log(game);
 				if (game.ships) {
-					displayPlayerShips(game.ships.filter((s) => s.Navy === Navy.Player));
-					displayOpponentShips(game.ships.filter((s) => s.Navy === Navy.Opponent));
+					displayPlayerShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Player'));
+					displayOpponentShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Opponent'));
 				}
 				if (game.turns) {
-					displayPlayerTurns(game.turns.filter((t) => t.Navy === Navy.Player));
-					displayOpponentTurns(game.turns.filter((t) => t.Navy === Navy.Opponent));
+					displayPlayerTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Player'));
+					displayOpponentTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Opponent'));
 				}
 			}
 		} catch (error) {
@@ -99,9 +101,8 @@
 	type pointType = { h: string; v: number };
 
 	const createPlayerShip = async (shipType: ShipType, size: number, points: pointType[]) => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		const payload: ArgsSeaBattleShip = {
-			Id: game.Id,
 			ShipType: shipType,
 			Size: size,
 			Navy: Navy.Player
@@ -111,12 +112,14 @@
 			payload.Points.push({ Horizontal: point.h, Vertical: point.v });
 		}
 		try {
-			const result = await fetch('/api/seabattle/ship', {
+			const result = await fetch(`${railsRoot}/api/sea_battle/${game.id}/ship`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
-				await result.json();
+				const ship = await result.json();
+				console.log(ship);
 				reloadGame();
 				removeShipToPlace(shipType);
 			}
@@ -126,20 +129,21 @@
 	};
 
 	const createOpponentShip = async (shipType: ShipType, size: number) => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		const payload: ArgsSeaBattleShip = {
-			Id: game.Id,
 			ShipType: shipType,
 			Size: size,
 			Navy: Navy.Opponent
 		};
 		try {
-			const result = await fetch('/api/seabattle/ship', {
+			const result = await fetch(`${railsRoot}/api/sea_battle/${game.id}/ship`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
-				await result.json();
+				const ship = await result.json();
+				console.log(ship);
 				reloadGame();
 			}
 		} catch (error) {
@@ -155,34 +159,34 @@
 			flags.opponentFire = false;
 			setTimeout(() => {
 				if (game && game.ships)
-					displayPlayerShips(game.ships.filter((s) => s.Navy === Navy.Player));
+					displayPlayerShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Player'));
 				if (game && game.turns)
-					displayOpponentTurns(game.turns.filter((t) => t.Navy === Navy.Opponent));
+					displayOpponentTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Opponent'));
 			}, 100);
 		} else {
 			flags.playerFire = false;
 			setTimeout(() => {
 				if (game && game.turns)
-					displayPlayerTurns(game.turns.filter((t) => t.Navy === Navy.Player));
+					displayPlayerTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Player'));
 				if (game && game.ships)
-					displayOpponentShips(game.ships.filter((s) => s.Navy === Navy.Opponent));
+					displayOpponentShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Opponent'));
 			}, 100);
 		}
 	};
 
 	const playerTurn = async (event: any) => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		const { Horizontal, Vertical } = event.detail;
 		const payload: ArgsSeaBattleFire = {
-			Id: game.Id,
 			Navy: Navy.Player,
 			Horizontal,
 			Vertical
 		};
 		try {
-			const result = await fetch('/api/seabattle/fire', {
+			const result = await fetch(`${railsRoot}/api/sea_battle/${game.id}/fire`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				const turn = await result.json();
@@ -195,16 +199,16 @@
 		}
 	};
 
-	const opponentTurn = async (e) => {
-		if (!game.Id) return;
+	const opponentTurn = async () => {
+		if (!game.id) return;
 		const payload: ArgsSeaBattleFire = {
-			Id: game.Id,
 			Navy: Navy.Opponent
 		};
 		try {
-			const result = await fetch('/api/seabattle/fire', {
+			const result = await fetch(`${railsRoot}/api/sea_battle/${game.id}/fire`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				const turn = await result.json();

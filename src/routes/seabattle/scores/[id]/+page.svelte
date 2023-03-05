@@ -8,6 +8,7 @@
 	import { Navy } from '../../../../lib/enum/navy.enum';
 	import { onMount } from 'svelte';
 	import SeaBattleShipGrid from '../../SeaBattleShipGrid.svelte';
+	import { railsRoot } from '../../../../lib/constants';
 
 	let game: SeaBattle = {};
 	let id = $page.params.id;
@@ -19,7 +20,7 @@
 
 	const getSeaBattle = async () => {
 		try {
-			const result = await fetch(`/api/seabattle/${id}`);
+			const result = await fetch(`${railsRoot}/api/sea_battle/${id}`);
 			if (result.ok) {
 				game = await result.json();
 				if (game.ships) {
