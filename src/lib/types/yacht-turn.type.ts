@@ -1,13 +1,13 @@
-import type { YachtCategory } from '$lib/enum/yacht-category.enum';
+import type { YachtCategory } from '../enum/yacht-category.enum';
 
 export type YachtTurn = {
-	Id?: number;
-	YachtId?: number;
+	id?: number;
+	yacht_id?: number;
 	RollOne?: string;
 	RollTwo?: string;
 	RollThree?: string;
 	Category?: YachtCategory;
 	Score?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 };
