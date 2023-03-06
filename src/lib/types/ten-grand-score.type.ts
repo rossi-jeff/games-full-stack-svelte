@@ -1,11 +1,11 @@
 import type { TenGrandCategory } from "../enum/ten-grand-category.enum";
 
 export type TenGrandScore = {
-    Id?: number;
-    TenGrandTurnId?: number;
-    Dice?: number;
-    Category?: TenGrandCategory;
-    Score?: number;
-    CreatedAt?: string;
-    UpdatedAt?: string;
-}
+	id?: number;
+	TenGrandTurnId?: number;
+	Dice?: number;
+	Category?: TenGrandCategory;
+	Score?: number;
+	created_at?: Date;
+	updated_at?: Date;
+};
