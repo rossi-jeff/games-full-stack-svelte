@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { railsRoot } from '$lib/constants';
+	import type { FreeCell } from '$lib/types/free-cell.type';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
@@ -7,7 +9,6 @@
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { ArgsFreeCellUpdate } from '../../lib/types/args-freee-cell-update.type';
 	import type { FlagType } from '../../lib/types/flag.type';
-	import type { Freecell } from '../../lib/types/free-cell.type';
 	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
 	import FreeCellCard from './FreeCellCard.svelte';
 	import FreeCellDirections from './FreeCellDirections.svelte';
@@ -18,7 +19,7 @@
 
 	let deck: Deck;
 	let card: Card | undefined;
-	let game: Freecell = {};
+	let game: FreeCell = {};
 	const session: UserSessionData = get(userSession);
 
 	let flags: FlagType = {
@@ -67,7 +68,7 @@
 
 	const createGame = async () => {
 		try {
-			const result = await fetch('/api/freecell', {
+			const result = await fetch(`${railsRoot}/api/free_cell`, {
 				method: 'POST',
 				headers: buildRequestHeaders(session)
 			});
@@ -80,16 +81,17 @@
 	};
 
 	const updateGame = async (Status: GameStatus) => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
 			const payload: ArgsFreeCellUpdate = {
 				Moves: turns,
 				Elapsed: elapsed,
 				Status
 			};
-			const result = await fetch(`/api/freecell/${game.Id}`, {
+			const result = await fetch(`${railsRoot}/api/free_cell/${game.id}`, {
 				method: 'PATCH',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
@@ -129,7 +131,7 @@
 			build();
 		}
 		deck.shuffle();
-		if (game && game.Id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
+		if (game && game.id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
 		for (const key in flags) flags[key] = false;
 		let idx = 0;
 		while ((card = deck.draw())) {
