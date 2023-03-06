@@ -7,7 +7,7 @@
 
 <div class="guess-word-item">
 	<div class="eye">
-		<a href="/guessword/scores/{item.Id}">
+		<a href="/guessword/scores/{item.id}">
 			<Eye />
 		</a>
 	</div>

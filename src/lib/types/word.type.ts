@@ -1,7 +1,7 @@
 export type Word = {
-	Id?: number;
+	id?: number;
 	Word?: string;
 	Length?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 };

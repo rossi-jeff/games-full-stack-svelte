@@ -4,13 +4,13 @@ import type { User } from './user.type';
 import type { Word } from './word.type';
 
 export type GuessWord = {
-	Id?: number;
+	id?: number;
+	user_id?: number;
 	WordId?: number;
-	UserId?: number;
 	Status?: GameStatus;
 	Score?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 
 	word?: Word;
 	guesses?: GuessWordGuess[];

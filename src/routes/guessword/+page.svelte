@@ -3,6 +3,7 @@
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { railsRoot } from '../../lib/constants';
 	import { Rating } from '../../lib/enum/rating.enum';
 	import type { ArgsGuessWordGuess } from '../../lib/types/args-guess-word-guess';
 	import type { ArgsGuessWordHint } from '../../lib/types/args-guess-word-hint.type';
@@ -32,14 +33,16 @@
 
 	const getRandomWord = async () => {
 		try {
-			const result = await fetch('/api/word/random', {
+			const result = await fetch(`${railsRoot}/api/word/random`, {
 				method: 'POST',
-				body: JSON.stringify({ Length })
+				body: JSON.stringify({ Length }),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				word = await result.json();
 				if (word.Length) hintArgs.Length = word.Length;
-				if (word.Id) createGame(word.Id);
+				if (word.id) createGame(word.id);
+				console.log(word);
 			}
 		} catch (error) {
 			console.log(error);
@@ -56,7 +59,7 @@
 		hintArgs.Gray = [];
 		hintArgs.Green = [];
 		for (let i = 0; i < hintArgs.Length; i++) {
-			hintArgs.Green[i] = null;
+			hintArgs.Green[i] = '';
 			hintArgs.Brown[i] = [];
 		}
 		for (const guess of guesses) {
@@ -81,7 +84,7 @@
 
 	const createGame = async (WordId: number) => {
 		try {
-			const result = await fetch('/api/guessword', {
+			const result = await fetch(`${railsRoot}/api/guess_word`, {
 				method: 'POST',
 				body: JSON.stringify({ WordId }),
 				headers: buildRequestHeaders(session)
@@ -96,16 +99,16 @@
 
 	const sendGuess = async (event: { detail: { Guess: string } }) => {
 		const { Guess } = event.detail;
-		if (!game.Id || !word.Word) return;
+		if (!game.id || !word.Word) return;
 		const payload: ArgsGuessWordGuess = {
-			Id: game.Id,
 			Word: word.Word,
 			Guess
 		};
 		try {
-			const result = await fetch('/api/guessword/guess', {
+			const result = await fetch(`${railsRoot}/api/guess_word/${game.id}/guess`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				const guess = await result.json();
@@ -121,9 +124,10 @@
 	const getHints = async () => {
 		if (!flags.showHints) return;
 		try {
-			const result = await fetch('/api/guessword/hint', {
+			const result = await fetch(`${railsRoot}/api/guess_word/hint`, {
 				method: 'POST',
-				body: JSON.stringify(hintArgs)
+				body: JSON.stringify(hintArgs),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				hints = await result.json();
@@ -134,9 +138,9 @@
 	};
 
 	const reloadGame = async () => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
-			const result = await fetch(`/api/guessword/${game.Id}`);
+			const result = await fetch(`${railsRoot}/api/guess_word/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
 				console.log(game);
