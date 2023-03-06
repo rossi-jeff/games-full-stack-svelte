@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Card, Deck } from '$lib/deck';
 	import { onMount } from 'svelte';
-	import { zeroPad } from '../../lib/mysql-date-format';
 	import ConcentrationBack from './ConcentrationBack.svelte';
 	import ConcentrationCard from './ConcentrationCard.svelte';
 	import type { Concentration } from '../../lib/types/concentration.type';
@@ -12,6 +11,7 @@
 	import type { ArgsConcentrationUpdate } from '../../lib/types/args-concentration-update.type';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import ConcentrationDirections from './ConcentrationDirections.svelte';
+	import { railsRoot } from '../../lib/constants';
 
 	let deck: Deck;
 	let dealt: boolean = false;
@@ -43,7 +43,7 @@
 		elapsed = 0;
 		start = Date.now();
 		deck.shuffle();
-		if (game && game.Id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
+		if (game && game.id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
 		if (interval) clearInterval(interval);
 		if (timeout) clearTimeout(timeout);
 		clock();
@@ -53,7 +53,7 @@
 
 	const createGame = async () => {
 		try {
-			const result = await fetch('/api/concentration', {
+			const result = await fetch(`${railsRoot}/api/concentration`, {
 				method: 'POST',
 				headers: buildRequestHeaders(session)
 			});
@@ -67,7 +67,7 @@
 	};
 
 	const updateGame = async (Status: GameStatus) => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
 			const payload: ArgsConcentrationUpdate = {
 				Moves: turns,
@@ -75,9 +75,10 @@
 				Matched: matched,
 				Status
 			};
-			const result = await fetch(`/api/concentration/${game.Id}`, {
+			const result = await fetch(`${railsRoot}/api/concentration/${game.id}`, {
 				method: 'PATCH',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
