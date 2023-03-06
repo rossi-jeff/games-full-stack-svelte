@@ -2,13 +2,13 @@ import type { GameStatus } from '../enum/game-status.enum';
 import type { User } from './user.type';
 
 export type Klondike = {
-	Id?: number;
-	UserId?: number;
+	id?: number;
+	user_id?: number;
 	Status?: GameStatus;
 	Moves?: number;
 	Elapsed?: number;
-	CreatedAt?: Date;
-	UpdatedAt?: Date;
+	created_at?: Date;
+	updated_at?: Date;
 
 	user?: User;
 };
