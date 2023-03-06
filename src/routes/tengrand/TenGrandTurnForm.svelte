@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import { get } from 'svelte/store';
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { railsRoot } from '../../lib/constants';
 	import { TenGrandCategory } from '../../lib/enum/ten-grand-category.enum';
 	import type { ArgsTenGrandScore } from '../../lib/types/args-ten-grand-score.type';
 	import type { FlagType } from '../../lib/types/flag.type';
 	import type { TenGrandOption } from '../../lib/types/ten-grand-option.type';
 	import type { TenGrandTurn } from '../../lib/types/ten-grand-turn.type';
 	import type { TenGrand } from '../../lib/types/ten-grand.type';
+	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
 	import DieFace from './DieFace.svelte';
 	import TenGrandTurnDisplay from './TenGrandTurnDisplay.svelte';
 
@@ -20,13 +24,13 @@
 		options: false
 	};
 	let currentScore: ArgsTenGrandScore = {
-		GameId: game.Id ?? 0,
-		TurnId: turn.Id ?? 0,
+		TurnId: turn.id ?? 0,
 		Dice: [],
 		Options: []
 	};
 	let selectedOptions: number[] = [];
 	let Options: TenGrandOption[] = [];
+	const session: UserSessionData = get(userSession);
 
 	const dispatch = createEventDispatcher();
 
@@ -91,12 +95,14 @@
 	};
 
 	const roll = async () => {
+		if (!game.id) return
 		let Quantity = rollDice.length || 6;
 		try {
 			flags.roll = false;
-			const result = await fetch('/api/tengrand/roll', {
+			const result = await fetch(`${railsRoot}/api/ten_grand/${game.id}/roll`, {
 				method: 'POST',
-				body: JSON.stringify({ Quantity })
+				body: JSON.stringify({ Quantity }),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				rollDice = await result.json();
@@ -113,9 +119,10 @@
 		selectedOptions = [];
 		try {
 			flags.options = false;
-			const result = await fetch('/api/tengrand/options', {
+			const result = await fetch(`${railsRoot}/api/ten_grand/options`, {
 				method: 'POST',
-				body: JSON.stringify({ Dice })
+				body: JSON.stringify({ Dice }),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				const data = await result.json();
@@ -128,9 +135,8 @@
 	};
 
 	const scoreOption = async () => {
-		if (!selectedOptions.length) return;
-		currentScore.GameId = game.Id || 0;
-		currentScore.TurnId = turn.Id || 0;
+		if (!selectedOptions.length || !game.id) return;
+		currentScore.TurnId = turn.id || 0;
 		currentScore.Dice = [...scoreDice];
 		currentScore.Options = [];
 		let crapOut = false;
@@ -148,9 +154,10 @@
 		flags.score = false;
 		flags.options = false;
 		try {
-			const result = await fetch('/api/tengrand/score', {
+			const result = await fetch(`${railsRoot}/api/ten_grand/${game.id}/score`, {
 				method: 'POST',
-				body: JSON.stringify(currentScore)
+				body: JSON.stringify(currentScore),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				turn = await result.json();
@@ -228,7 +235,7 @@
 			<button class="mt-2 mx-2" on:click={roll}> Roll </button>
 		{/if}
 	</div>
-	{#if turn && turn.Id}
+	{#if turn && turn.id}
 		<div class="current-turn">
 			<TenGrandTurnDisplay {turn} />
 		</div>

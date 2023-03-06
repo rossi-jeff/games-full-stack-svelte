@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { railsRoot } from '../../lib/constants';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { TenGrand } from '../../lib/types/ten-grand.type';
 	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
@@ -13,7 +14,7 @@
 
 	const createGame = async () => {
 		try {
-			const result = await fetch('/api/tengrand', {
+			const result = await fetch(`${railsRoot}/api/ten_grand`, {
 				method: 'POST',
 				headers: buildRequestHeaders(session)
 			});
@@ -26,9 +27,9 @@
 	};
 
 	const reloadGame = async () => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
-			const result = await fetch(`/api/tengrand/${game.Id}`);
+			const result = await fetch(`${railsRoot}/api/ten_grand/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
 			}
@@ -41,7 +42,7 @@
 <h2>Ten Grand</h2>
 
 <div class="ten-grand">
-	{#if game && game.Id}
+	{#if game && game.id}
 		<TenGrandTurnForm {game} on:reloadGame={reloadGame} />
 	{:else}
 		<button on:click={createGame}>New Game</button>

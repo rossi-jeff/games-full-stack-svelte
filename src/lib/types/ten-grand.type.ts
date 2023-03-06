@@ -3,13 +3,13 @@ import type { TenGrandTurn } from './ten-grand-turn.type';
 import type { User } from './user.type';
 
 export type TenGrand = {
-    Id?: number;
-    UserId?: number;
-    Status?: GameStatus;
-    Score?: number;
-    CreatedAt?: string;
-    UpdatedAt?: string;
+	id?: number;
+	user_id?: number;
+	Status?: GameStatus;
+	Score?: number;
+	created_at?: Date;
+	updated_at?: Date;
 
-    user?: User;
-    turns?: TenGrandTurn[];
-}
+	user?: User;
+	turns?: TenGrandTurn[];
+};
