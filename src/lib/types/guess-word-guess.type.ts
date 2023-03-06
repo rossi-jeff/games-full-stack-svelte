@@ -1,11 +1,11 @@
 import type { GuessWordGuessRating } from './guess-word-guess-rating.type';
 
 export type GuessWordGuess = {
-	Id?: number;
+	id?: number;
 	GuessWordId?: number;
 	Guess?: string;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 
 	ratings?: GuessWordGuessRating[];
 };

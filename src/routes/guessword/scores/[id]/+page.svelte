@@ -4,13 +4,14 @@
 	import { onMount } from 'svelte';
 	import GuessWordGuessList from '../../GuessWordGuessList.svelte';
 	import ChevronLeft from '../../../ChevronLeft.svelte';
+	import { railsRoot } from '../../../../lib/constants';
 
 	let game: GuessWord = {};
 	let id = $page.params.id;
 
 	const getGuessWord = async () => {
 		try {
-			const result = await fetch(`/api/guessword/${id}`);
+			const result = await fetch(`${railsRoot}/api/guess_word/${id}`);
 			if (result.ok) {
 				game = await result.json();
 			}

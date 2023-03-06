@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import ChevronLeft from '../../../ChevronLeft.svelte';
 	import HangmanDrawing from '../../HangmanDrawing.svelte';
+	import { railsRoot } from '../../../../lib/constants';
 
 	let game: HangMan = {};
 	let id = $page.params.id;
@@ -22,7 +23,7 @@
 
 	const getHangMan = async () => {
 		try {
-			const result = await fetch(`/api/hangman/${id}`);
+			const result = await fetch(`${railsRoot}/api/hangman/${id}`);
 			if (result.ok) {
 				game = await result.json();
 				if (game.Wrong) wrong = game.Wrong.toUpperCase().split(',');
