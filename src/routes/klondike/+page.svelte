@@ -12,6 +12,7 @@
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import { displayElapsed } from '../../lib/display-elapsed';
 	import KlondikeDirections from './KlondikeDirections.svelte';
+	import { railsRoot } from '$lib/constants';
 
 	let aces: { [key: number]: Card[] } = {};
 	let tableau: { [key: number]: Card[] } = {};
@@ -113,7 +114,7 @@
 			build();
 		}
 		deck.shuffle();
-		if (game && game.Id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
+		if (game && game.id && game.Status != GameStatus.Won) updateGame(GameStatus.Lost);
 		for (const key in flags) flags[key] = false;
 		passes = 0;
 		for (let i = 0; i < 7; i++) {
@@ -153,7 +154,7 @@
 
 	const createGame = async () => {
 		try {
-			const result = await fetch('/api/klondike', {
+			const result = await fetch(`${railsRoot}/api/klondike`, {
 				method: 'POST',
 				headers: buildRequestHeaders(session)
 			});
@@ -167,16 +168,17 @@
 	};
 
 	const updateGame = async (Status: GameStatus) => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
 			const payload: ArgsKlondikeUpdate = {
 				Moves: turns,
 				Elapsed: elapsed,
 				Status
 			};
-			const result = await fetch(`/api/klondike/${game.Id}`, {
+			const result = await fetch(`${railsRoot}/api/klondike/${game.id}`, {
 				method: 'PATCH',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				game = await result.json();
