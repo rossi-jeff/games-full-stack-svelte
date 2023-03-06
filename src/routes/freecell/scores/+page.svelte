@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { defaultLimit, defaultOffset } from '../../../lib/constants';
 	import { getPaginatedResults } from '../../../lib/get-paginated-results';
-	import type { Freecell } from '../../../lib/types/free-cell.type';
+	import type { FreeCell } from '../../../lib/types/free-cell.type';
 	import Pagination from '../../Pagination.svelte';
 	import FreeCellItems from './FreeCellItems.svelte';
 
@@ -12,10 +12,10 @@
 		Offset,
 		Limit
 	};
-	const path = '/api/freecell';
+	const path = '/api/free_cell';
 	type PaginatedFreeCell =
 		| {
-				Items: Freecell[];
+				Items: FreeCell[];
 				Count: number;
 				Offset: number;
 				Limit: number;
@@ -27,14 +27,14 @@
 		const { current, limit } = event.detail;
 		params.Offset = (current - 1) * limit;
 		params.Limit = limit;
-		paginated = await getPaginatedResults(path, params);
+		paginated = await getPaginatedResults(path, params, true);
 		initPagination();
 	};
 
 	let initPagination = () => {};
 
 	onMount(async () => {
-		paginated = await getPaginatedResults(path, params);
+		paginated = await getPaginatedResults(path, params, true);
 		initPagination();
 	});
 </script>
