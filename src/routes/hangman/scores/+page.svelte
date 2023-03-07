@@ -12,7 +12,7 @@
 		Offset,
 		Limit
 	};
-	const path = '/api/hangman';
+	const path = '/api/hang_man';
 
 	type PaginatedHangMen =
 		| {
@@ -28,13 +28,13 @@
 		const { current, limit } = event.detail;
 		params.Offset = (current - 1) * limit;
 		params.Limit = limit;
-		paginated = await getPaginatedResults(path, params);
+		paginated = await getPaginatedResults(path, params, true);
 		initPagination();
 	};
 	let initPagination = () => {};
 
 	onMount(async () => {
-		paginated = await getPaginatedResults(path, params);
+		paginated = await getPaginatedResults(path, params, true);
 		initPagination();
 	});
 </script>

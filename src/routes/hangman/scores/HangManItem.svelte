@@ -7,7 +7,7 @@
 
 <div class="hang-man-item">
 	<div class="eye">
-		<a href="/hangman/scores/{item.Id}">
+		<a href="/hangman/scores/{item.id}">
 			<Eye />
 		</a>
 	</div>
