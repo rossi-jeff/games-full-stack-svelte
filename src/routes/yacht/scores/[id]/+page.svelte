@@ -4,13 +4,14 @@
 	import ChevronLeft from '../../../ChevronLeft.svelte';
 	import YachtScoreCard from '../../YachtScoreCard.svelte';
 	import { onMount } from 'svelte';
+	import { railsRoot } from '../../../../lib/constants';
 
 	let game: Yacht = {};
 	let id = $page.params.id;
 
 	const getYacht = async () => {
 		try {
-			const result = await fetch(`/api/yacht/${id}`);
+			const result = await fetch(`${railsRoot}/api/yacht/${id}`);
 			if (result.ok) {
 				game = await result.json();
 			}

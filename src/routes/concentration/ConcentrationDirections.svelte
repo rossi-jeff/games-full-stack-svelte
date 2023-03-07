@@ -59,7 +59,7 @@
 		@apply mt-4;
 	}
 	div.concentration-directions-content {
-		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible border border-blue-500 rounded mx-2 p-2;
+		@apply h-0 max-h-0 overflow-hidden py-2 transition duration-500 ease-in-out invisible border border-blue-500 rounded mx-2 p-2 bg-white;
 	}
 	h2 {
 		@apply text-lg font-bold mx-2 mb-2;

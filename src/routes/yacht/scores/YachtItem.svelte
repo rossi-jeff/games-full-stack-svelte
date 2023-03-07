@@ -7,7 +7,7 @@
 
 <div class="yacht-item">
 	<div class="eye">
-		<a href="/yacht/scores/{item.Id}">
+		<a href="/yacht/scores/{item.id}">
 			<Eye />
 		</a>
 	</div>

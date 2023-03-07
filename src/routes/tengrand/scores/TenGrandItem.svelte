@@ -7,7 +7,7 @@
 
 <div class="ten-grand-item">
 	<div class="eye">
-		<a href="/tengrand/scores/{item.Id}">
+		<a href="/tengrand/scores/{item.id}">
 			<Eye />
 		</a>
 	</div>

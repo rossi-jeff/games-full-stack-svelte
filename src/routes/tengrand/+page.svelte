@@ -42,12 +42,9 @@
 <h2>Ten Grand</h2>
 
 <div class="ten-grand">
-	{#if game && game.id}
+	{#if game && game.id && game.Status == 'Playing'}
 		<TenGrandTurnForm {game} on:reloadGame={reloadGame} />
 	{:else}
-		<button on:click={createGame}>New Game</button>
-	{/if}
-	{#if game && game.Status === GameStatus.Won}
 		<button on:click={createGame}>New Game</button>
 	{/if}
 	{#if game.turns}
