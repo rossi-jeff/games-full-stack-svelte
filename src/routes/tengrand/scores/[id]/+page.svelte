@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { railsRoot } from '../../../../lib/constants';
 	import type { TenGrand } from '../../../../lib/types/ten-grand.type';
 	import ChevronLeft from '../../../ChevronLeft.svelte';
 	import TenGrandTurns from '../../TenGrandTurns.svelte';
@@ -11,7 +12,7 @@
 	const getTenGrand = async () => {
 		if (!id) return;
 		try {
-			const result = await fetch(`/api/tengrand/${id}`);
+			const result = await fetch(`${railsRoot}/api/ten_grand/${id}`);
 			if (result.ok) {
 				game = await result.json();
 			}

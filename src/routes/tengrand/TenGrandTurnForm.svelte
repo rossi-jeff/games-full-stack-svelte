@@ -229,7 +229,7 @@
 						<div class="score">{option.Score}</div>
 					</div>
 				{/each}
-				<button class="mt-2 mx-2" on:click={scoreOption}> Score </button>
+				<button class="mt-2 mx-2" on:click={scoreOption} disabled={selectedOptions.length == 0}> Score </button>
 			</div>
 		{:else}
 			<button class="mt-2 mx-2" on:click={roll}> Roll </button>
