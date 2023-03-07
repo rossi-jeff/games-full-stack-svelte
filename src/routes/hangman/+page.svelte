@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { clone } from '$lib/clone';
+	import { railsRoot } from '$lib/constants';
 	import type { HangMan } from '$lib/types/hang-man-type';
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
 	import { get } from 'svelte/store';
@@ -20,15 +21,16 @@
 
 	const getRandomWord = async () => {
 		try {
-			const result = await fetch('/api/word/random', {
+			const result = await fetch(`${railsRoot}/api/word/random`, {
 				method: 'POST',
-				body: JSON.stringify({ Min, Max })
+				body: JSON.stringify({ Min, Max }),
+				headers: buildRequestHeaders(session)
 			});
-			console.log(result);
 			if (result.ok) {
 				word = await result.json();
-				if (word.Id) createGame(word.Id);
+				if (word.id) createGame(word.id);
 				if (word.Length) newDisplay(word.Length);
+				console.log(word)
 			}
 		} catch (error) {
 			console.log(error);
@@ -61,7 +63,7 @@
 
 	const createGame = async (WordId: number) => {
 		try {
-			const result = await fetch('/api/hangman', {
+			const result = await fetch(`${railsRoot}/api/hang_man`, {
 				method: 'POST',
 				body: JSON.stringify({ WordId }),
 				headers: buildRequestHeaders(session)
@@ -75,17 +77,17 @@
 	};
 
 	const guess = async (event: any) => {
-		if (!game.Id || !word.Word) return;
+		if (!game.id || !word.Word) return;
 		const { Letter } = event.detail;
 		const payload = {
-			Id: game.Id,
 			Word: word.Word,
 			Letter
 		};
 		try {
-			const result = await fetch('/api/hangman/guess', {
+			const result = await fetch(`${railsRoot}/api/hang_man/${game.id}/guess`, {
 				method: 'POST',
-				body: JSON.stringify(payload)
+				body: JSON.stringify(payload),
+				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
 				const { Found } = await result.json();
@@ -120,9 +122,9 @@
 	};
 
 	const reloadGame = async () => {
-		if (!game.Id) return;
+		if (!game.id) return;
 		try {
-			const result = await fetch(`/api/hangman/${game.Id}`);
+			const result = await fetch(`${railsRoot}/api/hang_man/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
 				if (game.Status === GameStatus.Won) {

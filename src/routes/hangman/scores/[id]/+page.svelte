@@ -23,7 +23,7 @@
 
 	const getHangMan = async () => {
 		try {
-			const result = await fetch(`${railsRoot}/api/hangman/${id}`);
+			const result = await fetch(`${railsRoot}/api/hang_man/${id}`);
 			if (result.ok) {
 				game = await result.json();
 				if (game.Wrong) wrong = game.Wrong.toUpperCase().split(',');

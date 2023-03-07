@@ -3,15 +3,15 @@ import type { User } from './user.type';
 import type { Word } from './word.type';
 
 export type HangMan = {
-	Id?: number;
+	id?: number;
+	user_id?: number;
 	WordId?: number;
-	UserId?: number;
 	Correct?: string;
 	Wrong?: string;
 	Status?: GameStatus;
 	Score?: number;
-	CreatedAt?: string;
-	UpdatedAt?: string;
+	created_at?: Date;
+	updated_at?: Date;
 
 	word?: Word;
 	user?: User;
