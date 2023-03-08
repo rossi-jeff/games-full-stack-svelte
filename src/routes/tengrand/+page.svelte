@@ -1,15 +1,18 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { railsRoot } from '../../lib/constants';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
 	import type { TenGrand } from '../../lib/types/ten-grand.type';
 	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
+	import InProgressTenGrands from './InProgressTenGrands.svelte';
 	import TenGrandDirections from './TenGrandDirections.svelte';
 	import TenGrandTurnForm from './TenGrandTurnForm.svelte';
 	import TenGrandTurns from './TenGrandTurns.svelte';
 
 	let game: TenGrand = {};
+	let inProgress: TenGrand[] = []
 	const session: UserSessionData = get(userSession);
 
 	const createGame = async () => {
@@ -37,6 +40,31 @@
 			console.log(error);
 		}
 	};
+
+	const loadInProgress = async () => {
+		if (!session.Token) return;
+		try {
+			const result = await fetch(`${railsRoot}/api/ten_grand/progress`, {
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				inProgress = await result.json();
+				console.log(inProgress);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const continueGame = (event: any) => {
+		if (!event.detail.id) return;
+		game.id = event.detail.id;
+		reloadGame();
+	};
+
+	onMount(() => {
+		loadInProgress();
+	});
 </script>
 
 <h2>Ten Grand</h2>
@@ -51,6 +79,10 @@
 		<TenGrandTurns turns={game.turns} />
 	{/if}
 </div>
+
+{#if inProgress && inProgress.length && game && game.Status !== 'Playing'}
+	<InProgressTenGrands {inProgress} on:continueGame={continueGame} />
+{/if}
 
 <div class="scores-link">
 	<a href="/tengrand/scores">See Top Scores</a>

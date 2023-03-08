@@ -1,3 +1,4 @@
+
 <script lang="ts">
 	import { YachtCategory } from '$lib/enum/yacht-category.enum';
 	import type { ArgsYachtRoll } from '$lib/types/args-yacht-roll.type';
@@ -16,8 +17,11 @@
 	import YachtScoreCard from './YachtScoreCard.svelte';
 	import YachtScoreOptionList from './YachtScoreOptionList.svelte';
 	import { railsRoot } from '../../lib/constants';
+	import { onMount } from 'svelte';
+	import InProgessYachts from './InProgessYachts.svelte';
 
 	let game: Yacht = {};
+	let inProgress: Yacht[] = []
 	let turn: YachtTurn = {};
 	let options: YachtScoreOption[] = [];
 	let flags: FlagType = {
@@ -120,6 +124,31 @@
 			console.log(error);
 		}
 	};
+
+	const loadInProgress = async () => {
+		if (!session.Token) return;
+		try {
+			const result = await fetch(`${railsRoot}/api/yacht/progress`, {
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				inProgress = await result.json();
+				console.log(inProgress);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const continueGame = (event: any) => {
+		if (!event.detail.id) return;
+		game.id = event.detail.id;
+		reloadGame();
+	};
+
+	onMount(() => {
+		loadInProgress();
+	});
 </script>
 
 <h2>Yacht</h2>
@@ -151,6 +180,10 @@
 		<YachtScoreCard turns={game.turns} total={game.Total ?? 0} />
 	{/if}
 </div>
+
+{#if inProgress && inProgress.length && (!game.turns || game.turns.length >= 12)}
+	<InProgessYachts {inProgress} on:continueGame={continueGame} />
+{/if}
 
 <div class="scores-link">
 	<a href="/yacht/scores">See Top Scores</a>

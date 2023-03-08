@@ -5,6 +5,7 @@ export type Yacht = {
 	id?: number;
 	user_id?: number;
 	Total?: number;
+	NumTurns?: number;
 	created_at?: Date;
 	updated_at?: Date;
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { TenGrandTurn } from '../../lib/types/ten-grand-turn.type';
+	import SmallDieFace from './scores/SmallDieFace.svelte';
 
 	export let turn: TenGrandTurn = {};
 </script>
@@ -10,7 +11,13 @@
 			{#each turn.scores as score}
 				<div class="ten-grand-score" id="score-{score.Id}">
 					<div class="category">{score.Category}</div>
-					<div class="dice">{score.Dice}</div>
+					<div class="dice">
+						{#if score.Dice}
+							{#each score.Dice.split(',') as face}
+								<SmallDieFace face={parseInt(face)} />
+							{/each}
+						{/if}
+					</div>
 					<div class="score">{score.Score}</div>
 				</div>
 			{/each}
@@ -38,7 +45,7 @@
 		@apply w-36;
 	}
 	div.dice {
-		@apply w-24 text-center;
+		@apply w-36 text-center;
 	}
 	div.score {
 		@apply w-24 text-right;
