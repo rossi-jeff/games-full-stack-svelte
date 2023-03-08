@@ -7,11 +7,13 @@
 	import type { SeaBattleShip } from '$lib/types/sea-batte-ship.type';
 	import type { SeaBattle } from '$lib/types/sea-battle.type';
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { railsRoot } from '../../lib/constants';
 	import type { ArgsSeaBattleFire } from '../../lib/types/args-sea-battle-fire.type';
 	import type { SeaBattleTurn } from '../../lib/types/sea-battle-turn.type';
+	import InProgressSeaBattles from './InProgressSeaBattles.svelte';
 	import SeaBattleDirections from './SeaBattleDirections.svelte';
 	import SeaBattleGameOptions from './SeaBattleGameOptions.svelte';
 	import SeaBattlePlacementGrid from './SeaBattlePlacementGrid.svelte';
@@ -19,6 +21,7 @@
 	import SeaBattleTargetGrid from './SeaBattleTargetGrid.svelte';
 
 	let game: SeaBattle = {};
+	let inProgress: SeaBattle[] = [];
 	let shipsToPlace: string[] = [];
 	let flags: FlagType = {
 		newGame: false,
@@ -59,14 +62,16 @@
 			if (result.ok) {
 				game = await result.json();
 				console.log(game);
-				if (game.ships) {
-					displayPlayerShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Player'));
-					displayOpponentShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Opponent'));
-				}
-				if (game.turns) {
-					displayPlayerTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Player'));
-					displayOpponentTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Opponent'));
-				}
+				setTimeout(() => {
+					if (game.ships) {
+						displayPlayerShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Player'));
+						displayOpponentShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Opponent'));
+					}
+					if (game.turns) {
+						displayPlayerTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Player'));
+						displayOpponentTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Opponent'));
+					}
+				}, 100);
 			}
 		} catch (error) {
 			console.log(error);
@@ -220,6 +225,33 @@
 			console.log(error);
 		}
 	};
+
+	const loadInProgress = async () => {
+		if (!session.Token) return;
+		try {
+			const result = await fetch(`${railsRoot}/api/sea_battle/progress`, {
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				inProgress = await result.json();
+				console.log(inProgress);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const continueGame = (event: any) => {
+		if (!event.detail.id) return;
+		game.id = event.detail.id;
+		modeIdx = modes.indexOf(Navy.Player);
+		mode = modes[modeIdx];
+		reloadGame();
+	};
+
+	onMount(() => {
+		loadInProgress();
+	});
 </script>
 
 <h2>Sea Battle</h2>
@@ -256,6 +288,10 @@
 	{/if}
 {:else}
 	<SeaBattleGameOptions on:newGame={newGame} flag={flags.newGame} />
+{/if}
+
+{#if inProgress && inProgress.length && game && game.Status !== 'Playing'}
+	<InProgressSeaBattles {inProgress} on:continueGame={continueGame} />
 {/if}
 
 <div class="scores-link">
