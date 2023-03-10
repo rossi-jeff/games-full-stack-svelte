@@ -140,10 +140,20 @@
 		}
 	};
 
-	const continueGame = (event: any) => {
+	const continueGame = async (event: any) => {
 		if (!event.detail.id) return;
 		game.id = event.detail.id;
-		reloadGame();
+		try {
+			const result = await fetch(`${railsRoot}/api/yacht/${game.id}`);
+			if (result.ok) {
+				game = await result.json();
+				if (game.turns  && game.turns[game.turns.length - 1].Category == null) {
+					turn = game.turns[game.turns.length - 1]
+				}
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	onMount(() => {
