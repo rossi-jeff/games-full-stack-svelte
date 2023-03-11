@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Word } from '$lib/types/word.type';
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { railsRoot } from '../../lib/constants';
@@ -15,9 +16,11 @@
 	import GuessWordGuessForm from './GuessWordGuessForm.svelte';
 	import GuessWordGuessList from './GuessWordGuessList.svelte';
 	import HintList from './HintList.svelte';
+	import InProgressGuessWords from './InProgressGuessWords.svelte';
 
 	let word: Word = {};
 	let game: GuessWord = {};
+	let inProgress: GuessWord[] = [];
 	let Length: number = 5;
 	let hintArgs: ArgsGuessWordHint = {
 		Length,
@@ -99,6 +102,7 @@
 
 	const sendGuess = async (event: { detail: { Guess: string } }) => {
 		const { Guess } = event.detail;
+		console.log({ game, word });
 		if (!game.id || !word.Word) return;
 		const payload: ArgsGuessWordGuess = {
 			Word: word.Word,
@@ -144,13 +148,42 @@
 			if (result.ok) {
 				game = await result.json();
 				console.log(game);
+				if (game.word) word = game.word
+				if (word.Length) hintArgs.Length = word.Length;
 				if (game && game.guesses) buildHintArgs(game.guesses);
+				if (game.word && game.word.Length) Length = game.word.Length;
+				if (game.Status != 'Playing') loadInProgress()
 				getHints();
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	const loadInProgress = async () => {
+		if (!session.Token) return;
+		try {
+			const result = await fetch(`${railsRoot}/api/guess_word/progress`, {
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				inProgress = await result.json();
+				console.log(inProgress);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const continueGame = (event: any) => {
+		if (!event.detail.id) return;
+		game.id = event.detail.id;
+		reloadGame();
+	};
+
+	onMount(() => {
+		loadInProgress();
+	});
 </script>
 
 <h2>Guess Word</h2>
@@ -177,6 +210,10 @@
 
 {#if game && game.Status !== 'Playing'}
 	<GuessWordGameOptions on:newGame={newGame} />
+{/if}
+
+{#if inProgress && inProgress.length && game && game.Status !== 'Playing'}
+	<InProgressGuessWords {inProgress} on:continueGame={continueGame} />
 {/if}
 
 <div class="scores-link">

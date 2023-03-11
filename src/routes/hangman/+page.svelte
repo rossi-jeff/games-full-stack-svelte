@@ -3,6 +3,7 @@
 	import { railsRoot } from '$lib/constants';
 	import type { HangMan } from '$lib/types/hang-man-type';
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
@@ -12,9 +13,11 @@
 	import HangmanDrawing from './HangmanDrawing.svelte';
 	import HangManGameOptions from './HangManGameOptions.svelte';
 	import HangManLetterButtons from './HangManLetterButtons.svelte';
+	import InProgressHangMen from './InProgressHangMen.svelte';
 
 	let word: Word = {};
 	let game: HangMan = {};
+	let inProgress: HangMan[] = []
 	let Min = 4;
 	let Max = 12;
 	const session: UserSessionData = get(userSession);
@@ -131,11 +134,66 @@
 					clearButtons();
 					clearParts();
 				}
+				if (game.Status != 'Playing') loadInProgress()
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	const loadInProgress = async () => {
+		if (!session.Token) return
+		try {
+			const result = await fetch(`${railsRoot}/api/hang_man/progress`, {
+				headers: buildRequestHeaders(session)
+			})
+			if (result.ok) {
+				inProgress = await result.json()
+				console.log(inProgress);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	const continueGame = async (event: any) => {
+		if (!event.detail.id) return
+		game.id = event.detail.id
+		try {
+			const result = await fetch(`${railsRoot}/api/hang_man/${game.id}`);
+			if (result.ok) {
+				game = await result.json();
+				if (game.word) word = game.word
+				if (word.Length) {
+					display = [];
+					wrong = game.Wrong ? game.Wrong.split(',') : [];
+					correct = game.Correct ? game.Correct.split(',') : []
+					clearButtons();
+					clearParts();
+					for (let i = 0; i < word.Length; i++) display.push('');
+					setTimeout(() => {
+						correct = clone(correct);
+						wrong = clone(wrong);
+						for (const Letter of wrong) {
+							toggleButton(Letter,'Wrong');
+							updateDisplay(Letter);
+						}
+						for (const Letter of correct) {
+							toggleButton(Letter,'Correct');
+							updateDisplay(Letter);
+						}
+						drawHangMan();
+					}, 100);
+				}
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	onMount(() =>  {
+		loadInProgress()
+	})
 </script>
 
 <h2>Hang Man</h2>
@@ -153,6 +211,10 @@
 
 {#if game && game.Status !== 'Playing'}
 	<HangManGameOptions {Min} {Max} on:newGame={newGame} />
+{/if}
+
+{#if inProgress && inProgress.length && game && game.Status !== 'Playing'}
+	<InProgressHangMen {inProgress} on:continueGame={continueGame} />
 {/if}
 
 <div class="scores-link">

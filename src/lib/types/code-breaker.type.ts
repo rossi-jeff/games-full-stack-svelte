@@ -9,6 +9,7 @@ export type CodeBreaker = {
 	Status?: GameStatus;
 	Columns?: number;
 	Colors?: number;
+	Available?: string;
 	Score?: number;
 	created_at?: Date;
 	updated_at?: Date;

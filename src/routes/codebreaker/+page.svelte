@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { railsRoot } from '../../lib/constants';
+	import { Color } from '../../lib/enum/color.enum';
 	import type { ArgsCodeBreakerCreate } from '../../lib/types/args-code-breaker-create.type';
 	import type { CodeBreaker } from '../../lib/types/code-breaker.type';
 	import CodeBreakerDirections from './CodeBreakerDirections.svelte';
@@ -10,11 +12,13 @@
 	import CodeBreakerGuessForm from './CodeBreakerGuessForm.svelte';
 	import CodeBreakerGuessList from './CodeBreakerGuessList.svelte';
 	import CodeBreaketSolution from './CodeBreaketSolution.svelte';
+	import InProgressCodeBreakers from './InProgressCodeBreakers.svelte';
 
 	let game: CodeBreaker = {};
 	let available: string[] = [];
 	let columns: number = 4;
 	const session: UserSessionData = get(userSession);
+	let inProgress: CodeBreaker[] = []
 
 	const startGame = async (event: { detail: ArgsCodeBreakerCreate }) => {
 		const { Colors, Columns } = event.detail;
@@ -65,12 +69,39 @@
 			const result = await fetch(`${railsRoot}/api/code_breaker/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
-				console.log(game);
+				if (game.Columns) columns = game.Columns
+				available = game.Available ? game.Available.split(',') : Object.values(Color);
+				if (game.Status != 'Playing') loadInProgress()
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	};
+
+	const loadInProgress = async () => {
+		if (!session.Token) return
+		try {
+			const result = await fetch(`${railsRoot}/api/code_breaker/progress`, {
+				headers: buildRequestHeaders(session)
+			})
+			if (result.ok) {
+				inProgress = await result.json()
+				console.log(inProgress);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	const continueGame = (event: any) => {
+		if (!event.detail.id) return
+		game.id = event.detail.id
+		reloadGame()
+	}
+
+	onMount(() =>  {
+		loadInProgress()
+	})
 </script>
 
 <h2>Code Breaker</h2>
@@ -89,6 +120,10 @@
 
 {#if game && game.Status === 'Playing'}
 	<CodeBreakerGuessForm {available} {columns} on:sendGuess={sendGuess} />
+{/if}
+
+{#if inProgress && inProgress.length && game && game.Status !== 'Playing'}
+	<InProgressCodeBreakers {inProgress} on:continueGame={continueGame} />
 {/if}
 
 <div class="scores-link">

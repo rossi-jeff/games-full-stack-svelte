@@ -1,8 +1,11 @@
 <div class="content">
 	<h3>Welcome Visitor</h3>
 	<div>
-		The pages of this site are a collection of games written in typescript. They have a MySQL
-		backend and most calculations are performed on the server.
+		The pages of this site are a collection of games written in typescript. They have <a
+			href="https://rubyonrails.org/">Ruby on Rails</a
+		>
+		backend and a <a href="https://www.mysql.com/">MySQL</a> database and most calculations are performed
+		on the server.
 	</div>
 	<div>
 		The site itself was constructed using the following tools and resources:
@@ -44,10 +47,11 @@
 		<ul>
 			<li>proof of concept for user management</li>
 			<li>scores will show a username rather than anonymous</li>
+			<li>you may continue some in progress games</li>
 		</ul>
 		No contact information is collected.
 	</div>
-	<div>The source code for the games site is available upon request.</div>
+	<div>The source code for the games site and the backend are available upon request.</div>
 </div>
 
 <style>
