@@ -1,9 +1,7 @@
 <div class="content">
 	<h3>Welcome Visitor</h3>
 	<div>
-		The pages of this site are a collection of games written in typescript. They have <a
-			href="https://rubyonrails.org/">Ruby on Rails</a
-		>
+		The pages of this site are a collection of games written in typescript. They have <a href="https://nestjs.com/">NestJS</a>
 		backend and a <a href="https://www.mysql.com/">MySQL</a> database and most calculations are performed
 		on the server.
 	</div>
