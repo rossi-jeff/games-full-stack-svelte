@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Free Cell Scores</title>
+</svelte:head>
+
 <h2>Free Cell Scores</h2>
 
 {#if paginated && paginated.Items}

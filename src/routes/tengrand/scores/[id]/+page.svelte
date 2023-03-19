@@ -26,6 +26,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Ten Grand Score</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/tengrand/scores">
 		<ChevronLeft />

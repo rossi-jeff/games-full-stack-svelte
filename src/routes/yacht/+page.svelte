@@ -161,6 +161,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Yacht Game</title>
+</svelte:head>
+
 <h2>Yacht</h2>
 
 <div class="yacht">

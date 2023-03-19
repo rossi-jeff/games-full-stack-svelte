@@ -25,6 +25,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Yacht Score</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/yacht/scores">
 		<ChevronLeft />

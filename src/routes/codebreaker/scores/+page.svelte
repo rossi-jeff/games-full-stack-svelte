@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Code Breaker Scores</title>
+</svelte:head>
+
 <h2>Code Breaker Scores</h2>
 
 {#if paginated && paginated.Items}

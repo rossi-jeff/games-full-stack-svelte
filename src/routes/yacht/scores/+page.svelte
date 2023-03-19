@@ -38,6 +38,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Yacht Scores</title>
+</svelte:head>
+
 <h2>Yacht Scores</h2>
 
 {#if paginated && paginated.Items}

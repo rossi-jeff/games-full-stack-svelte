@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Sea Battle Scores</title>
+</svelte:head>
+
 <h2>Sea Battle Scores</h2>
 
 {#if paginated && paginated.Items}

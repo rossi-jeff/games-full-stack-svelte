@@ -26,6 +26,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Code Breaker Score</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/codebreaker/scores">
 		<ChevronLeft />

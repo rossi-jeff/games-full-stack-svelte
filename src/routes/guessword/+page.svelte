@@ -186,6 +186,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Guess Word Game</title>
+</svelte:head>
+
 <h2>Guess Word</h2>
 
 {#if game && game.guesses && game.guesses.length}

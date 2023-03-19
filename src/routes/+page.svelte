@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>Games by Jeff Rossi</title>
+</svelte:head>
+
 <div class="content">
 	<h3>Welcome Visitor</h3>
 	<div>

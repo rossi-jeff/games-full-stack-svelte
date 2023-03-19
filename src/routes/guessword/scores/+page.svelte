@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Guess Word Scores</title>
+</svelte:head>
+
 <h2>Guess Word Scores</h2>
 
 {#if paginated && paginated.Items}
