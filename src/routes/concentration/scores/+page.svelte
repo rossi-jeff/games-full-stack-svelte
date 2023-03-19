@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Concentration Scores</title>
+</svelte:head>
+
 <h2>Concentration Scores</h2>
 
 {#if paginated && paginated.Items}

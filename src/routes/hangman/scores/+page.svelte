@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Hang Man Scores</title>
+</svelte:head>
+
 <h2>Hang Man Scores</h2>
 
 {#if paginated && paginated.Items}

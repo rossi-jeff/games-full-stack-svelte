@@ -38,6 +38,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Ten Grand Scores</title>
+</svelte:head>
+
 <h2>Ten Grand Scores</h2>
 
 {#if paginated && paginated.Items}

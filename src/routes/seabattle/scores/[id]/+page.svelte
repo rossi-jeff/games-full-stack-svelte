@@ -42,6 +42,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Sea Battle Score</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/seabattle/scores">
 		<ChevronLeft />

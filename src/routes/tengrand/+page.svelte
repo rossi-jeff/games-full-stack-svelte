@@ -67,6 +67,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Ten Grand Game</title>
+</svelte:head>
+
 <h2>Ten Grand</h2>
 
 <div class="ten-grand">

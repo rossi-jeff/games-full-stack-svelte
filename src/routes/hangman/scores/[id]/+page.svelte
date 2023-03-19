@@ -40,6 +40,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Hang Man Score</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/hangman/scores">
 		<ChevronLeft />

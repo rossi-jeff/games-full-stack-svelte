@@ -196,6 +196,10 @@
 	})
 </script>
 
+<svelte:head>
+	<title>Hang Man Game</title>
+</svelte:head>
+
 <h2>Hang Man</h2>
 
 <HangmanDrawing {wrong} bind:drawMan={drawHangMan} bind:clearParts />

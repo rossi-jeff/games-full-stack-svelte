@@ -25,6 +25,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Guess Word Score</title>
+</svelte:head>
+
 <div class="back-link">
 	<a href="/guessword/scores">
 		<ChevronLeft />

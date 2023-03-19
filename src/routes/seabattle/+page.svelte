@@ -254,6 +254,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Sea Battle Game</title>
+</svelte:head>
+
 <h2>Sea Battle</h2>
 
 {#if game && game.Status === 'Playing'}

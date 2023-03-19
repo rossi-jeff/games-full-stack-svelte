@@ -778,6 +778,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Klondike Game</title>
+</svelte:head>
+
 <div class="klondike-container">
 	{#if flags.newGame}
 		<button on:click={deal} class="mb-2">New Deal</button>

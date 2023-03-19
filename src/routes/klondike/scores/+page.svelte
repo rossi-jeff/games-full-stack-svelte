@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Klondike Scores</title>
+</svelte:head>
+
 <h2>Klondike Scores</h2>
 
 {#if paginated && paginated.Items}

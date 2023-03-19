@@ -975,6 +975,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Free Cell Game</title>
+</svelte:head>
+
 <div class="free-cell-container">
 	<button on:click={deal} class="mb-2 ml-2">New Deal</button>
 	{#if flags.autoComplete}

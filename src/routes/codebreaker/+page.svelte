@@ -104,6 +104,10 @@
 	})
 </script>
 
+<svelte:head>
+	<title>Code Breaker Game</title>
+</svelte:head>
+
 <h2>Code Breaker</h2>
 
 {#if game && game.guesses && game.guesses.length > 0}

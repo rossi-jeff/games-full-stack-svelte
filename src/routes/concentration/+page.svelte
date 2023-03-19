@@ -182,6 +182,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Concentration Game</title>
+</svelte:head>
+
 <div class="concentration-container">
 	{#if dealt && deck.cards}
 		<div class="cards-wrap">
