@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { FlagType } from '$lib/types/flag.type';
+	import { onMount } from 'svelte';
 	import { Deck, type Card } from '../../lib/deck';
 	import PokerCard from './PokerCard.svelte';
+	import PokerSquaresDirections from './PokerSquaresDirections.svelte';
 
 	const rows = ['A', 'B', 'C', 'D', 'E'];
 	const columns = [0, 1, 2, 3, 4];
@@ -30,6 +32,7 @@
 	let stock: Card[] = [];
 	let current: Card | undefined;
 	let deck: Deck = new Deck();
+	let playing: boolean = false;
 	const flags: FlagType = {
 		stock: true,
 		waste: true,
@@ -39,9 +42,8 @@
 	const deal = () => {
 		deck = new Deck();
 		deck.shuffle();
-		preload();
 		stock = [];
-		while (deck.cards.length) {
+		while (stock.length < 25) {
 			const card = deck.draw();
 			if (card) {
 				card.clickable = true;
@@ -57,6 +59,7 @@
 		}
 		current = undefined;
 		updateScores();
+		playing = true;
 	};
 
 	const preload = () => {
@@ -82,6 +85,7 @@
 			flags.waste = false;
 			card.facedown = false;
 			card.clickable = false;
+			card.draggable = true;
 			current = card;
 			setTimeout(() => {
 				flags.stock = true;
@@ -94,8 +98,11 @@
 		if (!current) return;
 		let selected = grid[options.row][options.column];
 		if (selected) return;
+		if (current) current.draggable = false;
 		grid[options.row][options.column] = current;
 		current = undefined;
+		flags.grid = false;
+		flags.waste = false;
 		setTimeout(() => {
 			flags.grid = true;
 			flags.waste = true;
@@ -128,6 +135,7 @@
 			total += scores.column[column];
 		}
 		scores.total = total;
+		if (stock.length == 0) playing = false;
 	};
 
 	const scoreHand = (hand: Card[]) => {
@@ -190,13 +198,75 @@
 		if (idx == -1) return false;
 		return idx != values.lastIndexOf(2);
 	};
+
+	const dragStart = (event: any) => {
+		event.preventDefault();
+		if (event.target) event.dataTransfer.setData('text', event.target.id);
+		else if (event.detail) event.detail.dataTransfer.setData('text', event.detail.target.id);
+	};
+
+	const dragOver = (event: any) => {
+		event.preventDefault();
+	};
+
+	const dragEnter = (event: any) => {
+		let { target } = event;
+		if (target) {
+			while (!target.classList.contains('card-container')) target = target.parentElement;
+			target.classList.add('over');
+			setTimeout(() => {
+				target.classList.remove('over');
+			}, 500);
+		}
+	};
+
+	const drop = (event: any) => {
+		event.preventDefault();
+		event.stopPropagation();
+		const data = event.dataTransfer.getData('text');
+		const [from, _] = data.split('_');
+		if (from != 'waste') return;
+		let to = '';
+		let { target } = event;
+		if (target) {
+			while (!target.classList.contains('card-container')) target = target.parentElement;
+			to = target.id;
+		}
+		if (to) {
+			let [row, column] = to.split('_');
+			const gridPoint = grid[row][parseInt(column)];
+			if (gridPoint) return;
+			if (current) current.draggable = false;
+			grid[row][parseInt(column)] = current;
+			current = undefined;
+			flags.grid = false;
+			flags.waste = false;
+			setTimeout(() => {
+				flags.grid = true;
+				flags.waste = true;
+				updateScores();
+			}, 25);
+		}
+	};
+
+	onMount(() => {
+		deck = new Deck();
+		preload();
+	});
 </script>
 
+<svelte:head>
+	<title>Poker Squares Game</title>
+</svelte:head>
+
 <div class="poker-squares">
-	<button on:click={deal}>Deal</button>
 	<div class="flex flex-wrap">
-		<div class="w-32 pt-6">
+		<div class="w-64 pt-6">
+			{#if !playing}
+				<button on:click={deal} class="mb-4">Deal</button>
+			{/if}
 			<!-- left column-->
+
 			<div class="card-container mb-4" id="stock">
 				{#if flags.stock}
 					{#each stock as card}
@@ -207,9 +277,13 @@
 			<div class="card-container mb-4" id="waste">
 				{#if flags.waste}
 					{#if current}
-						<PokerCard card={current} level={0} from="waste" />
+						<PokerCard card={current} level={0} from="waste" on:dragStart={dragStart} />
 					{/if}
 				{/if}
+			</div>
+			<div>
+				<strong>Total</strong>
+				{scores.total}
 			</div>
 			<div class="mb-4">
 				<label for="row" class="font-bold block">Row</label>
@@ -243,7 +317,13 @@
 					<div class="flex flex-wrap mb-4">
 						<div class="row-label">{row}</div>
 						{#each columns as column}
-							<div class="card-container mr-4" id="{row}_{column}">
+							<div
+								class="card-container mr-4"
+								id="{row}_{column}"
+								on:dragover={dragOver}
+								on:dragenter={dragEnter}
+								on:drop={drop}
+							>
 								{#if grid && grid[row] && grid[row][column] && grid[row][column] != undefined}
 									<PokerCard card={grid[row][column]} level={0} from="grid" />
 								{/if}
@@ -259,17 +339,14 @@
 					{/each}
 				</div>
 			{/if}
-			<div>
-				<strong>Total</strong>
-				{scores.total}
-			</div>
 		</div>
 	</div>
+	<PokerSquaresDirections />
 </div>
 
 <style>
 	div.poker-squares {
-		@apply mx-2 p-4 h-screen bg-green-600 rounded;
+		@apply mx-2 p-4 h-screen bg-green-600 rounded block mb-4;
 	}
 	div.card-container {
 		@apply w-28 h-36 p-0 border border-dashed border-yellow-300 rounded text-center relative;
@@ -281,5 +358,11 @@
 	div.row-label,
 	div.row-sum {
 		@apply h-36 w-4 font-bold pt-16;
+	}
+	:global(div.over) {
+		@apply border-red-500;
+	}
+	button {
+		@apply bg-white border border-black rounded py-1 px-2;
 	}
 </style>

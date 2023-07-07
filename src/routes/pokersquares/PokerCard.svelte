@@ -13,6 +13,11 @@
 		dispatch('cardClicked', { card, from, level });
 	};
 
+	const dragStart = (event: any) => {
+		if (!card || !card.draggable) return;
+		dispatch('dragStart', event);
+	};
+
 	const setTop = () => {
 		if (!card) return;
 		const top = level * 1.5 + 0.5;
@@ -20,17 +25,28 @@
 		if (div) div.style.top = `${top}rem`;
 	};
 
+	const cursorClasses = () => {
+		if (!card) return;
+		const el = document.getElementById(`${from}_${card.id}`);
+		if (el) {
+			if (card.clickable) el.classList.add('clickable');
+			if (card.draggable) el.classList.add('draggable');
+		}
+	};
+
 	onMount(() => {
 		setTop();
+		cursorClasses();
 	});
 </script>
 
 <div
 	class="poker-card-wrapper"
 	id="{from}_{card ? card.id : ''}"
-	draggable="false"
+	draggable={card && card.draggable}
 	on:click={cardClicked}
 	on:keydown={cardClicked}
+	on:dragstart={dragStart}
 >
 	{#if card && card.facedown}
 		<img
@@ -39,7 +55,6 @@
 			class="card-back"
 			draggable="false"
 			id="back_{card.id}"
-			style="cursor: pointer;"
 		/>
 	{:else if card}
 		<img
@@ -59,5 +74,11 @@
 	img.card-back,
 	img.card-face {
 		@apply w-24 h-32;
+	}
+	:global(div.clickable) {
+		@apply cursor-pointer;
+	}
+	:global(div.draggable) {
+		@apply cursor-move;
 	}
 </style>
