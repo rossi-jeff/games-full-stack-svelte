@@ -4,9 +4,16 @@
 	import { Deck, type Card } from '../../lib/deck';
 	import PokerCard from './PokerCard.svelte';
 	import PokerSquaresDirections from './PokerSquaresDirections.svelte';
+	import { railsRoot } from '$lib/constants';
+	import { buildRequestHeaders } from '$lib/build-request-headers';
+	import { userSession, type UserSessionData } from '$lib/user-session.writable';
+	import { get } from 'svelte/store';
+	import type { PokerSquare } from '$lib/types/poker-square.type';
+	import { GameStatus } from '$lib/enum/game-status.enum';
 
 	const rows = ['A', 'B', 'C', 'D', 'E'];
 	const columns = [0, 1, 2, 3, 4];
+	const session: UserSessionData = get(userSession);
 	let options = {
 		row: rows[0],
 		column: columns[0]
@@ -38,6 +45,7 @@
 		waste: true,
 		grid: true
 	};
+	let game: PokerSquare = {};
 
 	const deal = () => {
 		deck = new Deck();
@@ -59,6 +67,7 @@
 		}
 		current = undefined;
 		updateScores();
+		createGame();
 		playing = true;
 	};
 
@@ -74,6 +83,35 @@
 			images[idx] = new Image();
 			images[idx].src = card.src;
 			idx++;
+		}
+	};
+
+	const createGame = async () => {
+		try {
+			const result = await fetch(`${railsRoot}/api/poker_square`, {
+				method: 'POST',
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				game = await result.json();
+				console.log(game);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const updateGame = async (Score: number, Status: GameStatus = GameStatus.Won) => {
+		if (!game.id) return;
+		const result = await fetch(`${railsRoot}/api/poker_square/${game.id}`, {
+			method: 'PATCH',
+			body: JSON.stringify({ Score, Status }),
+			headers: buildRequestHeaders(session)
+		});
+		if (result.ok) {
+			game = await result.json();
+			playing = false;
+			console.log(game);
 		}
 	};
 
@@ -135,7 +173,9 @@
 			total += scores.column[column];
 		}
 		scores.total = total;
-		if (stock.length == 0) playing = false;
+		if (stock.length == 0) {
+			updateGame(total);
+		}
 	};
 
 	const scoreHand = (hand: Card[]) => {
@@ -341,6 +381,11 @@
 			{/if}
 		</div>
 	</div>
+
+	<div class="scores-link">
+		<a href="/pokersquares/scores">See Top Scores</a>
+	</div>
+
 	<PokerSquaresDirections />
 </div>
 
@@ -364,5 +409,8 @@
 	}
 	button {
 		@apply bg-white border border-black rounded py-1 px-2;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
 	}
 </style>
