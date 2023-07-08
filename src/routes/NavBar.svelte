@@ -24,7 +24,8 @@
 		{ url: '/concentration', name: 'Concentration' },
 		{ url: '/klondike', name: 'Klondike' },
 		{ url: '/freecell', name: 'Free Cell' },
-		{ url: '/tengrand', name: 'Ten Grand' }
+		{ url: '/tengrand', name: 'Ten Grand' },
+		{ url: '/pokersquares', name: 'Poker Squares' }
 	];
 
 	let session: UserSessionData = get(userSession);
@@ -197,7 +198,7 @@
 		@apply text-white underline;
 	}
 	div.modal-overlay {
-		@apply fixed hidden inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full;
+		@apply fixed hidden inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-30;
 	}
 	div.dialog-header {
 		@apply border bg-blue-800 border-blue-900 text-white rounded p-2;
@@ -221,10 +222,10 @@
 		@apply bg-gray-400;
 	}
 	div#sign-in-dialog {
-		@apply hidden mx-auto relative w-96 bg-white p-4 rounded top-24;
+		@apply hidden mx-auto relative w-96 bg-white p-4 rounded top-24 z-40;
 	}
 	div#register-dialog {
-		@apply hidden mx-auto relative w-96 bg-white p-4 rounded top-24;
+		@apply hidden mx-auto relative w-96 bg-white p-4 rounded top-24 z-40;
 	}
 	:global(div.nav-bar a.active) {
 		@apply bg-blue-900 rounded text-white;
