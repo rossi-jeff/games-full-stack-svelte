@@ -4,6 +4,7 @@
 	import type { PokerSquare } from '$lib/types/poker-square.type';
 	import { onMount } from 'svelte';
 	import Pagination from '../../Pagination.svelte';
+	import PokerSquaresItems from './PokerSquaresItems.svelte';
 
 	let Limit = defaultLimit;
 	let Offset = defaultOffset;
@@ -44,7 +45,7 @@
 <h2>Poker Squares Scores</h2>
 
 {#if paginated && paginated.Items}
-	<div>{JSON.stringify(paginated.Items)}</div>
+	<PokerSquaresItems items={paginated.Items} />
 {/if}
 
 {#if paginated}
