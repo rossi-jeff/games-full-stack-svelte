@@ -9,7 +9,6 @@
 	const dispatch = createEventDispatcher();
 
 	const cardClicked = () => {
-		console.log('cardClicked', card.clickable);
 		if (!card.clickable) return;
 		dispatch('cardClicked', { card, from, level });
 	};

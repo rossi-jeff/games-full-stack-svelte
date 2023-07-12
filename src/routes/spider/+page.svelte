@@ -18,6 +18,7 @@
 		stock: true
 	};
 	let timeout: ReturnType<typeof setTimeout> | undefined;
+	let moves = 0;
 
 	const setup = () => {
 		flags.aces = false;
@@ -79,6 +80,7 @@
 				card.draggable = true;
 			}
 		}
+		moves = 0;
 		setTimeout(() => {
 			flags.tableau = true;
 			flags.stock = true;
@@ -135,9 +137,10 @@
 		const [_2, idxT] = to.split('-');
 		const toMove: Card[] = [];
 		let card: Card | undefined;
-		if (tableau[parseInt(idxF)].length) {
+		let Tableau = { ...tableau };
+		if (Tableau[parseInt(idxF)].length) {
 			let found = false;
-			while (!found && tableau[parseInt(idxF)].length) {
+			while (!found && Tableau[parseInt(idxF)].length) {
 				card = tableau[parseInt(idxF)].pop();
 				if (card) {
 					toMove.push(card);
@@ -148,9 +151,11 @@
 		if (toMove.length) {
 			while (toMove.length) {
 				card = toMove.pop();
-				if (card) tableau[parseInt(idxT)].push(card);
+				if (card) Tableau[parseInt(idxT)].push(card);
 			}
 		}
+		tableau = Tableau;
+		moves++;
 		adjustDraggable();
 	};
 
@@ -183,15 +188,16 @@
 	const adjustDraggable = () => {
 		let current: Card | undefined, previous: Card | undefined;
 		flags.tableau = false;
+		let Tableau = { ...tableau };
 		for (let t = 0; t < count.tableau; t++) {
-			if (tableau[t].length) {
-				for (const card of tableau[t]) card.draggable = false;
-				previous = tableau[t][tableau[t].length - 1];
+			if (Tableau[t].length) {
+				for (const card of Tableau[t]) card.draggable = false;
+				previous = Tableau[t][Tableau[t].length - 1];
 				previous.draggable = true;
 				previous.facedown = false;
-				if (tableau[t].length > 1) {
-					for (let i = tableau[t].length - 2; i >= 0; i--) {
-						current = tableau[t][i];
+				if (Tableau[t].length > 1) {
+					for (let i = Tableau[t].length - 2; i >= 0; i--) {
+						current = Tableau[t][i];
 						if (current.suit != previous.suit) break;
 						if (deck.faces.indexOf(current.face) != deck.faces.indexOf(previous.face) + 1) break;
 						current.draggable = true;
@@ -200,6 +206,7 @@
 				}
 			}
 		}
+		tableau = Tableau;
 		moveCompleteSuits();
 		setTimeout(() => {
 			flags.tableau = true;
@@ -211,36 +218,42 @@
 		flags.tableau = false;
 		let current: Card | undefined, previous: Card | undefined, counter: number;
 		let toMove: Card[] = [];
+		let Tableau = { ...tableau };
+		let Aces = { ...aces };
 		for (let t = 0; t < count.tableau; t++) {
-			if (tableau[t].length >= 13) {
-				previous = tableau[t][tableau[t].length - 1];
+			if (Tableau[t].length >= 13) {
+				previous = Tableau[t][Tableau[t].length - 1];
 				counter = 1;
 				toMove = [];
 				if (previous.face == 'ace') {
-					for (let i = tableau[t].length - 2; i >= 0; i--) {
-						current = tableau[t][i];
+					for (let i = Tableau[t].length - 2; i >= 0; i--) {
+						current = Tableau[t][i];
 						if (current.suit != previous.suit) break;
 						if (deck.faces.indexOf(current.face) != deck.faces.indexOf(previous.face) + 1) break;
 						counter++;
+						previous = current;
 					}
 				}
-				if (counter == 13) {
+				if (counter >= 13) {
 					while (toMove.length < 13) {
-						const card = tableau[t].pop();
+						const card = Tableau[t].pop();
 						if (card) toMove.push(card);
 					}
 					for (let a = 0; a < count.aces; a++) {
-						if (aces[a].length == 0) {
+						if (Aces[a].length == 0) {
 							while (toMove.length) {
 								const card = toMove.pop();
-								if (card) aces[a].push(card);
+								if (card) Aces[a].push(card);
 							}
+							moves++;
 							break;
 						}
 					}
 				}
 			}
 		}
+		tableau = Tableau;
+		aces = Aces;
 		setTimeout(() => {
 			flags.aces = true;
 			flags.tableau = true;
@@ -253,16 +266,20 @@
 		if (from === 'stock') {
 			timeout = setTimeout(() => {
 				let card: Card | undefined;
+				let Stock = [...stock];
+				let Tableau = { ...tableau };
 				for (let t = 0; t < count.tableau; t++) {
-					card = stock.pop();
+					card = Stock.pop();
 					if (card) {
 						card.facedown = false;
 						card.clickable = false;
 						card.draggable = true;
-						tableau[t].push(card);
+						Tableau[t].push(card);
 					} else break;
 				}
-				for (let s = 0; s < stock.length; s++) stock[s].clickable = true;
+				stock = Stock;
+				tableau = Tableau;
+				moves++;
 				adjustDraggable();
 			}, 150);
 		}
@@ -275,8 +292,12 @@
 </script>
 
 <div class="spider-container">
-	<button on:click={deal}>Deal</button>
-	<div id="spider-top-row" class="flex flex-wrap justify-between mb-4 mx-4">
+	<div class="p-2">
+		<button on:click={deal}>Deal</button>
+		<div>{moves}</div>
+	</div>
+
+	<div id="spider-top-row" class="flex flex-wrap justify-between mb-4 mx-2">
 		<div id="stock" class="card-container">
 			{#if flags.stock && stock}
 				{#each stock as card}
@@ -296,7 +317,7 @@
 			{/each}
 		</div>
 	</div>
-	<div id="spider-tableau" class="flex flex-wrap justify-between mx-4">
+	<div id="spider-tableau" class="flex flex-wrap justify-between mx-2">
 		{#each Array(count.tableau) as _, idx}
 			<div
 				class="card-container"
@@ -318,6 +339,9 @@
 <style>
 	div.card-container {
 		@apply w-28 h-36 p-0 border border-dashed border-yellow-300 rounded text-center relative;
+	}
+	button {
+		@apply bg-white border border-black rounded py-1 px-2;
 	}
 	:global(div.over) {
 		@apply border-red-500;
