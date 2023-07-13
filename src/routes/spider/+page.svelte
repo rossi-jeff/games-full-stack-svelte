@@ -362,6 +362,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Spider Game</title>
+</svelte:head>
+
 <div class="spider-container">
 	<div class="p-2 flex justify-between">
 		{#if spider.Status != 'Playing'}

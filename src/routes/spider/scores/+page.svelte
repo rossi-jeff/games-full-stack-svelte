@@ -39,6 +39,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Spider Scores</title>
+</svelte:head>
+
 <h2>Spider Scores</h2>
 
 {#if paginated && paginated.Items}
