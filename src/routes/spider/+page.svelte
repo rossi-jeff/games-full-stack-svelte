@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import SpiderCard from './SpiderCard.svelte';
 	import type { FlagType } from '$lib/types/flag.type';
+	import { displayElapsed } from '$lib/display-elapsed';
 
 	let aces: { [key: number]: Card[] } = {};
 	let tableau: { [key: number]: Card[] } = {};
@@ -18,7 +19,10 @@
 		stock: true
 	};
 	let timeout: ReturnType<typeof setTimeout> | undefined;
+	let interval: ReturnType<typeof setInterval> | undefined;
 	let moves = 0;
+	let start: number,
+		elapsed: number = 0;
 
 	const setup = () => {
 		flags.aces = false;
@@ -31,6 +35,14 @@
 			flags.aces = true;
 			flags.tableau = true;
 		}, 0);
+	};
+
+	const clock = () => {
+		if (interval) clearInterval(interval);
+		elapsed = 0;
+		interval = setInterval(() => {
+			elapsed = Math.round((Date.now() - start) / 1000);
+		}, 1000);
 	};
 
 	const preload = () => {
@@ -81,6 +93,8 @@
 			}
 		}
 		moves = 0;
+		start = Date.now();
+		clock();
 		setTimeout(() => {
 			flags.tableau = true;
 			flags.stock = true;
@@ -292,9 +306,16 @@
 </script>
 
 <div class="spider-container">
-	<div class="p-2">
+	<div class="p-2 flex justify-between">
 		<button on:click={deal}>Deal</button>
-		<div>{moves}</div>
+		<div>
+			<strong>Moves</strong>
+			{moves}
+		</div>
+		<div>
+			<strong>Elapsed</strong>
+			{displayElapsed(elapsed)}
+		</div>
 	</div>
 
 	<div id="spider-top-row" class="flex flex-wrap justify-between mb-4 mx-2">
