@@ -4,7 +4,15 @@
 	import SpiderCard from './SpiderCard.svelte';
 	import type { FlagType } from '$lib/types/flag.type';
 	import { displayElapsed } from '$lib/display-elapsed';
+	import type { Spider } from '../../lib/types/spider.type';
+	import { userSession, type UserSessionData } from '../../lib/user-session.writable';
+	import { get } from 'svelte/store';
+	import { railsRoot } from '../../lib/constants';
+	import { buildRequestHeaders } from '../../lib/build-request-headers';
+	import { GameStatus } from '../../lib/enum/game-status.enum';
 
+	let spider: Spider = {};
+	const session: UserSessionData = get(userSession);
 	let aces: { [key: number]: Card[] } = {};
 	let tableau: { [key: number]: Card[] } = {};
 	let stock: Card[];
@@ -95,10 +103,49 @@
 		moves = 0;
 		start = Date.now();
 		clock();
+		createGame();
 		setTimeout(() => {
 			flags.tableau = true;
 			flags.stock = true;
 		}, 0);
+	};
+
+	const quit = () => {
+		if (interval) clearInterval(interval);
+		setup();
+		updateGame(GameStatus.Lost);
+	};
+
+	const createGame = async () => {
+		try {
+			const result = await fetch(`${railsRoot}/api/spider`, {
+				method: 'POST',
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				spider = await result.json();
+				console.log(spider);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const updateGame = async (Status: GameStatus) => {
+		if (!spider.id) return;
+		try {
+			const result = await fetch(`${railsRoot}/api/spider/${spider.id}`, {
+				method: 'PATCH',
+				body: JSON.stringify({ Moves: moves, Elapsed: elapsed, Status }),
+				headers: buildRequestHeaders(session)
+			});
+			if (result.ok) {
+				spider = await result.json();
+				console.log(spider);
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const dragStart = (event: any) => {
@@ -222,9 +269,19 @@
 		}
 		tableau = Tableau;
 		moveCompleteSuits();
+		if (countAces() == 104) {
+			if (interval) clearInterval(interval);
+			updateGame(GameStatus.Won);
+		}
 		setTimeout(() => {
 			flags.tableau = true;
 		}, 0);
+	};
+
+	const countAces = () => {
+		let total = 0;
+		for (let a = 0; a < count.aces; a++) total += aces[a].length;
+		return total;
 	};
 
 	const moveCompleteSuits = () => {
@@ -307,7 +364,12 @@
 
 <div class="spider-container">
 	<div class="p-2 flex justify-between">
-		<button on:click={deal}>Deal</button>
+		{#if spider.Status != 'Playing'}
+			<button on:click={deal}>Deal</button>
+		{/if}
+		{#if spider.Status == 'Playing'}
+			<button on:click={quit}>Quit</button>
+		{/if}
 		<div>
 			<strong>Moves</strong>
 			{moves}
@@ -357,6 +419,10 @@
 	</div>
 </div>
 
+<div class="scores-link">
+	<a href="/spider/scores">See Top Scores</a>
+</div>
+
 <style>
 	div.card-container {
 		@apply w-28 h-36 p-0 border border-dashed border-yellow-300 rounded text-center relative;
@@ -366,5 +432,11 @@
 	}
 	:global(div.over) {
 		@apply border-red-500;
+	}
+	div.scores-link {
+		@apply mx-2 mt-4;
+	}
+	button:hover {
+		@apply bg-blue-400;
 	}
 </style>
