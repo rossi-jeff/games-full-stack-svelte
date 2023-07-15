@@ -31,6 +31,8 @@
 	let moves = 0;
 	let start: number,
 		elapsed: number = 0;
+	const suitCounts: number[] = [4, 2, 1];
+	let suits = 4;
 
 	const setup = () => {
 		flags.aces = false;
@@ -38,7 +40,6 @@
 		for (let t = 0; t < count.tableau; t++) tableau[t] = [];
 		for (let a = 0; a < count.aces; a++) aces[a] = [];
 		stock = [];
-		deck = new Deck(2);
 		setTimeout(() => {
 			flags.aces = true;
 			flags.tableau = true;
@@ -54,6 +55,7 @@
 	};
 
 	const preload = () => {
+		deck = new Deck();
 		let images = [];
 		let idx = 0;
 		for (const back of deck.backs) {
@@ -70,6 +72,7 @@
 
 	const deal = () => {
 		setup();
+		deck = new Deck({ decks: 2, suits });
 		deck.shuffle();
 		let idx = 0;
 		let counter = 0;
@@ -117,9 +120,11 @@
 	};
 
 	const createGame = async () => {
+		const Suits = suits;
 		try {
 			const result = await fetch(`${railsRoot}/api/spider`, {
 				method: 'POST',
+				body: JSON.stringify({ Suits }),
 				headers: buildRequestHeaders(session)
 			});
 			if (result.ok) {
@@ -217,7 +222,7 @@
 		}
 		tableau = Tableau;
 		moves++;
-		adjustDraggable();
+		moveCompleteSuits();
 	};
 
 	const getTopCard = (to: string) => {
@@ -268,7 +273,6 @@
 			}
 		}
 		tableau = Tableau;
-		moveCompleteSuits();
 		if (countAces() == 104) {
 			if (interval) clearInterval(interval);
 			updateGame(GameStatus.Won);
@@ -325,6 +329,7 @@
 		}
 		tableau = Tableau;
 		aces = Aces;
+		adjustDraggable();
 		setTimeout(() => {
 			flags.aces = true;
 			flags.tableau = true;
@@ -369,7 +374,15 @@
 <div class="spider-container">
 	<div class="p-2 flex justify-between">
 		{#if spider.Status != 'Playing'}
-			<button on:click={deal}>Deal</button>
+			<div class="flex">
+				<label for="suits">Suits</label>
+				<select name="suits" bind:value={suits} class="mr-2">
+					{#each suitCounts as sc}
+						<option value={sc}>{sc}</option>
+					{/each}
+				</select>
+				<button on:click={deal}>Deal</button>
+			</div>
 		{/if}
 		{#if spider.Status == 'Playing'}
 			<button on:click={quit}>Quit</button>
@@ -431,7 +444,8 @@
 	div.card-container {
 		@apply w-28 h-36 p-0 border border-dashed border-yellow-300 rounded text-center relative;
 	}
-	button {
+	button,
+	select {
 		@apply bg-white border border-black rounded py-1 px-2;
 	}
 	:global(div.over) {
@@ -442,5 +456,8 @@
 	}
 	button:hover {
 		@apply bg-blue-400;
+	}
+	label {
+		@apply font-bold mr-2;
 	}
 </style>

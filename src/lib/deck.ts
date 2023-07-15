@@ -26,6 +26,7 @@ export class Card {
 export class Deck {
 	cards: Card[] = [];
 	decks = 1;
+	suitCount = 4;
 	readonly suits: string[] = ['clubs', 'diamonds', 'hearts', 'spades'];
 	readonly faces: string[] = [
 		'ace',
@@ -64,8 +65,9 @@ export class Deck {
 		spades: 'black'
 	};
 
-	constructor(decks = 1) {
-		this.decks = decks;
+	constructor(options?: { decks?: number; suits?: number }) {
+		this.decks = options && options.decks ? options.decks : 1;
+		this.suitCount = options && options.suits ? options.suits : 4;
 		this.randomBack();
 		this.build();
 	}
@@ -73,13 +75,40 @@ export class Deck {
 	build() {
 		this.cards = [];
 		let id = 1;
-		for (let d = 0; d < this.decks; d++) {
-			for (const suit of this.suits) {
-				for (const face of this.faces) {
-					const card = new Card(suit, face, this.back, id);
-					this.cards.push(card);
-					id++;
-				}
+		const { decks, suitCount } = this;
+		for (let i = 0; i < decks; i++) {
+			switch (suitCount) {
+				case 4:
+					for (const suit of this.suits) {
+						for (const face of this.faces) {
+							const card = new Card(suit, face, this.back, id);
+							this.cards.push(card);
+							id++;
+						}
+					}
+					break;
+				case 2:
+					for (let j = 0; j < 2; j++) {
+						for (let k = 0; k < 2; k++) {
+							const suit = this.suits[k];
+							for (const face of this.faces) {
+								const card = new Card(suit, face, this.back, id);
+								this.cards.push(card);
+								id++;
+							}
+						}
+					}
+					break;
+				case 1:
+					for (let j = 0; j < 4; j++) {
+						const suit = this.suits[0];
+						for (const face of this.faces) {
+							const card = new Card(suit, face, this.back, id);
+							this.cards.push(card);
+							id++;
+						}
+					}
+					break;
 			}
 		}
 	}
