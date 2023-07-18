@@ -10,6 +10,7 @@
 	import { railsRoot } from '../../lib/constants';
 	import { buildRequestHeaders } from '../../lib/build-request-headers';
 	import { GameStatus } from '../../lib/enum/game-status.enum';
+	import SpiderDirections from './SpiderDirections.svelte';
 
 	let spider: Spider = {};
 	const session: UserSessionData = get(userSession);
@@ -439,6 +440,8 @@
 <div class="scores-link">
 	<a href="/spider/scores">See Top Scores</a>
 </div>
+
+<SpiderDirections />
 
 <style>
 	div.card-container {
