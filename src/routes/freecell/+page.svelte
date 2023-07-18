@@ -1228,11 +1228,13 @@
 	</div>
 </div>
 
-<div class="scores-link">
-	<a href="/freecell/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/freecell/scores">See Top Scores</a>
+	</div>
 
-<FreeCellDirections />
+	<FreeCellDirections />
+{/if}
 
 <style>
 	div.free-cell-container {

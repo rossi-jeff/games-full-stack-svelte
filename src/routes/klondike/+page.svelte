@@ -985,11 +985,13 @@
 	{/if}
 </div>
 
-<div class="scores-link">
-	<a href="/klondike/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/klondike/scores">See Top Scores</a>
+	</div>
 
-<KlondikeDirections />
+	<KlondikeDirections />
+{/if}
 
 <style>
 	div.klondike-container {

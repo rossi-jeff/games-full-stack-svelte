@@ -437,11 +437,13 @@
 	</div>
 </div>
 
-<div class="scores-link">
-	<a href="/spider/scores">See Top Scores</a>
-</div>
+{#if spider.Status != 'Playing'}
+	<div class="scores-link">
+		<a href="/spider/scores">See Top Scores</a>
+	</div>
 
-<SpiderDirections />
+	<SpiderDirections />
+{/if}
 
 <style>
 	div.card-container {

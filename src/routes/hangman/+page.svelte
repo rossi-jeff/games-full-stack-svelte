@@ -17,7 +17,7 @@
 
 	let word: Word = {};
 	let game: HangMan = {};
-	let inProgress: HangMan[] = []
+	let inProgress: HangMan[] = [];
 	let Min = 4;
 	let Max = 12;
 	const session: UserSessionData = get(userSession);
@@ -33,7 +33,7 @@
 				word = await result.json();
 				if (word.id) createGame(word.id);
 				if (word.Length) newDisplay(word.Length);
-				console.log(word)
+				console.log(word);
 			}
 		} catch (error) {
 			console.log(error);
@@ -134,7 +134,7 @@
 					clearButtons();
 					clearParts();
 				}
-				if (game.Status != 'Playing') loadInProgress()
+				if (game.Status != 'Playing') loadInProgress();
 			}
 		} catch (error) {
 			console.log(error);
@@ -142,32 +142,32 @@
 	};
 
 	const loadInProgress = async () => {
-		if (!session.Token) return
+		if (!session.Token) return;
 		try {
 			const result = await fetch(`${railsRoot}/api/hang_man/progress`, {
 				headers: buildRequestHeaders(session)
-			})
+			});
 			if (result.ok) {
-				inProgress = await result.json()
+				inProgress = await result.json();
 				console.log(inProgress);
 			}
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
 	const continueGame = async (event: any) => {
-		if (!event.detail.id) return
-		game.id = event.detail.id
+		if (!event.detail.id) return;
+		game.id = event.detail.id;
 		try {
 			const result = await fetch(`${railsRoot}/api/hang_man/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
-				if (game.word) word = game.word
+				if (game.word) word = game.word;
 				if (word.Length) {
 					display = [];
 					wrong = game.Wrong ? game.Wrong.split(',') : [];
-					correct = game.Correct ? game.Correct.split(',') : []
+					correct = game.Correct ? game.Correct.split(',') : [];
 					clearButtons();
 					clearParts();
 					for (let i = 0; i < word.Length; i++) display.push('');
@@ -175,11 +175,11 @@
 						correct = clone(correct);
 						wrong = clone(wrong);
 						for (const Letter of wrong) {
-							toggleButton(Letter,'Wrong');
+							toggleButton(Letter, 'Wrong');
 							updateDisplay(Letter);
 						}
 						for (const Letter of correct) {
-							toggleButton(Letter,'Correct');
+							toggleButton(Letter, 'Correct');
 							updateDisplay(Letter);
 						}
 						drawHangMan();
@@ -189,11 +189,11 @@
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
-	onMount(() =>  {
-		loadInProgress()
-	})
+	onMount(() => {
+		loadInProgress();
+	});
 </script>
 
 <svelte:head>
@@ -221,11 +221,13 @@
 	<InProgressHangMen {inProgress} on:continueGame={continueGame} />
 {/if}
 
-<div class="scores-link">
-	<a href="/hangman/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/hangman/scores">See Top Scores</a>
+	</div>
 
-<HangManDirections />
+	<HangManDirections />
+{/if}
 
 <style>
 	h2 {

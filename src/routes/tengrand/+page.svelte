@@ -12,7 +12,7 @@
 	import TenGrandTurns from './TenGrandTurns.svelte';
 
 	let game: TenGrand = {};
-	let inProgress: TenGrand[] = []
+	let inProgress: TenGrand[] = [];
 	const session: UserSessionData = get(userSession);
 
 	const createGame = async () => {
@@ -88,11 +88,13 @@
 	<InProgressTenGrands {inProgress} on:continueGame={continueGame} />
 {/if}
 
-<div class="scores-link">
-	<a href="/tengrand/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/tengrand/scores">See Top Scores</a>
+	</div>
 
-<TenGrandDirections />
+	<TenGrandDirections />
+{/if}
 
 <style>
 	button {

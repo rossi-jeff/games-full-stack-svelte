@@ -229,11 +229,13 @@
 	</div>
 </div>
 
-<div class="scores-link">
-	<a href="/concentration/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/concentration/scores">See Top Scores</a>
+	</div>
 
-<ConcentrationDirections />
+	<ConcentrationDirections />
+{/if}
 
 <style>
 	div.concentration-container {

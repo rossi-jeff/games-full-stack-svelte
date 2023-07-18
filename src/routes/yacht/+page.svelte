@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	import { YachtCategory } from '$lib/enum/yacht-category.enum';
 	import type { ArgsYachtRoll } from '$lib/types/args-yacht-roll.type';
@@ -21,7 +20,7 @@
 	import InProgessYachts from './InProgessYachts.svelte';
 
 	let game: Yacht = {};
-	let inProgress: Yacht[] = []
+	let inProgress: Yacht[] = [];
 	let turn: YachtTurn = {};
 	let options: YachtScoreOption[] = [];
 	let flags: FlagType = {
@@ -41,7 +40,6 @@
 			if (result.ok) {
 				game = await result.json();
 				console.log(game);
-				
 			}
 		} catch (error) {
 			console.log(error);
@@ -147,8 +145,8 @@
 			const result = await fetch(`${railsRoot}/api/yacht/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
-				if (game.turns  && game.turns[game.turns.length - 1].Category == null) {
-					turn = game.turns[game.turns.length - 1]
+				if (game.turns && game.turns[game.turns.length - 1].Category == null) {
+					turn = game.turns[game.turns.length - 1];
 				}
 			}
 		} catch (error) {
@@ -199,11 +197,13 @@
 	<InProgessYachts {inProgress} on:continueGame={continueGame} />
 {/if}
 
-<div class="scores-link">
-	<a href="/yacht/scores">See Top Scores</a>
-</div>
+{#if game && (!game.id || game.turns?.length === Object.values(YachtCategory).length)}
+	<div class="scores-link">
+		<a href="/yacht/scores">See Top Scores</a>
+	</div>
 
-<YachtDirections />
+	<YachtDirections />
+{/if}
 
 <style>
 	button {

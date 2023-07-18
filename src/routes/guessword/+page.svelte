@@ -148,11 +148,11 @@
 			if (result.ok) {
 				game = await result.json();
 				console.log(game);
-				if (game.word) word = game.word
+				if (game.word) word = game.word;
 				if (word.Length) hintArgs.Length = word.Length;
 				if (game && game.guesses) buildHintArgs(game.guesses);
 				if (game.word && game.word.Length) Length = game.word.Length;
-				if (game.Status != 'Playing') loadInProgress()
+				if (game.Status != 'Playing') loadInProgress();
 				getHints();
 			}
 		} catch (error) {
@@ -220,11 +220,13 @@
 	<InProgressGuessWords {inProgress} on:continueGame={continueGame} />
 {/if}
 
-<div class="scores-link">
-	<a href="/guessword/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/guessword/scores">See Top Scores</a>
+	</div>
 
-<GuessWordDirections />
+	<GuessWordDirections />
+{/if}
 
 <style>
 	h2 {

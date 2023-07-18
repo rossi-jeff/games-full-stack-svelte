@@ -45,6 +45,9 @@
 			between piles.
 		</div>
 		<div class="mx-2 mb-2">
+			Play continues until all cards are in the foundation or no more moves can be made.
+		</div>
+		<div class="mx-2 mb-2">
 			The game can be difficult to solve with 4 suits, for that reason options are given to play
 			with 2 or 1 suits.
 		</div>
@@ -54,6 +57,10 @@
 				target="_blank"
 				rel="noreferrer">Spider</a
 			>
+		</div>
+		<h3>Scoring</h3>
+		<div class="mx-2 mb-2">
+			This version is designed as solitaire and the goal is to complete in the shortest time.
 		</div>
 	</div>
 </div>
