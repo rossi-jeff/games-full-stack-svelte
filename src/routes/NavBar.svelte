@@ -25,7 +25,8 @@
 		{ url: '/klondike', name: 'Klondike' },
 		{ url: '/freecell', name: 'Free Cell' },
 		{ url: '/tengrand', name: 'Ten Grand' },
-		{ url: '/pokersquares', name: 'Poker Squares' }
+		{ url: '/pokersquares', name: 'Poker Squares' },
+		{ url: '/spider', name: 'Spider' }
 	];
 
 	let session: UserSessionData = get(userSession);

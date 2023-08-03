@@ -382,11 +382,13 @@
 		</div>
 	</div>
 
-	<div class="scores-link">
-		<a href="/pokersquares/scores">See Top Scores</a>
-	</div>
+	{#if game && game.Status !== 'Playing'}
+		<div class="scores-link">
+			<a href="/pokersquares/scores">See Top Scores</a>
+		</div>
 
-	<PokerSquaresDirections />
+		<PokerSquaresDirections />
+	{/if}
 </div>
 
 <style>

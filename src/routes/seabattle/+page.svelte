@@ -65,11 +65,15 @@
 				setTimeout(() => {
 					if (game.ships) {
 						displayPlayerShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Player'));
-						displayOpponentShips(game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Opponent'));
+						displayOpponentShips(
+							game.ships.filter((s) => s.Navy && s.Navy.toString() == 'Opponent')
+						);
 					}
 					if (game.turns) {
 						displayPlayerTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Player'));
-						displayOpponentTurns(game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Opponent'));
+						displayOpponentTurns(
+							game.turns.filter((t) => t.Navy && t.Navy.toString() == 'Opponent')
+						);
 					}
 				}, 100);
 			}
@@ -298,11 +302,13 @@
 	<InProgressSeaBattles {inProgress} on:continueGame={continueGame} />
 {/if}
 
-<div class="scores-link">
-	<a href="/seabattle/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/seabattle/scores">See Top Scores</a>
+	</div>
 
-<SeaBattleDirections />
+	<SeaBattleDirections />
+{/if}
 
 <style>
 	h2 {

@@ -18,7 +18,7 @@
 	let available: string[] = [];
 	let columns: number = 4;
 	const session: UserSessionData = get(userSession);
-	let inProgress: CodeBreaker[] = []
+	let inProgress: CodeBreaker[] = [];
 
 	const startGame = async (event: { detail: ArgsCodeBreakerCreate }) => {
 		const { Colors, Columns } = event.detail;
@@ -69,9 +69,9 @@
 			const result = await fetch(`${railsRoot}/api/code_breaker/${game.id}`);
 			if (result.ok) {
 				game = await result.json();
-				if (game.Columns) columns = game.Columns
+				if (game.Columns) columns = game.Columns;
 				available = game.Available ? game.Available.split(',') : Object.values(Color);
-				if (game.Status != 'Playing') loadInProgress()
+				if (game.Status != 'Playing') loadInProgress();
 			}
 		} catch (error) {
 			console.log(error);
@@ -79,29 +79,29 @@
 	};
 
 	const loadInProgress = async () => {
-		if (!session.Token) return
+		if (!session.Token) return;
 		try {
 			const result = await fetch(`${railsRoot}/api/code_breaker/progress`, {
 				headers: buildRequestHeaders(session)
-			})
+			});
 			if (result.ok) {
-				inProgress = await result.json()
+				inProgress = await result.json();
 				console.log(inProgress);
 			}
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
 	const continueGame = (event: any) => {
-		if (!event.detail.id) return
-		game.id = event.detail.id
-		reloadGame()
-	}
+		if (!event.detail.id) return;
+		game.id = event.detail.id;
+		reloadGame();
+	};
 
-	onMount(() =>  {
-		loadInProgress()
-	})
+	onMount(() => {
+		loadInProgress();
+	});
 </script>
 
 <svelte:head>
@@ -130,11 +130,13 @@
 	<InProgressCodeBreakers {inProgress} on:continueGame={continueGame} />
 {/if}
 
-<div class="scores-link">
-	<a href="/codebreaker/scores">See Top Scores</a>
-</div>
+{#if game && game.Status !== 'Playing'}
+	<div class="scores-link">
+		<a href="/codebreaker/scores">See Top Scores</a>
+	</div>
 
-<CodeBreakerDirections />
+	<CodeBreakerDirections />
+{/if}
 
 <style>
 	h2 {
